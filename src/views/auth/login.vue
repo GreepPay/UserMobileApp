@@ -66,7 +66,7 @@
 
           <!-- Button -->
           <div class="w-full flex flex-col items-center justify-center pt-5">
-            <app-button @click.prevent="Logic.Common.GoToRoute('/')" class="w-full py-3">
+            <app-button @click.prevent="Logic.Common.GoToRoute('/wallets')" class="w-full py-3">
               Login
             </app-button>
           </div>

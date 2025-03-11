@@ -12,7 +12,7 @@
           <app-normal-text class="!text-primary text-center">
             Current wallet balance:
             <span class="!font-semibold pl-1"
-              >₺ {{ Logic.Common.convertToMoney(6074, false, "", false) }}</span
+              > ₺ {{ Logic.Common.convertToMoney(6074, false, "", false) }}</span
             >
           </app-normal-text>
           <app-header-text class="!text-3xl">
