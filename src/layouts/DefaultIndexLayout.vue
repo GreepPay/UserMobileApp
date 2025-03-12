@@ -9,7 +9,7 @@
     <div class="w-full flex flex-col relative h-full overflow-y-auto">
       <!-- Top section -->
       <div
-        class="w-full flex flex-row items-center justify-between py-4 bg-white px-4 sticky top-0 z-10"
+        class="w-full flex flex-row items-center justify-between py-4 bg-white px-4 sticky top-0 z-999"
       >
         <app-image-loader
           :photo-url="'/images/temps/profile-1.png'"
@@ -21,7 +21,7 @@
         </app-header-text>
 
         <div
-          class="border rounded-full h-9 w-9 rounded-full flex justify-center items-center"
+          class="border border-black rounded-full h-9 w-9 rounded-full flex justify-center items-center border-black"
         >
           <app-icon name="bell" custom-class="h-6" />
         </div>
@@ -36,7 +36,6 @@
 <script lang="ts">
   import { AppHeaderText, AppIcon, AppImageLoader } from "@greep/ui-components"
   import { ref, defineComponent } from "vue"
-  import { useRouter } from "vue-router"
 
   export default defineComponent({
     components: {
@@ -56,39 +55,7 @@
     },
     name: "DefaultIndexLayout",
     setup() {
-      const router = useRouter()
-
-      const selectedTab = ref("")
-
-      const tabIsActive = (tabName: string) => {
-        const mainName = tabName
-
-        if (mainName == "base" && router.currentRoute.value.path == "/") {
-          return true
-        } else if (
-          mainName != "base" &&
-          router.currentRoute.value.path.includes(mainName)
-        ) {
-          selectedTab.value = mainName
-          return true
-        }
-
-        return false
-      }
-
-      const goBack = () => {
-        window.history.length > 1 ? router.go(-1) : router.push("/")
-      }
-
-      const goToRoute = (route: string) => {
-        router.push(route)
-      }
-
-      return {
-        tabIsActive,
-        goBack,
-        goToRoute,
-      }
+      return {}
     },
   })
 </script>

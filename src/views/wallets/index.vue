@@ -1,15 +1,23 @@
 <template>
   <app-wrapper>
-    <default-index-layout title="Withdraw Funds">
+    <default-index-layout title="Home">
       <div
-        class="w-full flex flex-col items-center justify-center space-y-3 p-5 pt-8"
+        class="w-full flex flex-col items-center justify-center space-y-4 p-5"
       >
         <app-title-card-container>
-          <div class="p-0">
+          <div class="space-y-4 flex flex-col justify-center">
+            <div class="flex items-center justify-center">
+              <app-dropdown-select
+                :options="dropdownOptions"
+                :showTitle="false"
+              />
+            </div>
+
             <div class="w-full flex flex-col items-center justify-center">
               <app-normal-text class="!text-white !font-normal text-center">
                 Total Balance
               </app-normal-text>
+
               <app-header-text class="!text-2xl text-white">
                 ₺
                 {{
@@ -19,8 +27,42 @@
                 }}
               </app-header-text>
             </div>
+
+            <div class="flex space-x-3 justify-between items-center px-6">
+              <div
+                class="space-y-1 flex flex-col items-center"
+                v-for="action in actionBtns"
+                :key="action.route"
+                @click="Logic.Common.GoToRoute(`/wallets/${action.route}`)"
+              >
+                <app-button iconOnly custom-class="bg-white">
+                  <template #icon>
+                    <app-icon
+                      :name="action.icon"
+                      custom-class="!text-primary"
+                      class="size-5"
+                    />
+                  </template>
+                </app-button>
+
+                <app-normal-text class="text-white">
+                  {{ action.text }}
+                </app-normal-text>
+              </div>
+            </div>
           </div>
         </app-title-card-container>
+
+        <div class="w-full h-fit space-y-4">
+          <div class="flex items-center justify-between">
+            <app-header-text class="text-lg font-semibold">
+              Quick Pay
+            </app-header-text>
+            <app-icon name="add-circle" class="size-6" />
+          </div>
+
+          <HorizontalUserList :items="users" :imageSize="56" />
+        </div>
 
         <!-- Transaction details -->
         <div class="w-full flex flex-col space-y-4 pt-2">
@@ -30,7 +72,7 @@
             </app-normal-text>
 
             <app-normal-text class="text-primary text-right">
-              View all
+              See all
             </app-normal-text>
           </div>
 
@@ -59,9 +101,17 @@
     AppIcon,
     AppTransaction,
     AppTitleCardContainer,
+    AppDropdownSelect,
+    HorizontalUserList,
   } from "@greep/ui-components"
   import { ref, reactive } from "vue"
   import { Logic } from "@greep/logic"
+
+  interface User {
+    id: number
+    name: string
+    avatar: string
+  }
 
   export default defineComponent({
     name: "WalletsPage",
@@ -74,10 +124,41 @@
       AppIcon,
       AppTransaction,
       AppTitleCardContainer,
+      AppDropdownSelect,
+      HorizontalUserList,
     },
     setup() {
       const amount = ref("1000")
-
+      const actionBtns = [
+        {
+          text: "Add",
+          icon: "plus",
+          route: "add-money",
+        },
+        {
+          text: "Send",
+          icon: "arrow-up",
+          route: "send-money",
+        },
+        {
+          text: "Scan",
+          icon: "scan",
+          route: "scan",
+        },
+      ]
+      const dropdownOptions = [
+        { title: "Home", icon: "images/temps/profile-1.png", value: "home" },
+        {
+          title: "Profile",
+          icon: "images/temps/profile-1.png",
+          value: "profile",
+        },
+        {
+          title: "Settings",
+          icon: "images/temps/profile-1.png",
+          value: "settings",
+        },
+      ]
       const modalIsOpen = ref(false)
 
       const amountIsValid = () => {
@@ -90,70 +171,64 @@
 
       const transactions = reactive<
         {
-          type: "credit" | "debit"
-          description: string
-          icon: string
+          id: string | number
+          title: string
           amount: number
-          day: string
-          time: string
+          type: "sent" | "received" | "added" | "redeemed"
+          transactionType: "credit" | "debit"
+          date: string
         }[]
       >([
         {
-          type: "credit",
-          description: "Payment from QR-Code | Josh",
-          icon: "scan-type",
-          amount: 70,
-          day: "Today",
-          time: "10:54 AM",
+          id: 1,
+          title: "Timms Closet Ventures",
+          amount: 33000,
+          type: "sent",
+          transactionType: "debit",
+          date: "Today",
         },
         {
-          type: "credit",
-          description: "Payment from QR-Code | Lizzy",
-          icon: "scan-type",
-          amount: 95,
-          day: "Today",
-          time: "09:54 AM",
+          id: 2,
+          title: "Freelance Payment",
+          amount: 50000,
+          type: "received",
+          transactionType: "credit",
+          date: "Yesterday",
         },
         {
-          type: "debit",
-          description: "Raymond Akinola",
-          icon: "send-type",
-          amount: 230,
-          day: "Today",
-          time: "07:54 AM",
+          id: 3,
+          title: "Wallet Top-Up",
+          amount: 100000,
+          type: "added",
+          transactionType: "credit",
+          date: "2 Days Ago",
         },
         {
-          type: "credit",
-          description: "Payment from Transfer | Josh",
-          icon: "tag-type",
-          amount: 89,
-          day: "Today",
-          time: "06:54 AM",
+          id: 4,
+          title: "Gift Card Redemption",
+          amount: 25000,
+          type: "redeemed",
+          transactionType: "debit",
+          date: "Last Week",
         },
         {
-          type: "credit",
-          description: "Payment from QR-Code | Mica",
-          icon: "scan-type",
-          amount: 70,
-          day: "Today",
-          time: "05:54 AM",
+          id: 5,
+          title: "Online Shopping",
+          amount: 45000,
+          type: "sent",
+          transactionType: "debit",
+          date: "Last Month",
         },
-        {
-          type: "credit",
-          description: "Payment from Transfer | Lola",
-          icon: "tag-type",
-          amount: 100,
-          day: "Today",
-          time: "04:54 AM",
-        },
-        {
-          type: "credit",
-          description: "Payment from QR-Code | Josh",
-          icon: "scan-type",
-          amount: 70,
-          day: "Today",
-          time: "03:54 AM",
-        },
+      ])
+
+      const users = ref<User[]>([
+        { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
+        { id: 2, name: "Test", avatar: "/images/temps/profile-1.png" },
+        { id: 3, name: "Sukky", avatar: "/images/temps/profile-1.png" },
+        { id: 4, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+        { id: 5, name: "Sukky", avatar: "/images/temps/profile-1.png" },
+        { id: 5, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+        { id: 5, name: "Sukky", avatar: "/images/temps/profile-1.png" },
       ])
 
       return {
@@ -161,9 +236,23 @@
         Logic,
         modalIsOpen,
         transactions,
+        users,
+        dropdownOptions,
+        actionBtns,
         continueToNext,
         amountIsValid,
       }
     },
   })
 </script>
+
+<style scoped>
+  /* Hide scrollbar but allow horizontal scrolling */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
