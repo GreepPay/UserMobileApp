@@ -32,7 +32,7 @@
   } from "../../components/Core/Common"
 
   export default defineComponent({
-    name: "WalletAddMoneyPage",
+    name: "WalletScanPage",
     components: {
       PaymentMethod,
       MobileMoneyDetails,
@@ -42,7 +42,7 @@
       EnterAmount,
     },
     setup() {
-      const activeStep = ref(2)
+      const activeStep = ref(1)
       const pageTitle = computed(() => {
         if (activeStep.value === 2) {
           return "Choose Method"

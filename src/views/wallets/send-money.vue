@@ -32,7 +32,7 @@
   } from "../../components/Core/Common"
 
   export default defineComponent({
-    name: "WalletAddMoneyPage",
+    name: "WalletSendMoneyPage",
     components: {
       PaymentMethod,
       MobileMoneyDetails,
@@ -42,10 +42,10 @@
       EnterAmount,
     },
     setup() {
-      const activeStep = ref(2)
+      const activeStep = ref(1)
       const pageTitle = computed(() => {
         if (activeStep.value === 2) {
-          return "Choose Method"
+          return "Transfer"
         } else if (activeStep.value === 3) {
           return "Confirm Details"
         } else if (activeStep.value === 4) {
@@ -55,7 +55,7 @@
         } else if (activeStep.value === 6) {
           return ""
         } else {
-          return "Add Money" // Default title
+          return "Send Money" // Default title
         }
       })
 
