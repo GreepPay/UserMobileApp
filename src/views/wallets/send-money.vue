@@ -6,12 +6,11 @@
       :hideBackBtn="activeStep > 4"
       @back="handleBack"
     >
-      <enter-amount v-if="activeStep === 1" @next="activeStep = 2" />
-      <payment-method v-if="activeStep === 2" @next="activeStep = 3" />
-      <mobile-money-details v-if="activeStep === 3" @next="activeStep = 4" />
-      <make-payment v-if="activeStep === 4" @next="activeStep = 5" />
-      <processing v-if="activeStep === 5" @next="activeStep = 6" />
-      <success v-if="activeStep === 6" />
+      <select-beneficiary v-if="activeStep === 1" @next="activeStep = 2" />
+      <enter-amount v-if="activeStep === 2" @next="activeStep = 3" />
+      <payment-details v-if="activeStep === 3" @next="activeStep = 4" />
+      <processing v-if="activeStep === 4" @next="activeStep = 5" />
+      <success v-if="activeStep === 5" />
     </subpage-layout>
   </app-wrapper>
 </template>
@@ -20,10 +19,10 @@
   import { defineComponent } from "vue"
   import { ref, computed } from "vue"
   import {
-    MobileMoneyDetails,
-    MakePayment,
+    SelectBeneficiary,
     EnterAmount,
-  } from "../../components/Wallets/AddMoney"
+    PaymentDetails,
+  } from "../../components/Wallets/SendMoney"
 
   import {
     PaymentMethod,
@@ -35,11 +34,11 @@
     name: "WalletSendMoneyPage",
     components: {
       PaymentMethod,
-      MobileMoneyDetails,
       Success,
-      MakePayment,
       Processing,
+      SelectBeneficiary,
       EnterAmount,
+      PaymentDetails,
     },
     setup() {
       const activeStep = ref(1)
@@ -49,10 +48,8 @@
         } else if (activeStep.value === 3) {
           return "Confirm Details"
         } else if (activeStep.value === 4) {
-          return "Make Payment"
-        } else if (activeStep.value === 5) {
           return "Processing"
-        } else if (activeStep.value === 6) {
+        } else if (activeStep.value === 5) {
           return ""
         } else {
           return "Send Money" // Default title
