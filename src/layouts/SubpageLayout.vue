@@ -9,9 +9,10 @@
     <div class="w-full flex flex-col relative h-full overflow-y-auto">
       <!-- Top section -->
       <div
-        class="w-full flex flex-row items-center justify-between py-4 bg-white px-4 sticky top-0 z-10"
+        class="w-full flex flex-row items-center py-4 bg-white px-4 sticky top-0 z-10"
+        :class="hideBackBtn ? ' justify-center ' : ' justify-between '"
       >
-        <div class="flex justify-start">
+        <div class="flex justify-start" v-if="!hideBackBtn">
           <app-icon
             name="arrow-left"
             :customClass="'h-[22px]'"
@@ -19,14 +20,10 @@
           />
         </div>
 
-        <div class="flex justify-center">
+        <div class="flex justify-center flex-1">
           <app-header-text class="!text-left">
             {{ title }}
           </app-header-text>
-        </div>
-
-        <div class="flex justify-start invisible">
-          <app-icon name="chevron-left" :customClass="'h-[22px]'" />
         </div>
       </div>
 
@@ -66,6 +63,11 @@
       },
       useEmitBack: {
         type: Boolean, // If true, emits "back" instead of using goBack
+        default: false,
+      },
+
+      hideBackBtn: {
+        type: Boolean,
         default: false,
       },
     },

@@ -26,7 +26,7 @@
 
     <!-- Bottom button -->
     <div class="w-fit bg-white dark:bg-black pt-4">
-      <app-button :class="`!bg-secondary !py-4  !px-8`" @click="continueToNext">
+      <app-button :class="`!bg-secondary !py-4  !px-8`" @click="Logic.Common.GoToRoute('/wallets')">
         Done
       </app-button>
     </div>
@@ -63,7 +63,7 @@
       AppIcon,
     },
     emits: ["next"],
-    setup(_, { emit }) {
+    setup() {
       const amount = ref("0")
       const maximumAmount = 10000
 

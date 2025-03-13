@@ -3,6 +3,7 @@
     <subpage-layout
       :title="pageTitle"
       :useEmitBack="activeStep !== 1"
+      :hideBackBtn="activeStep > 4"
       @back="handleBack"
     >
       <enter-amount v-if="activeStep === 1" @next="activeStep = 2" />
@@ -38,7 +39,7 @@
       EnterAmount,
     },
     setup() {
-      const activeStep = ref(6)
+      const activeStep = ref(1)
       const pageTitle = computed(() => {
         if (activeStep.value === 2) {
           return "Choose Method"
@@ -49,7 +50,7 @@
         } else if (activeStep.value === 5) {
           return "Processing"
         } else if (activeStep.value === 6) {
-          return "Successful"
+          return ""
         } else {
           return "Add Money" // Default title
         }
