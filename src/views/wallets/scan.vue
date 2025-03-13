@@ -1,133 +1,67 @@
 <template>
   <app-wrapper>
-    <subpage-layout title="Withdraw to Bank">
-      <div class="w-full flex flex-col items-center p-5 pt-8 space-y-8 h-full">
-        <AppTitleCardContainer>
-          <div class="p-0">
-            <div
-              class="w-full flex flex-col items-center justify-center space-y-2"
-            >
-              <app-normal-text class="!text-white !font-normal text-center">
-                Total Balance
-              </app-normal-text>
-              <app-header-text class="!text-3xl">
-                ₺
-                {{
-                  !Number.isNaN(parseFloat(amount))
-                    ? Logic.Common.convertToMoney(amount, false, "", false)
-                    : "0"
-                }}
-              </app-header-text>
-            </div>
-          </div>
-        </AppTitleCardContainer>
-
-        <!-- keyboard -->
-        <app-keyboard v-model="amount" />
-
-        <div
-          :class="`w-full flex flex-col items-center justify-center ${
-            parseFloat(amount) > maximumAmount ? 'visible' : 'invisible'
-          }`"
-        >
-          <app-normal-text class="!text-red-500">
-            Maximum withdrawal amount is
-            <span class="!font-semibold pl-1">
-              ₺
-              {{
-                Logic.Common.convertToMoney(maximumAmount, false, "", false)
-              }}</span
-            >
-          </app-normal-text>
-        </div>
-      </div>
-
-      <!-- Bottom button -->
-      <div
-        class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
-        style="
-          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-        "
-      >
-        <div class="w-full flex flex-col">
-          <app-button
-            :class="`!bg-secondary !py-4 ${
-              amountIsValid() ? 'opacity-100' : 'opacity-50'
-            }`"
-            @click="amountIsValid() ? continueToNext() : null"
-            >Next</app-button
-          >
-        </div>
-      </div>
-    </subpage-layout>
-
-    <app-modal
-      v-if="modalIsOpen"
-      title="Choose Withdrawal Method"
-      canClose
-      :close="
-        () => {
-          modalIsOpen = false
-        }
-      "
+    <subpage-layout
+      :title="pageTitle"
+      :useEmitBack="activeStep !== 1"
+      :hideBackBtn="activeStep > 4"
+      @back="handleBack"
     >
-      <div class="w-full flex flex-col space-y-1 px-4 pb-4">
-        <app-normal-text class="!text-left !text-gray-500">
-          How do you want to receive your funds?
-        </app-normal-text>
-      </div>
-    </app-modal>
+      <enter-amount v-if="activeStep === 1" @next="activeStep = 2" />
+      <payment-method v-if="activeStep === 2" @next="activeStep = 3" />
+      <mobile-money-details v-if="activeStep === 3" @next="activeStep = 4" />
+      <make-payment v-if="activeStep === 4" @next="activeStep = 5" />
+      <processing v-if="activeStep === 5" @next="activeStep = 6" />
+      <success v-if="activeStep === 6" />
+    </subpage-layout>
   </app-wrapper>
 </template>
 
 <script lang="ts">
   import { defineComponent } from "vue"
+  import { ref, computed } from "vue"
   import {
-    AppHeaderText,
-    AppButton,
-    AppKeyboard,
-    AppNormalText,
-    AppModal,
-    AppTitleCardContainer,
-  } from "@greep/ui-components"
-  import { ref } from "vue"
-  import { Logic } from "@greep/logic"
+    MobileMoneyDetails,
+    MakePayment,
+    EnterAmount,
+  } from "../../components/Wallets/AddMoney"
+
+  import {
+    PaymentMethod,
+    Success,
+    Processing,
+  } from "../../components/Core/Common"
 
   export default defineComponent({
     name: "WalletScanPage",
     components: {
-      AppHeaderText,
-      AppButton,
-      AppKeyboard,
-      AppNormalText,
-      AppModal,
-      AppTitleCardContainer,
+      PaymentMethod,
+      MobileMoneyDetails,
+      Success,
+      MakePayment,
+      Processing,
+      EnterAmount,
     },
     setup() {
-      const amount = ref("0")
-      const maximumAmount = 10000
+      const activeStep = ref(1)
+      const pageTitle = computed(() => {
+        if (activeStep.value === 2) {
+          return "Choose Method"
+        } else if (activeStep.value === 3) {
+          return "Confirm Details"
+        } else if (activeStep.value === 4) {
+          return "Make Payment"
+        } else if (activeStep.value === 5) {
+          return "Processing"
+        } else if (activeStep.value === 6) {
+          return ""
+        } else {
+          return "Add Money" // Default title
+        }
+      })
 
-      const modalIsOpen = ref(false)
+      const handleBack = () => activeStep.value--
 
-      const amountIsValid = () => {
-        return (
-          parseFloat(amount.value) > 0 &&
-          parseFloat(amount.value) <= maximumAmount
-        )
-      }
-
-      const continueToNext = () => {
-        // Implement the logic for choosing the withdrawal method and calling the next step.
-      }
-
-      return {
-        amount,
-        Logic,
-        modalIsOpen,
-        maximumAmount,
-        continueToNext,
-        amountIsValid,
-      }
+      return { activeStep, pageTitle, handleBack }
     },
   })
 </script>

@@ -26,7 +26,10 @@
 
     <!-- Bottom button -->
     <div class="w-fit bg-white dark:bg-black pt-4">
-      <app-button :class="`!bg-secondary !py-4  !px-8`" @click="Logic.Common.GoToRoute('/wallets')">
+      <app-button
+        :class="`!bg-secondary !py-4  !px-8`"
+        @click="Logic.Common.GoToRoute('/wallets')"
+      >
         Done
       </app-button>
     </div>

@@ -20,13 +20,16 @@
   import { defineComponent } from "vue"
   import { ref, computed } from "vue"
   import {
-    PaymentMethod,
     MobileMoneyDetails,
-    Success,
     MakePayment,
     EnterAmount,
-    Processing,
   } from "../../components/Wallets/AddMoney"
+
+  import {
+    PaymentMethod,
+    Success,
+    Processing,
+  } from "../../components/Core/Common"
 
   export default defineComponent({
     name: "WalletAddMoneyPage",
@@ -39,7 +42,7 @@
       EnterAmount,
     },
     setup() {
-      const activeStep = ref(1)
+      const activeStep = ref(2)
       const pageTitle = computed(() => {
         if (activeStep.value === 2) {
           return "Choose Method"

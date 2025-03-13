@@ -12,27 +12,7 @@
       </div>
     </app-title-card-container>
 
-    <div
-      class="w-full flex flex-col px-4 rounded-xl border-[1.5px] border-[#F0F3F6]"
-    >
-      <div class="space-y-1 py-4">
-        <app-normal-text class="!text-[#616161]">
-          Deposit Amount
-        </app-normal-text>
-        <app-header-text class="!text-[#0A141E] !font-medium">
-          ₩ 57,500
-        </app-header-text>
-      </div>
-
-      <p class="h-[1px] bg-[#F0F3F6]" />
-
-      <div class="space-y-1 py-4">
-        <app-normal-text class="!text-[#616161]"> Fee </app-normal-text>
-        <app-header-text class="!text-[#0A141E] !font-medium">
-          ₩ 2,500
-        </app-header-text>
-      </div>
-    </div>
+    <app-details :details="paymentDetails" />
   </div>
 
   <!-- Bottom button -->
@@ -55,8 +35,8 @@
     AppTitleCardContainer,
     AppHeaderText,
     AppButton,
+    AppDetails,
   } from "@greep/ui-components"
-  import { ref } from "vue"
   import { Logic } from "@greep/logic"
 
   export default defineComponent({
@@ -66,15 +46,22 @@
       AppTitleCardContainer,
       AppHeaderText,
       AppButton,
+      AppDetails,
     },
     emits: ["next"],
     setup(_, { emit }) {
+      const paymentDetails = {
+        "Deposit Amount": "11,233",
+        Fee: "1333",
+      }
+
       const continueToNext = () => {
         emit("next")
       }
 
       return {
         Logic,
+        paymentDetails,
         continueToNext,
       }
     },

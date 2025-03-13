@@ -55,9 +55,7 @@
     name: "DashboardLayout",
     setup() {
       const router = useRouter()
-
       const selectedTab = ref("")
-
       const tabIsActive = (tabName: string) => {
         const mainName = tabName
 
@@ -70,7 +68,6 @@
           selectedTab.value = mainName
           return true
         }
-
         return false
       }
 

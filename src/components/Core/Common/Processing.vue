@@ -37,12 +37,15 @@
     </div>
 
     <!-- Bottom button -->
+
     <div
       class="!w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
       style="
         padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
       "
     >
+      <app-countdown-timer :duration="100" />
+
       <div class="w-full bg-white dark:bg-black pt-4">
         <app-button
           :class="`!bg-secondary !w-full !py-4  !px-8`"
@@ -67,6 +70,7 @@
     AppAvatar,
     AppDropdownSelect,
     AppIcon,
+    AppCountdownTimer,
   } from "@greep/ui-components"
   import { ref } from "vue"
   import { Logic } from "@greep/logic"
@@ -83,6 +87,7 @@
       AppAvatar,
       AppDropdownSelect,
       AppIcon,
+      AppCountdownTimer,
     },
     emits: ["next"],
     setup(_, { emit }) {

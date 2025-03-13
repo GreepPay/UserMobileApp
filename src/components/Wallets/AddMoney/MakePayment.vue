@@ -18,38 +18,7 @@
       Add money to your wallet using the following bank details
     </div>
 
-    <div
-      class="w-full flex flex-col px-4 rounded-xl border-[1.5px] border-[#F0F3F6]"
-    >
-      <div class="space-y-1 py-4">
-        <app-normal-text class="!text-[#616161]">Bank Name</app-normal-text>
-        <app-header-text class="!text-[#0A141E] !font-medium">
-          Script Bank
-        </app-header-text>
-      </div>
-
-      <p class="h-[1px] bg-[#F0F3F6]" />
-
-      <div class="space-y-1 py-4">
-        <app-normal-text class="!text-[#616161]">
-          Account Name
-        </app-normal-text>
-        <app-header-text class="!text-[#0A141E] !font-medium">
-          Dasa Script
-        </app-header-text>
-      </div>
-
-      <p class="h-[1px] bg-[#F0F3F6]" />
-
-      <div class="space-y-1 py-4">
-        <app-normal-text class="!text-[#616161]">
-          Reference Code
-        </app-normal-text>
-        <app-header-text class="!text-[#0A141E] !font-medium">
-          09802323672
-        </app-header-text>
-      </div>
-    </div>
+    <app-details :details="paymentDetails" />
   </div>
 
   <!-- Bottom button -->
@@ -72,6 +41,7 @@
     AppTitleCardContainer,
     AppHeaderText,
     AppButton,
+    AppDetails,
   } from "@greep/ui-components"
   import { ref } from "vue"
   import { Logic } from "@greep/logic"
@@ -83,15 +53,23 @@
       AppTitleCardContainer,
       AppHeaderText,
       AppButton,
+      AppDetails,
     },
     emits: ["next"],
     setup(_, { emit }) {
+      const paymentDetails = {
+        "Bank name": "Script Bank",
+        accountName: "Dasa Script",
+        referenceCode: "09802323672",
+      }
+
       const continueToNext = () => {
         emit("next")
       }
 
       return {
         Logic,
+        paymentDetails,
         continueToNext,
       }
     },
