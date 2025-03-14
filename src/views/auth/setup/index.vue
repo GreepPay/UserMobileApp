@@ -8,16 +8,20 @@
           <auth-setup-account-info />
         </template>
 
-        <template v-if="currentPage == 'verify_account'">
-          <auth-setup-verify-account />
-        </template>
-
         <template v-if="currentPage == 'pick_currency'">
           <auth-setup-pick-currency />
         </template>
 
+        <template v-if="currentPage == 'verify_phone'">
+          <auth-setup-verify-phone />
+        </template>
+
         <template v-if="currentPage == 'verify_email'">
           <auth-setup-verify-email />
+        </template>
+
+        <template v-if="currentPage == 'set_passcode'">
+          <auth-setup-set-passcode />
         </template>
 
         <!-- Spacer -->
@@ -28,93 +32,112 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from "vue";
-import { AppOnboardingLayout } from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-import AuthSetupAccountInfo from "../../../components/AuthSetup/account-info.vue";
-import AuthSetupVerifyAccount from "../../../components/AuthSetup/verify-account.vue";
-import AuthSetupPickCurrency from "../../../components/AuthSetup/pick-currency.vue";
-import AuthSetupVerifyEmail from "../../../components/AuthSetup/verify-email.vue";
-
-export default defineComponent({
-  name: "SetupAccountIndex",
-  components: {
+  import { defineComponent, ref, reactive } from "vue"
+  import { AppOnboardingLayout } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
+  import {
     AuthSetupAccountInfo,
-    AuthSetupVerifyAccount,
+    AuthSetupSetPasscode,
     AuthSetupPickCurrency,
     AuthSetupVerifyEmail,
-    AppOnboardingLayout,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
+    AuthSetupVerifyPhone,
+  } from "../../../components/AuthSetup"
 
-    const currentPage = ref("account_info");
+  export default defineComponent({
+    name: "SetupAccountIndex",
+    components: {
+      AuthSetupAccountInfo,
+      AuthSetupSetPasscode,
+      AuthSetupPickCurrency,
+      AuthSetupVerifyEmail,
+      AuthSetupVerifyPhone,
+      AppOnboardingLayout,
+    },
+    setup() {
+      const FormValidations = Logic.Form
 
-    const pageSettings = reactive({
-      main_title: "Setup POS",
-      pages: [
-        {
-          title: "Account Info",
-          key: "account_info",
-          action_btn: {
-            label: "Next",
-            handler: () => {
-              currentPage.value = "verify_account";
-            },
-            is_disabled: false,
-          },
-        },
-        {
-          title: "Verify Account",
-          key: "verify_account",
-          action_btn: {
-            label: "Next",
-            handler: () => {
-              currentPage.value = "pick_currency";
-            },
-            is_disabled: false,
-          },
-        },
-        {
-          title: "Pick Currency",
-          key: "pick_currency",
-          action_btn: {
-            label: "Next",
-            handler: () => {
-              currentPage.value = "verify_email";
-            },
-            is_disabled: false,
-          },
-        },
-        {
-          title: "Verify Email",
-          key: "verify_email",
-          action_btn: {
-            label: "Next",
-            handler: () => {
-              console.log("Next");
-            },
-            is_disabled: false,
-          },
-        },
-      ],
-    });
+      const currentPage = ref("account_info")
 
-    return {
-      FormValidations,
-      Logic,
-      currentPage,
-      pageSettings,
-    };
-  },
-  data() {
-    return {
-      parentRefs: null,
-    };
-  },
-  mounted() {
-    const parentRefs: any = this.$refs;
-    this.parentRefs = parentRefs;
-  },
-});
+      const pageSettings = reactive({
+        main_title: "Setup",
+        pages: [
+          {
+            title: "Account Info",
+            key: "account_info",
+            action_btn: {
+              label: "Next",
+              handler: () => {
+                currentPage.value = "pick_currency"
+              },
+              is_disabled: false,
+            },
+          },
+          {
+            title: "Pick Currency",
+            key: "pick_currency",
+            action_btn: {
+              label: "Next",
+              handler: () => {
+                currentPage.value = "verify_phone"
+              },
+              is_disabled: false,
+            },
+          },
+          {
+            title: "Verify Phone",
+            key: "verify_phone",
+            action_btn: {
+              label: "Next",
+              handler: () => {
+                currentPage.value = "verify_email"
+              },
+              is_disabled: false,
+            },
+          },
+          {
+            title: "Verify Email",
+            key: "verify_email",
+            action_btn: {
+              label: "Next",
+              handler: () => {
+                currentPage.value = "set_passcode"
+              },
+              is_disabled: false,
+            },
+          },
+          {
+            title: "Set Passcode",
+            key: "set_passcode",
+            action_btn: {
+              label: "Complete Setup",
+              handler: () => {
+                handleNext()
+              },
+              is_disabled: false,
+            },
+          },
+        ],
+      })
+
+      const handleNext = () => {
+        Logic.Common.GoToRoute("/")
+      }
+
+      return {
+        FormValidations,
+        Logic,
+        currentPage,
+        pageSettings,
+      }
+    },
+    data() {
+      return {
+        parentRefs: null,
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

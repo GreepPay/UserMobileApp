@@ -1,12 +1,10 @@
 <template>
   <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
-    wewew
-    <!-- <app-form-wrapper
+    <app-form-wrapper
       ref="formComponent"
       :parent-refs="parentRefs"
       class="w-full flex flex-col space-y-[20px] h-full"
     >
-      
       <app-info-box>
         <app-normal-text custom-class="!leading-5">
           <span class="font-semibold">What’s your preferred currency?</span>
@@ -44,90 +42,89 @@
           </div>
         </div>
       </div>
- 
-    </app-form-wrapper> -->
+    </app-form-wrapper>
   </div>
 </template>
 
 <script lang="ts">
-  // import { defineComponent, reactive } from "vue";
-  // import {
-  //   AppFormWrapper,
-  //   AppInfoBox,
-  //   AppNormalText,
-  //   AppIcon,
-  //   AppImageLoader,
-  // } from "@greep/ui-components";
-  // import { Logic } from "@greep/logic";
+  import { defineComponent, reactive } from "vue"
+  import {
+    AppFormWrapper,
+    AppInfoBox,
+    AppNormalText,
+    AppIcon,
+    AppImageLoader,
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-  // export default defineComponent({
-  //   components: {
-  //     AppFormWrapper,
-  //     AppInfoBox,
-  //     AppNormalText,
-  //     AppIcon,
-  //     AppImageLoader,
-  //   },
-  //   props: {},
-  //   name: "AuthSetupPickCurrency",
-  //   setup() {
-  //     const FormValidations = Logic.Form;
+  export default defineComponent({
+    components: {
+      AppFormWrapper,
+      AppInfoBox,
+      AppNormalText,
+      AppIcon,
+      AppImageLoader,
+    },
+    props: {},
+    name: "AuthSetupPickCurrency",
+    setup() {
+      const FormValidations = Logic.Form
 
-  //     const availableCurrencies = reactive([
-  //       {
-  //         code: "TRY",
-  //         name: "Turkish Lira",
-  //       },
-  //       {
-  //         code: "USD",
-  //         name: "United States Dollar",
-  //       },
-  //       {
-  //         code: "USDC",
-  //         name: "USDC",
-  //       },
-  //       {
-  //         code: "NGN",
-  //         name: "Nigerian Naira",
-  //       },
-  //       {
-  //         code: "GHS",
-  //         name: "Ghanaian Cedis",
-  //       },
-  //       {
-  //         code: "XLM",
-  //         name: "XLM",
-  //       },
-  //       {
-  //         code: "ZAR",
-  //         name: "South African Rand",
-  //       },
-  //       {
-  //         code: "EUR",
-  //         name: "Euro",
-  //       },
-  //     ]);
+      const availableCurrencies = reactive([
+        {
+          code: "TRY",
+          name: "Turkish Lira",
+        },
+        {
+          code: "USD",
+          name: "United States Dollar",
+        },
+        {
+          code: "USDC",
+          name: "USDC",
+        },
+        {
+          code: "NGN",
+          name: "Nigerian Naira",
+        },
+        {
+          code: "GHS",
+          name: "Ghanaian Cedis",
+        },
+        {
+          code: "XLM",
+          name: "XLM",
+        },
+        {
+          code: "ZAR",
+          name: "South African Rand",
+        },
+        {
+          code: "EUR",
+          name: "Euro",
+        },
+      ])
 
-  //     const formData = reactive<{
-  //       preferred_currency: string;
-  //     }>({
-  //       preferred_currency: "TRY",
-  //     });
+      const formData = reactive<{
+        preferred_currency: string
+      }>({
+        preferred_currency: "TRY",
+      })
 
-  //     return {
-  //       formData,
-  //       FormValidations,
-  //       availableCurrencies,
-  //     };
-  //   },
-  //   data() {
-  //     return {
-  //       parentRefs: [],
-  //     };
-  //   },
-  //   mounted() {
-  //     const parentRefs: any = this.$refs;
-  //     this.parentRefs = parentRefs;
-  //   },
-  // });
+      return {
+        formData,
+        FormValidations,
+        availableCurrencies,
+      }
+    },
+    data() {
+      return {
+        parentRefs: [],
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

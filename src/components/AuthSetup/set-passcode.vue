@@ -7,85 +7,35 @@
     >
       <app-info-box>
         <app-normal-text custom-class="!leading-5">
-          <span class="font-semibold">Alright, let's get you rolling!</span>
-          Help us get to know you and your business.
+          Enter a
+          <span class="font-semibold">6-digit </span>
+          passcode to ensure that only you can open this app.
         </app-normal-text>
       </app-info-box>
 
       <app-text-field
         :has-title="false"
-        type="text"
-        placeholder="First Name"
-        ref="firstName"
-        name="First Name"
+        type="password"
+        placeholder="Passcode"
+        ref="passcode"
+        name="Passcode"
         use-floating-label
-        v-model="formData.firstName"
+        v-model="formData.passcode"
         :rules="[FormValidations.RequiredRule]"
       >
       </app-text-field>
 
       <app-text-field
         :has-title="false"
-        type="text"
-        placeholder="Last Name"
-        ref="lastName"
-        name="Last Name"
+        type="password"
+        placeholder="Confirm Passcode"
+        ref="confirm_passcode"
+        name="Confirm Passcode"
         use-floating-label
-        v-model="formData.lastName"
+        v-model="formData.confirm_passcode"
         :rules="[FormValidations.RequiredRule]"
       >
       </app-text-field>
-
-      <app-text-field
-        :has-title="false"
-        type="tel"
-        placeholder="Phone Number"
-        ref="phoneNumber"
-        name="Phone Number"
-        use-floating-label
-        v-model="formData.phoneNumber"
-        :rules="[FormValidations.RequiredRule]"
-      >
-      </app-text-field>
-
-      <app-text-field
-        :has-title="false"
-        type="text"
-        placeholder="Email Address"
-        ref="email"
-        name="Email"
-        v-model="formData.email"
-        use-floating-label
-        :rules="[FormValidations.RequiredRule, FormValidations.EmailRule]"
-      >
-      </app-text-field>
-
-      <div class="w-full grid grid-cols-2 gap-3">
-        <app-select
-          :placeholder="'Country'"
-          :hasTitle="false"
-          :paddings="'py-4 !px-3'"
-          :options="countries"
-          ref="country"
-          use-floating-label
-          v-model="countryCode"
-          auto-complete
-        >
-        </app-select>
-
-        <app-select
-          v-if="showStateSelector"
-          :placeholder="'State'"
-          :hasTitle="false"
-          :paddings="'py-4 !px-3'"
-          :options="states"
-          ref="state"
-          v-model="stateIsoCode"
-          use-floating-label
-          auto-complete
-        >
-        </app-select>
-      </div>
     </app-form-wrapper>
   </div>
 </template>
@@ -117,12 +67,8 @@
       const FormValidations = Logic.Form
 
       const formData = reactive({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        country: "",
-        state: "",
+        passcode: "",
+        confirm_passcode: "",
       })
 
       const showStateSelector = ref(true)

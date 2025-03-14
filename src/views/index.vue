@@ -1,171 +1,255 @@
 <template>
   <app-wrapper>
-    <dashboard-layout title="Wallet">
-      <div class="w-full flex flex-col items-center justify-start px-4 space-y-4">
+    <default-index-layout title="Home">
+      <div
+        class="w-full flex flex-col items-center justify-start px-6 space-y-4"
+      >
         <!-- Balance card section -->
-        <div class="w-full flex flex-col space-y-2 pt-2">
-          <app-image-loader
-            class="w-full h-[130px] rounded-[15px] flex flex-col justify-between px-3 py-3"
-            :photoUrl="'/images/wallet-bg.svg'"
-          >
-            <div class="w-full flex flex-row items-center justify-between">
-              <app-normal-text class="text-left font-semibold !text-white !text-sm">
-                James Roland
-              </app-normal-text>
-
-              <app-normal-text class="text-right !text-white font-normal">
-                @ziggy_bugger
-              </app-normal-text>
-            </div>
-
-            <div class="w-full flex flex-col space-y-0.5">
-              <app-normal-text class="!font-extralight !text-white">
+        <app-title-card-container custom-class="rounded-[40px]">
+          <div class="space-y-4 flex flex-col justify-center w-full">
+            <div
+              class="w-full flex flex-col space-y-1 items-center justify-center"
+            >
+              <app-normal-text
+                custom-class="!text-white !font-normal  text-center"
+              >
                 Total Balance
               </app-normal-text>
-              <app-header-text class="!text-left !text-white !text-3xl">
-                ₺ 6,740
+
+              <app-header-text custom-class="!text-3xl !leading-6 text-white">
+                ₺
+                {{
+                  !Number.isNaN(parseFloat(amount))
+                    ? Logic.Common.convertToMoney(1000, false, "", false)
+                    : "0"
+                }}
               </app-header-text>
             </div>
-          </app-image-loader>
-        </div>
 
-        <!-- Action buttons -->
-        <div class="w-full grid grid-cols-2 gap-3">
-          <div class="col-span-1 flex flex-col">
-            <app-button
-              class="w-full !bg-secondary !text-white py-3"
-              @click="Logic.Common.GoToRoute('/request')"
-            >
-              Request
-            </app-button>
+            <div class="flex w-full space-x-3 justify-around items-center px-6">
+              <div
+                class="space-y-1 flex flex-col items-center"
+                v-for="action in actionBtns"
+                :key="action.route"
+                @click="Logic.Common.GoToRoute(`/wallets/${action.route}`)"
+              >
+                <app-button iconOnly custom-class="bg-white">
+                  <template #icon>
+                    <app-icon
+                      :name="action.icon"
+                      custom-class="!text-primary"
+                      class="size-5"
+                    />
+                  </template>
+                </app-button>
+
+                <app-normal-text class="text-white">
+                  {{ action.text }}
+                </app-normal-text>
+              </div>
+            </div>
           </div>
-          <div class="col-span-1 flex flex-col">
-            <app-button
-              class="w-full !border-secondary !bg-white border-[1px] !text-secondary py-3"
-              @click="Logic.Common.GoToRoute('/withdraw')"
-            >
-              Withdraw
-            </app-button>
+        </app-title-card-container>
+
+        <div class="w-full h-fit space-y-4">
+          <div class="flex items-center justify-between">
+            <app-header-text class="font-semibold"> Quick Pay </app-header-text>
+            <app-icon name="add-circle" class="size-6" />
           </div>
+
+          <horizontal-user-list :items="users" :imageSize="56" />
         </div>
 
         <!-- Recent transactions -->
         <div class="w-full flex flex-col space-y-4 pt-2">
           <div class="w-full flex flex-row justify-between items-center">
-            <app-normal-text class="!text-left font-semibold !text-sm">
-              Recent history
-            </app-normal-text>
+            <app-header-text class="!text-left"> Transactions </app-header-text>
 
-            <app-normal-text class="text-primary text-right"> View all </app-normal-text>
+            <app-normal-text class="text-primary text-right">
+              View all
+            </app-normal-text>
           </div>
 
           <div class="w-full flex flex-col space-y-3">
             <app-transaction
               :data="item"
-              v-for="(item, index) in recentTransactions"
+              v-for="(item, index) in transactions"
               :key="index"
-              @click="Logic.Common.GoToRoute(`/payment/${index}`)"
+              @click="Logic.Common.GoToRoute(`/wallets/add-money`)"
             />
           </div>
         </div>
       </div>
-    </dashboard-layout>
+    </default-index-layout>
+
+    <app-modal
+      v-if="showWelcomeModal"
+      :close="
+        () => {
+          showWelcomeModal = false
+        }
+      "
+    >
+      <div class="w-full flex flex-col items-center px-4 pb-4">
+        <app-icon name="green-lovely" custom-class="size-[96px]" />
+        <div
+          class="w-full flex flex-col xs:!space-y-0 sm:!space-y-2 md:space-y-2 items-center justify-center"
+        >
+          <app-header-text class="text-center w-full xs:!text-base sm:!text-lg">
+            Welcome
+          </app-header-text>
+          <app-normal-text class="text-center w-full">
+            Experience borderless payments without the stress of manual
+            conversion to your preferred currency.
+          </app-normal-text>
+        </div>
+
+        <app-button
+          :custom-class="`!bg-secondary !w-full !py-4  !px-8`"
+          @click="showWelcomeModal = false"
+        >
+          Start using Greep
+        </app-button>
+      </div>
+    </app-modal>
   </app-wrapper>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
-import {
-  AppImageLoader,
-  AppNormalText,
-  AppHeaderText,
-  AppButton,
-  AppTransaction,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "IndexPage",
-  components: {
+  import { defineComponent, reactive, ref } from "vue"
+  import {
     AppImageLoader,
     AppNormalText,
     AppHeaderText,
     AppButton,
     AppTransaction,
-  },
-  setup() {
-    const recentTransactions = reactive<
-      {
-        type: "credit" | "debit";
-        description: string;
-        icon: string;
-        amount: number;
-        day: string;
-        time: string;
-      }[]
-    >([
-      {
-        type: "credit",
-        description: "Payment from QR-Code | Josh",
-        icon: "scan-type",
-        amount: 70,
-        day: "Today",
-        time: "10:54 AM",
-      },
-      {
-        type: "credit",
-        description: "Payment from QR-Code | Lizzy",
-        icon: "scan-type",
-        amount: 95,
-        day: "Today",
-        time: "09:54 AM",
-      },
-      {
-        type: "debit",
-        description: "Withdrawal from Wallet",
-        icon: "send-type",
-        amount: 230,
-        day: "Today",
-        time: "07:54 AM",
-      },
-      {
-        type: "credit",
-        description: "Payment from Transfer | Josh",
-        icon: "tag-type",
-        amount: 89,
-        day: "Today",
-        time: "06:54 AM",
-      },
-      {
-        type: "credit",
-        description: "Payment from QR-Code | Mica",
-        icon: "scan-type",
-        amount: 70,
-        day: "Today",
-        time: "05:54 AM",
-      },
-      {
-        type: "credit",
-        description: "Payment from Transfer | Lola",
-        icon: "tag-type",
-        amount: 100,
-        day: "Today",
-        time: "04:54 AM",
-      },
-      {
-        type: "credit",
-        description: "Payment from QR-Code | Josh",
-        icon: "scan-type",
-        amount: 70,
-        day: "Today",
-        time: "03:54 AM",
-      },
-    ]);
+    AppIcon,
+    AppTitleCardContainer,
+    AppModal,
+    HorizontalUserList,
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-    return {
-      recentTransactions,
-      Logic,
-    };
-  },
-});
+  interface User {
+    id: number
+    name: string
+    avatar: string
+  }
+
+  export default defineComponent({
+    name: "IndexPage",
+    components: {
+      AppImageLoader,
+      AppNormalText,
+      AppHeaderText,
+      AppButton,
+      AppTransaction,
+      AppIcon,
+      AppModal,
+      AppTitleCardContainer,
+      HorizontalUserList,
+    },
+    setup() {
+      const amount = ref("1000")
+      const showWelcomeModal = ref(true)
+      const actionBtns = [
+        {
+          text: "Add",
+          icon: "plus",
+          route: "add-money",
+        },
+        {
+          text: "Send",
+          icon: "arrow-up",
+          route: "send-money",
+        },
+        {
+          text: "Scan",
+          icon: "scan",
+          route: "scan",
+        },
+      ]
+      const transactions = reactive<
+        {
+          id: string | number
+          title: string
+          amount: number
+          type: "sent" | "received" | "added" | "redeemed"
+          transactionType: "credit" | "debit"
+          date: string
+        }[]
+      >([
+        {
+          id: 1,
+          title: "Timms Closet Ventures",
+          amount: 33000,
+          type: "sent",
+          transactionType: "debit",
+          date: "Today",
+        },
+        {
+          id: 2,
+          title: "Freelance Payment",
+          amount: 50000,
+          type: "received",
+          transactionType: "credit",
+          date: "Yesterday",
+        },
+        {
+          id: 3,
+          title: "Wallet Top-Up",
+          amount: 100000,
+          type: "added",
+          transactionType: "credit",
+          date: "2 Days Ago",
+        },
+        {
+          id: 4,
+          title: "Gift Card Redemption",
+          amount: 25000,
+          type: "redeemed",
+          transactionType: "debit",
+          date: "Last Week",
+        },
+        {
+          id: 5,
+          title: "Online Shopping",
+          amount: 45000,
+          type: "sent",
+          transactionType: "debit",
+          date: "Last Month",
+        },
+      ])
+
+      const users = ref<User[]>([
+        { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
+        { id: 2, name: "Test", avatar: "/images/temps/profile-2.png" },
+        { id: 3, name: "Sukky", avatar: "/images/temps/profile-1.png" },
+        { id: 4, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+        { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
+        { id: 5, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+        { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
+      ])
+
+      return {
+        showWelcomeModal,
+        transactions,
+        users,
+        Logic,
+        actionBtns,
+        amount,
+      }
+    },
+  })
 </script>
+
+<style scoped>
+  /* Hide scrollbar but allow horizontal scrolling */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>

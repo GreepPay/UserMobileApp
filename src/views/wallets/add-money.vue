@@ -42,7 +42,7 @@
       EnterAmount,
     },
     setup() {
-      const activeStep = ref(2)
+      const activeStep = ref(1)
       const pageTitle = computed(() => {
         if (activeStep.value === 2) {
           return "Choose Method"
