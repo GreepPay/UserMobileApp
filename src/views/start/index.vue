@@ -18,6 +18,8 @@
           ></div>
         </div>
       </div>
+
+      <!--  -->
       <app-swiper
         :free-mode="false"
         :show-pagination="false"
@@ -48,7 +50,7 @@
               />
 
               <div
-                class="flex flex-col space-y-2 items-center px-x py-4 justify-center"
+                class="flex flex-col space-y-2 items-center px-x justify-center"
               >
                 <app-header-text class="text-center">
                   Borderless Transactions With Multiple Currencies
@@ -189,7 +191,7 @@
           >
             <!-- Main section -->
             <div
-              class="w-full flex flex-col items-center justify-center space-y-5 px-4 -mt-[44px]"
+              class="w-full flex flex-col items-center justify-center space-y-5 px-4"
             >
               <img src="/images/logo.png" alt="logo" class="w-[100px]" />
             </div>

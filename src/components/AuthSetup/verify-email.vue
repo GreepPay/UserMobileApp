@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
-    <!-- <app-form-wrapper
+    <app-form-wrapper
       ref="formComponent"
       :parent-refs="parentRefs"
       class="w-full flex flex-col space-y-[20px] h-full"
@@ -12,13 +12,12 @@
           Enter your OTP code here
         </app-normal-text>
 
-       
         <app-otp-input
           v-model="formData.otp_code"
           type="tel"
           :number-of-input="4"
           :should-reset-o-t-p="true"
-          @change-o-t-p="handleOTPChange"
+          :change-o-t-p="handleOTPChange"
         />
 
         <div
@@ -33,55 +32,54 @@
           </app-normal-text>
         </div>
       </div>
- 
-    </app-form-wrapper> -->
+    </app-form-wrapper>
   </div>
 </template>
 
 <script lang="ts">
-  // import { defineComponent, reactive } from "vue"
-  // import {
-  //   AppFormWrapper,
-  //   AppNormalText,
-  //   AppOtpInput,
-  // } from "@greep/ui-components"
-  // import { Logic } from "@greep/logic"
+  import { defineComponent, reactive } from "vue"
+  import {
+    AppFormWrapper,
+    AppNormalText,
+    AppOtpInput,
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-  // export default defineComponent({
-  //   components: {
-  //     AppFormWrapper,
-  //     AppNormalText,
-  //     AppOtpInput,
-  //   },
-  //   props: {},
-  //   name: "AuthSetupVerifyEmail",
-  //   setup() {
-  //     const FormValidations = Logic.Form
+  export default defineComponent({
+    components: {
+      AppFormWrapper,
+      AppNormalText,
+      AppOtpInput,
+    },
+    props: {},
+    name: "AuthSetupVerifyEmail",
+    setup() {
+      const FormValidations = Logic.Form
 
-  //     const formData = reactive<{
-  //       otp_code: string
-  //     }>({
-  //       otp_code: "",
-  //     })
+      const formData = reactive<{
+        otp_code: string
+      }>({
+        otp_code: "",
+      })
 
-  //     const handleOTPChange = () => {
-  //       // formData.otp_code = value;
-  //     }
+      const handleOTPChange = () => {
+        // formData.otp_code = value;
+      }
 
-  //     return {
-  //       formData,
-  //       FormValidations,
-  //       handleOTPChange,
-  //     }
-  //   },
-  //   data() {
-  //     return {
-  //       parentRefs: [],
-  //     }
-  //   },
-  //   mounted() {
-  //     const parentRefs: any = this.$refs
-  //     this.parentRefs = parentRefs
-  //   },
-  // })
+      return {
+        formData,
+        FormValidations,
+        handleOTPChange,
+      }
+    },
+    data() {
+      return {
+        parentRefs: [],
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

@@ -25,29 +25,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { AppButton } from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue";
+  import { defineComponent } from "vue"
+  import { AppButton } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
+  import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue"
 
-export default defineComponent({
-  name: "VerifyEmailPage",
-  components: {
-    AuthSetupVerifyEmail,
-    AppButton,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
+  export default defineComponent({
+    name: "VerifyEmailPage",
+    components: {
+      AuthSetupVerifyEmail,
+      AppButton,
+    },
+    setup() {
+      const FormValidations = Logic.Form
 
-    const handleNext = () => {
-      Logic.Common.GoToRoute("/auth/welcome");
-    };
+      const handleNext = () => {
+        Logic.Common.GoToRoute("/auth/welcome")
+      }
 
-    return {
-      FormValidations,
-      Logic,
-      handleNext,
-    };
-  },
-});
+      return {
+        FormValidations,
+        Logic,
+        handleNext,
+      }
+    },
+  })
 </script>

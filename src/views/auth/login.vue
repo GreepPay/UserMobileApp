@@ -62,7 +62,7 @@
       })
 
       const handleNext = () => {
-        Logic.Common.GoToRoute("/wallets")
+        Logic.Common.GoToRoute("/auth/verify-email")
       }
 
       return {

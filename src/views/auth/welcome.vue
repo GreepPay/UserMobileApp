@@ -10,28 +10,30 @@
       <!-- Top section -->
       <div class="w-full flex flex-row items-center justify-center pt-4">
         <app-image-loader
-          photo-url="/images/temps/user-profile.png"
-          class="h-[96px] w-[96px] rounded-full xs:w-[80px] xs:h-[80px]"
+          :photo-url="'/images/temps/profile-2.png'"
+          custom-class="h-[96px] w-[96px] rounded-full"
         />
       </div>
 
       <div
         class="w-full flex flex-col xs:!space-y-0 sm:!space-y-2 md:space-y-2 items-center justify-center"
       >
-        <app-header-text class="text-center w-full xs:!text-base sm:!text-lg"
-          >Welcome Back</app-header-text
-        >
+        <app-header-text class="text-center w-full xs:!text-base sm:!text-lg">
+          Welcome Back
+        </app-header-text>
         <app-normal-text
           class="text-center w-full !text-[#0A141E] sm:!text-sm xs:!text-xs"
-          >Timms Closet Ventures</app-normal-text
         >
+          Raymond Akinola
+        </app-normal-text>
       </div>
 
       <div class="w-full flex flex-col space-y-2 items-center justify-center">
         <app-normal-text
           class="text-center w-full font-semibold sm:!text-sm xs:!text-sm"
-          >Enter Passcode</app-normal-text
         >
+          Enter Passcode
+        </app-normal-text>
 
         <div class="w-full flex flex-row space-x-0 items-center justify-center">
           <div v-for="index in 5" :key="index" class="px-3">
@@ -62,39 +64,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, reactive } from "vue";
-import {
-  AppImageLoader,
-  AppHeaderText,
-  AppNormalText,
-  AppKeyboard,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "WelcomePage",
-  components: {
-    AppImageLoader,
+  import { defineComponent, watch, reactive } from "vue"
+  import {
     AppHeaderText,
     AppNormalText,
     AppKeyboard,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
+    AppImageLoader,
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-    const formData = reactive({
-      passcode: "",
-    });
+  export default defineComponent({
+    name: "WelcomePage",
+    components: {
+      AppHeaderText,
+      AppNormalText,
+      AppKeyboard,
+      AppImageLoader,
+    },
+    setup() {
+      const FormValidations = Logic.Form
 
-    watch(formData, () => {
-      console.log(formData);
-    });
+      const formData = reactive({
+        passcode: "",
+      })
 
-    return {
-      FormValidations,
-      Logic,
-      formData,
-    };
-  },
-});
+      watch(formData, () => {
+        console.log(formData)
+      })
+
+      return {
+        FormValidations,
+        Logic,
+        formData,
+      }
+    },
+  })
 </script>
