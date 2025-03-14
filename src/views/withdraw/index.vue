@@ -11,8 +11,8 @@
           </app-normal-text>
           <app-normal-text class="!text-primary text-center">
             Current wallet balance:
-            <span class="!font-semibold pl-1"
-              > ₺ {{ Logic.Common.convertToMoney(6074, false, "", false) }}</span
+            <span class="!font-semibold pl-1">
+              ₺ {{ Logic.Common.convertToMoney(6074, false, "", false) }}</span
             >
           </app-normal-text>
           <app-header-text class="!text-3xl">
@@ -43,7 +43,9 @@
       <!-- Bottom button -->
       <div
         class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
-        style="padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important"
+        style="
+          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+        "
       >
         <div class="w-full flex flex-col">
           <app-button
@@ -63,7 +65,7 @@
       canClose
       :close="
         () => {
-          modalIsOpen = false;
+          modalIsOpen = false
         }
       "
     >
@@ -77,46 +79,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import {
-  AppHeaderText,
-  AppButton,
-  AppKeyboard,
-  AppNormalText,
-  AppModal,
-} from "@greep/ui-components";
-import { ref } from "vue";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "WithdrawPage",
-  components: {
+  import { defineComponent } from "vue"
+  import {
     AppHeaderText,
     AppButton,
     AppKeyboard,
     AppNormalText,
     AppModal,
-  },
-  setup() {
-    const amount = ref("0");
+  } from "@greep/ui-components"
+  import { ref } from "vue"
+  import { Logic } from "@greep/logic"
 
-    const modalIsOpen = ref(false);
+  export default defineComponent({
+    name: "WithdrawPage",
+    components: {
+      AppHeaderText,
+      AppButton,
+      AppKeyboard,
+      AppNormalText,
+      AppModal,
+    },
+    setup() {
+      const amount = ref("0")
 
-    const amountIsValid = () => {
-      return parseFloat(amount.value) > 0 && parseFloat(amount.value) <= 6074;
-    };
+      const modalIsOpen = ref(false)
 
-    const continueToNext = () => {
-      //   modalIsOpen.value = true;
-    };
+      const amountIsValid = () => {
+        return parseFloat(amount.value) > 0 && parseFloat(amount.value) <= 6074
+      }
 
-    return {
-      amount,
-      Logic,
-      modalIsOpen,
-      continueToNext,
-      amountIsValid,
-    };
-  },
-});
+      const continueToNext = () => {
+        //   modalIsOpen.value = true;
+      }
+
+      return {
+        amount,
+        Logic,
+        modalIsOpen,
+        continueToNext,
+        amountIsValid,
+      }
+    },
+  })
 </script>

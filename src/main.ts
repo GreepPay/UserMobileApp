@@ -4,8 +4,6 @@ import routes from "./router/index"
 import { createRouter, createWebHistory } from "@ionic/vue-router"
 import { Logic } from "@greep/logic"
 
-// import "@greep/ui-components/dist/library.min.css"
-
 // Layouts
 import DashboardLayout from "./layouts/DashboardLayout.vue"
 import SubpageLayout from "./layouts/SubpageLayout.vue"
@@ -23,6 +21,9 @@ import "@ionic/vue/css/core.css"
 // You can disable this if you dont want TailwindCss
 import "./assets/index.css"
 import { RouteRecordRaw } from "vue-router"
+
+// UI component css style
+import "@greep/ui-components/dist/library.min.css"
 
 routes.then((routes) => {
   const router = createRouter({

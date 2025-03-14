@@ -7,7 +7,7 @@
           @click="Logic.Common.GoToRoute('/auth/login')"
           >Sign In</app-button
         >
-      </template> 
+      </template>
       <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
         <!-- Headers -->
         <div class="w-full flex flex-col items-start justify-start space-y-1">
