@@ -23,7 +23,7 @@
             GRP Token Earned
           </app-normal-text>
 
-          <div class="flex px-1 items-center justify-end space-x-2">
+          <div class="flex px-1 items-center justify-end space-x-1">
             <app-normal-text custom-class="!text-black !font-semibold">
               40
             </app-normal-text>

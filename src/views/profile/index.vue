@@ -47,6 +47,22 @@
           </app-header-text>
         </div>
       </div>
+
+      <!-- Bottom button -->
+      <div
+        class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
+        style="
+          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+        "
+      >
+        <app-button
+          custom-class="!w-full !py-4  !px-8"
+          :outlined="true"
+          variant="danger"
+        >
+          Logout
+        </app-button>
+      </div>
     </subpage-layout>
   </app-wrapper>
 </template>
