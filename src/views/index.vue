@@ -33,7 +33,7 @@
                 :key="action.route"
                 @click="Logic.Common.GoToRoute(`/wallets/${action.route}`)"
               >
-                <app-button iconOnly custom-class="bg-white">
+                <app-button iconOnly variant="primary" custom-class="bg-white">
                   <template #icon>
                     <app-icon
                       :name="action.icon"
@@ -151,7 +151,7 @@
     },
     setup() {
       const amount = ref("1000")
-      const showWelcomeModal = ref(true)
+      const showWelcomeModal = ref(false)
       const actionBtns = [
         {
           text: "Add",

@@ -50,10 +50,10 @@
     },
     emits: ["next"],
     setup(_, { emit }) {
-      const paymentDetails = {
-        "Deposit Amount": "11,233",
-        Fee: "1333",
-      }
+      const paymentDetails = [
+        { title: "Deposit Amount", content: "11,233" },
+        { title: "Fee", content: "1333" },
+      ]
 
       const continueToNext = () => {
         emit("next")

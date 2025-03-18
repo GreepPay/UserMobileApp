@@ -22,6 +22,7 @@
 
         <div
           class="border border-black rounded-full h-9 w-9 rounded-full flex justify-center items-center border-black"
+          @click="Logic.Common.GoToRoute(`/notifications`)"
         >
           <app-icon name="bell" custom-class="h-6" />
         </div>
@@ -36,6 +37,7 @@
 <script lang="ts">
   import { AppHeaderText, AppIcon, AppImageLoader } from "@greep/ui-components"
   import { ref, defineComponent } from "vue"
+  import { Logic } from "@greep/logic"
 
   export default defineComponent({
     components: {
@@ -55,7 +57,7 @@
     },
     name: "DefaultIndexLayout",
     setup() {
-      return {}
+      return { Logic }
     },
   })
 </script>

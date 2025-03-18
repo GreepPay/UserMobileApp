@@ -57,11 +57,11 @@
     },
     emits: ["next"],
     setup(_, { emit }) {
-      const paymentDetails = {
-        "Bank name": "Script Bank",
-        accountName: "Dasa Script",
-        referenceCode: "09802323672",
-      }
+      const paymentDetails = [
+        { title: "Bank name", content: "Script Bank" },
+        { title: "accountName", content: "Dasa Script" },
+        { title: "referenceCode", content: "09802323672" },
+      ]
 
       const continueToNext = () => {
         emit("next")

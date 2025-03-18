@@ -50,11 +50,11 @@
     },
     emits: ["next"],
     setup(_, { emit }) {
-      const paymentDetails = {
-        Merchant: "Timms Closet Ventures",
-        "Transfer Amount": "₦ 33,500",
-        Fee: "₦ 500",
-      }
+      const paymentDetails = [
+        { title: "Merchant", content: "Timms Closet Ventures" },
+        { title: "Transfer Amount", content: "₦ 33,500" },
+        { title: "Fee", content: "₦ 500" },
+      ]
 
       const continueToNext = () => {
         emit("next")
