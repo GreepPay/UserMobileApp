@@ -41,17 +41,14 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, onMounted, watch, ref } from "vue"
+  import { defineComponent, reactive } from "vue"
   import {
     AppFormWrapper,
     AppTextField,
     AppInfoBox,
     AppNormalText,
-    AppSelect,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
-  import { Country, State } from "country-state-city"
-  import { SelectOption } from "@greep/ui-components/src/types"
 
   export default defineComponent({
     components: {
@@ -59,7 +56,6 @@
       AppTextField,
       AppInfoBox,
       AppNormalText,
-      AppSelect,
     },
     props: {},
     name: "AuthSetupAccountInfo",
@@ -71,59 +67,10 @@
         confirm_passcode: "",
       })
 
-      const showStateSelector = ref(true)
-
-      const stateIsoCode = ref("")
-      const countryCode = ref("")
-
-      const countries = reactive<SelectOption[]>([])
-      const states = reactive<SelectOption[]>([])
-
-      const setCountries = () => {
-        countries.length = 0
-        const allCountries = Country.getAllCountries()
-        countries.push(
-          ...allCountries.map((country) => ({
-            key: country.isoCode,
-            value: ` ${country.flag} ${country.name}`,
-          }))
-        )
-      }
-
-      const setStates = () => {
-        if (countryCode.value) {
-          const allStates = State.getStatesOfCountry(countryCode.value)
-          states.length = 0
-          states.push(
-            ...allStates.map((state) => ({
-              key: state.isoCode,
-              value: state.name,
-            }))
-          )
-        }
-      }
-
-      onMounted(() => {
-        setCountries()
-      })
-
-      watch(countryCode, () => {
-        setStates()
-        showStateSelector.value = false
-        setTimeout(() => {
-          showStateSelector.value = true
-        }, 100)
-      })
-
       return {
         FormValidations,
         Logic,
         formData,
-        countries,
-        states,
-        stateIsoCode,
-        countryCode,
-        showStateSelector,
       }
     },
     data() {

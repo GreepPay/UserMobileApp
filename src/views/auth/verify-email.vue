@@ -26,8 +26,8 @@
 
 <script lang="ts">
   import { defineComponent } from "vue"
-  import { AppButton } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
+  import { AppButton } from "@greep/ui-components"
   import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue"
 
   export default defineComponent({

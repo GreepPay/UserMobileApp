@@ -55,9 +55,7 @@
     },
     setup() {
       const FormValidations = Logic.Form
-
       const currentPage = ref("account_info")
-
       const pageSettings = reactive({
         main_title: "Setup",
         pages: [

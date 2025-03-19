@@ -68,8 +68,6 @@
     props: {},
     name: "AuthSetupPickCurrency",
     setup() {
-      const FormValidations = Logic.Form
-
       const availableCurrencies = reactive([
         {
           code: "TRY",
@@ -113,7 +111,6 @@
 
       return {
         formData,
-        FormValidations,
         availableCurrencies,
       }
     },

@@ -42,10 +42,9 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue"
+  import { defineComponent, reactive } from "vue"
   import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
-  import { reactive } from "vue"
 
   export default defineComponent({
     name: "LoginPage",
@@ -58,7 +57,7 @@
       const FormValidations = Logic.Form
 
       const formData = reactive({
-        email: "script@gmail.com",
+        email: "",
       })
 
       const handleNext = () => {

@@ -43,7 +43,6 @@
     AppNormalText,
     AppOtpInput,
   } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
 
   export default defineComponent({
     components: {
@@ -54,21 +53,16 @@
     props: {},
     name: "AuthSetupVerifyEmail",
     setup() {
-      const FormValidations = Logic.Form
-
-      const formData = reactive<{
-        otp_code: string
-      }>({
+      const formData = reactive<{ otp_code: string }>({
         otp_code: "",
       })
 
       const handleOTPChange = () => {
-        // formData.otp_code = value;
+        console.log("otp changed")
       }
 
       return {
         formData,
-        FormValidations,
         handleOTPChange,
       }
     },

@@ -56,8 +56,9 @@
       <div class="w-full flex flex-row items-center justify-center">
         <app-normal-text
           class="text-center w-full text-red sm:!text-sm xs:!text-xs"
-          >Log Out</app-normal-text
         >
+          Log Out
+        </app-normal-text>
       </div>
     </div>
   </app-wrapper>
