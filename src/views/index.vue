@@ -1,17 +1,19 @@
 <template>
   <app-wrapper>
     <default-index-layout title="Home">
-      <div
-        class="w-full flex flex-col items-center justify-start px-6 space-y-4"
-      >
-        <!-- Balance card section -->
-        <app-title-card-container custom-class="rounded-[40px]">
-          <div class="space-y-4 flex flex-col justify-center w-full">
-            <div
-              class="w-full flex flex-col space-y-1 items-center justify-center"
-            >
+      <div class="w-full flex flex-col items-center justify-start px-6">
+        <app-title-card-container>
+          <div
+            class="flex flex-col space-y-5 justify-center items-center w-full"
+          >
+            <app-currency-switch
+              :model-value="modelCurrencyValue"
+              default-currency="USD"
+            />
+
+            <div class="w-full py-5 flex flex-col items-center justify-center">
               <app-normal-text
-                custom-class="!text-white !font-normal  text-center"
+                custom-class="!text-white !font-normal !font-sm pb-1  text-center"
               >
                 Total Balance
               </app-normal-text>
@@ -26,24 +28,20 @@
               </app-header-text>
             </div>
 
-            <div class="flex w-full space-x-3 justify-around items-center px-6">
+            <div class="flex w-full justify-between items-center px-6">
               <div
-                class="space-y-1 flex flex-col items-center"
+                class="flex flex-col items-center px-3s"
                 v-for="action in actionBtns"
                 :key="action.route"
-                @click="Logic.Common.GoToRoute(`/wallets/${action.route}`)"
+                @click="Logic.Common.GoToRoute(`/${action.route}`)"
               >
                 <app-button iconOnly variant="primary" custom-class="bg-white">
                   <template #icon>
-                    <app-icon
-                      :name="action.icon"
-                      custom-class="!text-primary"
-                      class="size-5"
-                    />
+                    <app-icon :name="action.icon" />
                   </template>
                 </app-button>
 
-                <app-normal-text class="text-white">
+                <app-normal-text class="!text-white !text-lg pt-1.5">
                   {{ action.text }}
                 </app-normal-text>
               </div>
@@ -51,32 +49,35 @@
           </div>
         </app-title-card-container>
 
-        <div class="w-full h-fit space-y-4">
+        <div class="w-full h-fit py-6">
           <div class="flex items-center justify-between">
             <app-header-text class="font-semibold"> Quick Pay </app-header-text>
-            <app-icon name="add-circle" class="size-6" />
+            <app-icon
+              name="add-circle"
+              class="size-7"
+              @click="Logic.Common.GoToRoute(`/beneficiaries`)"
+            />
           </div>
 
-          <horizontal-user-list :items="users" :imageSize="56" />
+          <div class="pt-4">
+            <horizontal-user-list :items="users" :imageSize="56" />
+          </div>
         </div>
 
         <!-- Recent transactions -->
-        <div class="w-full flex flex-col space-y-4 pt-2">
-          <div class="w-full flex flex-row justify-between items-center">
+        <div class="w-full flex flex-col">
+          <div class="w-full flex justify-between items-center">
             <app-header-text class="!text-left"> Transactions </app-header-text>
-
-            <app-normal-text class="text-primary text-right">
-              View all
+            <app-normal-text
+              class="text-primary !text-lg text-right"
+              @click="Logic.Common.GoToRoute(`/transactions`)"
+            >
+              See all
             </app-normal-text>
           </div>
 
-          <div class="w-full flex flex-col space-y-3">
-            <app-transaction
-              :data="item"
-              v-for="(item, index) in transactions"
-              :key="index"
-              @click="Logic.Common.GoToRoute(`/wallets/add-money`)"
-            />
+          <div class="py-2">
+            <app-transactions :transactions="transactions" />
           </div>
         </div>
       </div>
@@ -90,15 +91,17 @@
         }
       "
     >
-      <div class="w-full flex flex-col items-center px-4 pb-4">
+      <div class="w-full flex flex-col items-center">
         <app-icon name="green-lovely" custom-class="size-[96px]" />
+
         <div
-          class="w-full flex flex-col xs:!space-y-0 sm:!space-y-2 md:space-y-2 items-center justify-center"
+          class="w-full flex flex-col pt-2 pb-6 px-5 items-center justify-center"
         >
-          <app-header-text class="text-center w-full xs:!text-base sm:!text-lg">
+          <app-header-text class="text-center w-full !text-xl">
             Welcome
           </app-header-text>
-          <app-normal-text class="text-center w-full">
+
+          <app-normal-text class="text-center !text-lg !text-gray-two w-full">
             Experience borderless payments without the stress of manual
             conversion to your preferred currency.
           </app-normal-text>
@@ -118,15 +121,15 @@
 <script lang="ts">
   import { defineComponent, reactive, ref } from "vue"
   import {
-    AppImageLoader,
     AppNormalText,
     AppHeaderText,
     AppButton,
-    AppTransaction,
+    AppTransactions,
     AppIcon,
     AppTitleCardContainer,
     AppModal,
     HorizontalUserList,
+    AppCurrencySwitch,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
 
@@ -139,29 +142,30 @@
   export default defineComponent({
     name: "IndexPage",
     components: {
-      AppImageLoader,
       AppNormalText,
       AppHeaderText,
       AppButton,
-      AppTransaction,
+      AppTransactions,
       AppIcon,
       AppModal,
       AppTitleCardContainer,
       HorizontalUserList,
+      AppCurrencySwitch,
     },
     setup() {
       const amount = ref("1000")
-      const showWelcomeModal = ref(false)
+      const modelCurrencyValue = ref("USD")
+      const showWelcomeModal = ref(true)
       const actionBtns = [
         {
           text: "Add",
           icon: "plus",
-          route: "add-money",
+          route: "add",
         },
         {
           text: "Send",
           icon: "arrow-up",
-          route: "send-money",
+          route: "send",
         },
         {
           text: "Scan",
@@ -238,6 +242,7 @@
         Logic,
         actionBtns,
         amount,
+        modelCurrencyValue,
       }
     },
   })

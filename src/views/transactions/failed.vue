@@ -51,11 +51,7 @@
 
         <!-- History -->
         <div class="w-full flex flex-col space-y-2 s">
-          <app-transaction
-            :data="item"
-            v-for="(item, index) in transactions"
-            :key="index"
-          />
+          <app-transactions :transactions="transactions" />
         </div>
       </div>
     </subpage-layout>
@@ -71,7 +67,7 @@
     AppTitleCardContainer,
     AppNormalText,
     AppHeaderText,
-    AppTransaction,
+    AppTransactions,
     AppButton,
     AppIcon,
     AppTextField,
@@ -86,7 +82,7 @@
       AppTitleCardContainer,
       AppNormalText,
       AppHeaderText,
-      AppTransaction,
+      AppTransactions,
       AppButton,
       AppIcon,
       AppTextField,

@@ -13,7 +13,8 @@
       >
         <app-image-loader
           :photo-url="'/images/temps/profile-1.png'"
-          custom-class="h-[31px] w-[31px] rounded-full"
+          custom-class="size-10   rounded-full"
+          @click="Logic.Common.GoToRoute(`/profile`)"
         />
 
         <app-header-text class="!text-left">

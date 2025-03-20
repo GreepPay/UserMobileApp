@@ -46,7 +46,7 @@
           </div>
 
           <div class="w-full flex flex-col space-y-3">
-            <app-transaction
+            <app-transactions
               :data="item"
               v-for="(item, index) in transactions"
               :key="index"
@@ -68,7 +68,7 @@
     AppTitleCardContainer,
     AppNormalText,
     AppHeaderText,
-    AppTransaction,
+    AppTransactions,
     AppButton,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
@@ -81,7 +81,7 @@
       AppTitleCardContainer,
       AppNormalText,
       AppHeaderText,
-      AppTransaction,
+      AppTransactions,
       AppButton,
     },
     setup() {

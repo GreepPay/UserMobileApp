@@ -51,7 +51,7 @@
 
         <!-- History -->
         <div class="w-full flex flex-col space-y-2 s">
-          <app-transaction
+          <app-transactions
             :data="item"
             v-for="(item, index) in transactions"
             :key="index"
@@ -72,7 +72,7 @@
     AppTitleCardContainer,
     AppNormalText,
     AppHeaderText,
-    AppTransaction,
+    AppTransactions,
     AppButton,
     AppIcon,
     AppTextField,
@@ -87,7 +87,7 @@
       AppTitleCardContainer,
       AppNormalText,
       AppHeaderText,
-      AppTransaction,
+      AppTransactions,
       AppButton,
       AppIcon,
       AppTextField,

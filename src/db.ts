@@ -32,3 +32,13 @@ const availableCurrencies = [
     name: "Euro",
   },
 ]
+
+const users = [
+  { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
+  { id: 2, name: "Test", avatar: "/images/temps/profile-2.png" },
+  { id: 3, name: "Sukky", avatar: "/images/temps/profile-1.png" },
+  { id: 4, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+  { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
+  { id: 5, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+  { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
+]
