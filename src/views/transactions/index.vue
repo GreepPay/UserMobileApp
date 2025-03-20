@@ -3,48 +3,77 @@
     <subpage-layout title="Transaction History">
       <div class="w-full flex flex-col items-center p-5 space-y-3 h-full">
         <!-- Date filter selector -->
-        <div class="flex items-center w-full">
-          <div
-            class="flex-1 flex items-center border rounded-l-xl py-[15px] px-5"
-          >
-            <app-normal-text
-              class="flex-1 !text-base !text-veryLightGray !leading-6 !font-medium"
+        <div class="w-full flex flex-row items-center">
+          <div class="w-1/2 flex flex-col">
+            <app-text-field
+              :has-title="false"
+              type="date"
+              placeholder="From"
+              ref="from"
+              name="from"
+              v-model="filterSetup.from"
+              custom-class="!border-[1.5px] border-[#E0E2E4] !rounded-r-[0px] px-4 py-4 !bg-transparent"
+              :input-style="`!text-sm`"
             >
-              From
-            </app-normal-text>
-            <app-icon name="calendar" />
+              <template #inner-suffix>
+                <app-icon name="calendar" custom-class="h-[22px]" />
+              </template>
+            </app-text-field>
           </div>
-          <div
-            class="flex-1 flex items-center border rounded-r-xl py-[15px] px-5"
-          >
-            <app-normal-text
-              class="flex-1 !text-base !text-veryLightGray !leading-6 !font-medium"
+
+          <div class="w-1/2 flex flex-col">
+            <app-text-field
+              :has-title="false"
+              type="date"
+              placeholder="To"
+              ref="to"
+              name="to"
+              v-model="filterSetup.to"
+              custom-class="!border-[1.5px] border-[#E0E2E4] !rounded-l-[0px] !border-l-[0px] px-4 py-4 !bg-transparent"
+              :input-style="`!text-sm`"
             >
-              To
-            </app-normal-text>
-            <app-icon name="calendar" />
+              <template #inner-suffix>
+                <app-icon name="calendar" custom-class="h-[22px]" />
+              </template>
+            </app-text-field>
           </div>
         </div>
 
-        <!-- <app-text-field type="date" placeholder="From">
-          <template #inner-suffix> <app-icon name="calendar" /> </template>
-        </app-text-field> -->
+        <div
+          class="w-full flex flex-col space-y-1 border-[#E0E2E4] border-[1.5px] px-4 py-4 rounded-[16px]"
+        >
+          <app-select
+            v-model="filterSetup.period"
+            :options="monthFilterOption"
+            is-wrapper
+            @OnOptionSelected="
+              (option) => {
+                currentOptionName = option.value
+              }
+            "
+          >
+            <div
+              class="flex flex-row space-x-[3px] items-center w-full justify-start"
+            >
+              <app-normal-text
+                custom-class="!text-black !font-semibold !text-left !text-sm"
+                >{{ currentOptionName }}</app-normal-text
+              >
+              <app-icon name="dropdown" custom-class="!h-[6px]" />
+            </div>
+          </app-select>
 
-        <!-- Header  -->
-        <div class="w-full flex flex-col space-y-1 border rounded-xl py-4 px-5">
-          <div class="flex items-center space-x-2">
-            <app-header-text class="!font-semibold !text-xl !leading-6">
-              Feb, 2025
-            </app-header-text>
-            <app-icon name="caret-down" />
-          </div>
-
-          <div class="flex items-center justify -between space-x-6">
-            <app-normal-text class="!font-medium !text-lg !block !leading-6">
-              In | 1500 GRP
+          <div class="w-full flex flex-row items-center space-x-3">
+            <app-normal-text
+              custom-class="!text-black !font-[500] !text-left !text-sm"
+            >
+              In | ₺30,000
             </app-normal-text>
-            <app-normal-text class="!font-medium !text-lg !leading-6">
-              Out | 5000 GRP
+
+            <app-normal-text
+              custom-class="!text-black !font-[500] !text-left !text-sm"
+            >
+              Out | ₺30,000
             </app-normal-text>
           </div>
         </div>
@@ -71,6 +100,7 @@
     AppButton,
     AppIcon,
     AppTextField,
+    AppSelect,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
 
@@ -86,6 +116,7 @@
       AppButton,
       AppIcon,
       AppTextField,
+      AppSelect,
     },
     setup() {
       const amount = ref("1000")
@@ -115,7 +146,7 @@
           amount: 500,
           transactionType: "credit",
           type: "added",
-          status: "success",
+          status: "processing",
           date: "2025-03-18",
         },
         {
@@ -142,7 +173,7 @@
           amount: 500,
           transactionType: "credit",
           type: "added",
-          status: "success",
+          status: "processing",
           date: "2025-03-18",
         },
         {
@@ -151,7 +182,7 @@
           amount: 50,
           transactionType: "debit",
           type: "redeemed",
-          status: "success",
+          status: "failed",
           date: "2025-03-18",
         },
         {
@@ -160,7 +191,7 @@
           amount: 100,
           transactionType: "debit",
           type: "sent",
-          status: "success",
+          status: "failed",
           date: "2025-03-18",
         },
         {
@@ -187,7 +218,7 @@
           amount: 100,
           transactionType: "debit",
           type: "sent",
-          status: "success",
+          status: "processing",
           date: "2025-03-18",
         },
         {
@@ -196,7 +227,7 @@
           amount: 500,
           transactionType: "credit",
           type: "added",
-          status: "success",
+          status: "failed",
           date: "2025-03-18",
         },
         {
@@ -205,15 +236,76 @@
           amount: 50,
           transactionType: "debit",
           type: "redeemed",
-          status: "success",
+          status: "failed",
           date: "2025-03-18",
         },
       ])
+
+      const filterSetup = reactive({
+        from: "",
+        to: "",
+        period: "",
+      })
+      const currentOptionName = ref("January, 2025")
+
+      const monthFilterOption = [
+        {
+          value: "January, 2025",
+          key: "january_2025",
+        },
+        {
+          value: "February, 2025",
+          key: "february_2025",
+        },
+        {
+          value: "March, 2025",
+          key: "march_2025",
+        },
+        {
+          value: "April, 2025",
+          key: "april_2025",
+        },
+        {
+          value: "May, 2025",
+          key: "may_2025",
+        },
+        {
+          value: "June, 2025",
+          key: "june_2025",
+        },
+        {
+          value: "July, 2025",
+          key: "july_2025",
+        },
+        {
+          value: "August, 2025",
+          key: "august_2025",
+        },
+        {
+          value: "September, 2025",
+          key: "september_2025",
+        },
+        {
+          value: "October, 2025",
+          key: "october_2025",
+        },
+        {
+          value: "November, 2025",
+          key: "november_2025",
+        },
+        {
+          value: "December, 2025",
+          key: "december_2025",
+        },
+      ]
 
       return {
         Logic,
         transactions,
         amount,
+        currentOptionName,
+        filterSetup,
+        monthFilterOption,
       }
     },
   })

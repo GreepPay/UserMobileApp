@@ -71,7 +71,8 @@
 
             <app-normal-text
               custom-class="!text-black !font-[500] !text-left !text-sm"
-              >Out | ₺30,000</app-normal-text
+            >
+              Out | ₺30,000</app-normal-text
             >
           </div>
         </div>
@@ -139,16 +140,11 @@
       AppButton,
       AppIcon,
       AppTextField,
+      AppSelect,
     },
     setup() {
       const amount = ref("1000")
       const selectedDate = ref("")
-      const dateHistory = [
-        { key: "bills", value: "Paying Bills" },
-        { key: "gift", value: "Sending as a Gift" },
-        { key: "business", value: "Business Transaction" },
-        { key: "personal", value: "Personal Use" },
-      ]
 
       const transactionHistory = [
         {
@@ -335,7 +331,6 @@
         Logic,
         transactionHistory,
         amount,
-        dateHistory,
         selectedDate,
         currentOptionName,
         filterSetup,

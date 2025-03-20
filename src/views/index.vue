@@ -4,14 +4,14 @@
       <div class="w-full flex flex-col items-center justify-start px-6">
         <app-title-card-container>
           <div
-            class="flex flex-col space-y-5 justify-center items-center w-full"
+            class="flex flex-col space-y-3 justify-center items-center w-full"
           >
             <app-currency-switch
               :model-value="modelCurrencyValue"
               default-currency="USD"
             />
 
-            <div class="w-full py-5 flex flex-col items-center justify-center">
+            <div class="w-full py-3 flex flex-col items-center justify-center">
               <app-normal-text
                 custom-class="!text-white !font-normal !font-sm pb-1  text-center"
               >

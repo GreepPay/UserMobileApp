@@ -1,67 +1,119 @@
 <template>
   <app-wrapper>
-    <subpage-layout
-      :title="pageTitle"
-      :useEmitBack="activeStep !== 1"
-      :hideBackBtn="activeStep > 4"
-      @back="handleBack"
-    >
-      <enter-amount v-if="activeStep === 1" @next="activeStep = 2" />
-      <payment-method v-if="activeStep === 2" @next="activeStep = 3" />
-      <mobile-money-details v-if="activeStep === 3" @next="activeStep = 4" />
-      <make-payment v-if="activeStep === 4" @next="activeStep = 5" />
-      <processing v-if="activeStep === 5" @next="activeStep = 6" />
-      <success v-if="activeStep === 6" />
+    <subpage-layout title="Add Money">
+      <div class="w-full flex flex-col items-center p-5 pt-3 space-y-8 h-full">
+        <app-title-card-container>
+          <div
+            class="flex flex-col space-y-4 justify-center items-center w-full"
+          >
+            <app-currency-switch
+              :model-value="modelCurrencyValue"
+              default-currency="USD"
+            />
+
+            <div class="w-full flex flex-col items-center justify-center">
+              <app-normal-text
+                custom-class="!text-white !font-normal !font-sm pb-2  text-center"
+              >
+                Amount
+              </app-normal-text>
+
+              <app-header-text class="!text-3xl text-white">
+                ₺
+                {{
+                  !Number.isNaN(parseFloat(amount))
+                    ? Logic.Common.convertToMoney(amount, false, "", false)
+                    : "0"
+                }}
+              </app-header-text>
+            </div>
+          </div>
+        </app-title-card-container>
+
+        <!-- keyboard -->
+        <app-keyboard v-model="amount" />
+
+        <div
+          :class="`w-full flex flex-col items-center justify-center ${
+            parseFloat(amount) > maximumAmount ? 'visible' : 'invisible'
+          }`"
+        >
+          <app-normal-text class="!text-red-500">
+            Maximum withdrawal amount is
+            <span class="!font-semibold pl-1">
+              ₺
+              {{ Logic.Common.convertToMoney(maximumAmount, false, "", false) }}
+            </span>
+          </app-normal-text>
+        </div>
+
+        <!-- Bottom button -->
+        <div
+          class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
+          style="
+            padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+          "
+        >
+          <div class="w-full flex flex-col">
+            <app-button
+              :class="`!py-4 ${amountIsValid() ? 'opacity-100' : 'opacity-50'}`"
+              @click="amountIsValid() ? continueToNext() : null"
+            >
+              Next
+            </app-button>
+          </div>
+        </div>
+      </div>
     </subpage-layout>
   </app-wrapper>
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue"
-  import { ref, computed } from "vue"
+  import { defineComponent, ref } from "vue"
   import {
-    MobileMoneyDetails,
-    MakePayment,
-    EnterAmount,
-  } from "../../components/Wallets/AddMoney"
-
-  import {
-    PaymentMethod,
-    Success,
-    Processing,
-  } from "../../components/Core/Common"
+    AppHeaderText,
+    AppButton,
+    AppKeyboard,
+    AppNormalText,
+    AppTitleCardContainer,
+    AppCurrencySwitch,
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
   export default defineComponent({
-    name: "WalletScanPage",
+    name: "WalletAddMoneyPage",
     components: {
-      PaymentMethod,
-      MobileMoneyDetails,
-      Success,
-      MakePayment,
-      Processing,
-      EnterAmount,
+      AppHeaderText,
+      AppButton,
+      AppKeyboard,
+      AppNormalText,
+      AppTitleCardContainer,
+      AppCurrencySwitch,
     },
     setup() {
-      const activeStep = ref(1)
-      const pageTitle = computed(() => {
-        if (activeStep.value === 2) {
-          return "Choose Method"
-        } else if (activeStep.value === 3) {
-          return "Confirm Details"
-        } else if (activeStep.value === 4) {
-          return "Make Payment"
-        } else if (activeStep.value === 5) {
-          return "Processing"
-        } else if (activeStep.value === 6) {
-          return ""
-        } else {
-          return "Add Money" // Default title
-        }
-      })
+      const modelCurrencyValue = ref("USD")
+      const amount = ref("0")
+      const maximumAmount = 10000
 
-      const handleBack = () => activeStep.value--
+      const amountIsValid = () => {
+        return (
+          parseFloat(amount.value) > 0 &&
+          parseFloat(amount.value) <= maximumAmount
+        )
+      }
 
-      return { activeStep, pageTitle, handleBack }
+      const continueToNext = () => {
+        Logic.Common.GoToRoute("/add/method")
+      }
+
+      return {
+        amount,
+        Logic,
+        maximumAmount,
+        continueToNext,
+        amountIsValid,
+        modelCurrencyValue,
+      }
     },
   })
 </script>

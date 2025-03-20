@@ -8,14 +8,9 @@
           </app-button>
         </div>
 
-        <!-- Notifications -->s
+        <!-- Notifications -->
         <div class="w-full flex flex-col space-y-3">
-          <app-notifications
-            :data="item"
-            v-for="(item, index) in notifications"
-            :key="index"
-            @click="Logic.Common.GoToRoute(`/wallets/add-money`)"
-          />
+          <app-notifications :notifications="notifications" />
         </div>
       </div>
     </subpage-layout>
@@ -60,15 +55,7 @@
       const amount = ref("1000")
       const showWelcomeModal = ref(true)
 
-      const notifications = reactive<
-        {
-          id: string | number
-          title: string
-          description: string
-          type: string
-          date: string
-        }[]
-      >([
+      const notifications = [
         {
           id: 1,
           title: "Timms Milestone",
@@ -196,7 +183,7 @@
           type: "failed",
           date: "Today",
         },
-      ])
+      ]
 
       return {
         showWelcomeModal,
