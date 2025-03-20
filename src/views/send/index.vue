@@ -1,64 +1,159 @@
 <template>
   <app-wrapper>
-    <subpage-layout
-      :title="pageTitle"
-      :useEmitBack="activeStep !== 1"
-      :hideBackBtn="activeStep > 4"
-      @back="handleBack"
-    >
-      <select-beneficiary v-if="activeStep === 1" @next="activeStep = 2" />
-      <enter-amount v-if="activeStep === 2" @next="activeStep = 3" />
-      <payment-details v-if="activeStep === 3" @next="activeStep = 4" />
-      <processing v-if="activeStep === 4" @next="activeStep = 5" />
-      <success v-if="activeStep === 5" />
+    <subpage-layout title="Send Money">
+      <div class="w-full flex flex-col items-center pt-3 h-full">
+        <!-- Search -->
+        <div class="w-full px-6">
+          <app-search
+            placeholder="Search User/Merchant"
+            @update:search="searchQuery = $event"
+          />
+        </div>
+
+        <!-- Tabs -->
+        <div class="w-full px-3 py-3">
+          <app-tabs :tabs="tabs" v-model:activeTab="activeTab" />
+        </div>
+
+        <!-- Filtered List -->
+        <div class="w-full px-1">
+          <beneficiary-list
+            v-model="selectedBeneficiary"
+            :dataItems="filteredBeneficiaries"
+          />
+        </div>
+      </div>
+
+      <!-- Bottom Button -->
+      <div
+        class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
+        style="
+          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+        "
+      >
+        <div class="w-full flex flex-col">
+          <app-button
+            @click="continueToNext"
+            :disabled="!selectedBeneficiary"
+            class="!bg-secondary !py-4"
+          >
+            Next
+          </app-button>
+        </div>
+      </div>
     </subpage-layout>
   </app-wrapper>
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue"
-  import { ref, computed } from "vue"
+  import { defineComponent, ref, computed } from "vue"
   import {
-    SelectBeneficiary,
-    EnterAmount,
-    PaymentDetails,
-  } from "../../components/Wallets/SendMoney"
-
-  import {
-    PaymentMethod,
-    Success,
-    Processing,
-  } from "../../components/Core/Common"
+    AppHeaderText,
+    AppButton,
+    AppKeyboard,
+    AppNormalText,
+    AppTitleCardContainer,
+    AppCurrencySwitch,
+    BeneficiaryList,
+    AppSearch,
+    AppTabs,
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
   export default defineComponent({
-    name: "WalletSendMoneyPage",
+    name: "SelectBeneficiaryPage",
     components: {
-      PaymentMethod,
-      Success,
-      Processing,
-      SelectBeneficiary,
-      EnterAmount,
-      PaymentDetails,
+      AppHeaderText,
+      AppButton,
+      AppKeyboard,
+      AppNormalText,
+      AppTitleCardContainer,
+      AppCurrencySwitch,
+      BeneficiaryList,
+      AppSearch,
+      AppTabs,
     },
     setup() {
-      const activeStep = ref(1)
-      const pageTitle = computed(() => {
-        if (activeStep.value === 2) {
-          return "Transfer"
-        } else if (activeStep.value === 3) {
-          return "Confirm Details"
-        } else if (activeStep.value === 4) {
-          return "Processing"
-        } else if (activeStep.value === 5) {
-          return ""
-        } else {
-          return "Send Money" // Default title
-        }
+      const modelCurrencyValue = ref("USD")
+      const amount = ref("0")
+      const maximumAmount = 10000
+      const searchQuery = ref("")
+      const activeTab = ref("recents")
+      const selectedBeneficiary = ref(null)
+
+      const amountIsValid = () => {
+        return (
+          parseFloat(amount.value) > 0 &&
+          parseFloat(amount.value) <= maximumAmount
+        )
+      }
+
+      const beneficiaries = ref([
+        {
+          id: 1,
+          image: "images/temps/profile-1.png",
+          name: "Samwell Taiwo",
+          description: "Greep User",
+          isBeneficiary: false,
+        },
+        {
+          id: 2,
+          image: "images/temps/profile-2.png",
+          name: "Jane Smith",
+          description: "Greep Merchant",
+          isBeneficiary: true,
+        },
+        {
+          id: 3,
+          image: "images/temps/profile-1.png",
+          name: "John Doe",
+          description: "Greep User",
+          isBeneficiary: false,
+        },
+        {
+          id: 4,
+          image: "images/temps/profile-2.png",
+          name: "Sarah Johnson",
+          description: "Greep Merchant",
+          isBeneficiary: true,
+        },
+      ])
+
+      const tabs = [
+        { key: "recents", label: "Recents" },
+        { key: "beneficiaries", label: "Beneficiaries" },
+      ]
+
+      // Computed property to filter beneficiaries based on active tab and search query
+      const filteredBeneficiaries = computed(() => {
+        return beneficiaries.value.filter((user) => {
+          const matchesSearch = user.name
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase())
+          const matchesTab =
+            activeTab.value === "recents" ||
+            (activeTab.value === "beneficiaries" && user.isBeneficiary)
+          return matchesSearch && matchesTab
+        })
       })
 
-      const handleBack = () => activeStep.value--
+      const continueToNext = () => {
+        Logic.Common.GoToRoute("/send/enter-amount")
+      }
 
-      return { activeStep, pageTitle, handleBack }
+      return {
+        amount,
+        Logic,
+        maximumAmount,
+        continueToNext,
+        amountIsValid,
+        modelCurrencyValue,
+        activeTab,
+        tabs,
+        filteredBeneficiaries,
+        selectedBeneficiary,
+        searchQuery,
+      }
     },
   })
 </script>

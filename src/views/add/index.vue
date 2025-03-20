@@ -90,8 +90,7 @@
       AppTitleCardContainer,
       AppCurrencySwitch,
     },
-    emits: ["next"],
-    setup(_, { emit }) {
+    setup() {
       const modelCurrencyValue = ref("USD")
       const amount = ref("0")
       const maximumAmount = 10000

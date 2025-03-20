@@ -9,7 +9,7 @@
           <app-title-card-container custom-class="!rounded-2xl">
             <div class="w-full flex flex-col">
               <app-normal-text class="!text-white !font-normal">
-                You pay
+                To Be Sent
               </app-normal-text>
               <app-header-text class="!text-white !text-xl pt-1">
                 ₺
@@ -18,13 +18,6 @@
             </div>
           </app-title-card-container>
 
-          <app-info-box>
-            <app-normal-text
-              custom-class="text-center !leading-5 !text-gray-two !text-sm  "
-            >
-              Add money to your wallet using the following bank details
-            </app-normal-text>
-          </app-info-box>
           <app-details :details="confirmationDetails" />
         </template>
         <!-- Confirmation details end -->
@@ -112,7 +105,6 @@
     AppHeaderText,
     AppIcon,
     AppTitleCardContainer,
-    AppInfoBox,
     AppCountdownTimer,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
@@ -120,7 +112,7 @@
   import { ref } from "vue"
 
   export default defineComponent({
-    name: "AddMoneyPaymentPage",
+    name: "ConfirmSendMoneyPage",
     components: {
       AppButton,
       AppNormalText,
@@ -128,7 +120,6 @@
       AppHeaderText,
       AppIcon,
       AppTitleCardContainer,
-      AppInfoBox,
       AppCountdownTimer,
     },
     setup() {
@@ -136,20 +127,20 @@
 
       const currentPageContent = ref("confirmation_info")
       const mainButtonLabel = ref("Confirm")
-      const pageTitle = ref("Make Payment")
+      const pageTitle = ref("Confirm Details")
 
       const confirmationDetails = reactive([
         {
-          title: "Bank Name",
-          content: "Capital One",
+          title: "Merchant",
+          content: "Timms Closet Ventures",
         },
         {
-          title: "Account Number",
-          content: "4833241496",
+          title: "Transfer Amount",
+          content: "₦ 33,500",
         },
         {
-          title: "Reference Code",
-          content: "278356263782903",
+          title: "Fee",
+          content: "₦ 500",
         },
       ])
 
@@ -162,7 +153,7 @@
         } else {
           currentPageContent.value = "confirmation_info"
           mainButtonLabel.value = "Confirm"
-          pageTitle.value = "Make Payment"
+          pageTitle.value = "Confirm Details"
           hideBackBtn.value = false
         }
       }
