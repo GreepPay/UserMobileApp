@@ -83,6 +83,7 @@
       </div>
     </default-index-layout>
 
+    <!-- Welcome Modal -->
     <app-modal
       v-if="showWelcomeModal"
       :close="

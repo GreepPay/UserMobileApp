@@ -81,7 +81,7 @@
   import { Logic } from "@greep/logic"
 
   export default defineComponent({
-    name: "WalletAddMoneyPage",
+    name: "WalletScanPage",
     components: {
       AppHeaderText,
       AppButton,
