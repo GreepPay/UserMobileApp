@@ -2,36 +2,63 @@
   <app-wrapper>
     <subpage-layout :title="pageTitle" :hideBackBtn="hideBackBtn">
       <div
-        class="w-full flex flex-col items-center justify-start px-5 h-full space-y-3"
+        class="w-full flex flex-col items-center justify-start px-5 h-full pt-1 space-y-5"
       >
         <!-- Confirmation details starts -->
-        <template v-if="currentPageContent == 'confirmation_info'">
-          <app-title-card-container custom-class="!rounded-2xl">
-            <div class="w-full flex flex-col">
-              <app-normal-text class="!text-white !font-normal">
-                You pay
-              </app-normal-text>
-              <app-header-text class="!text-white !text-xl pt-1">
-                ₺
-                {{ Logic.Common.convertToMoney(10000, false, "", false) }}
-              </app-header-text>
-            </div>
-          </app-title-card-container>
-
-          <app-info-box>
-            <app-normal-text
-              custom-class="text-center !leading-5 !text-gray-two !text-sm  "
+        <template v-if="currentPageContent == 'conversion'">
+          <div
+            class="w-full border-[1.5px] border-light-gray-two rounded-light-gray-two flex flex-col relative rounded-[32px]"
+          >
+            <div
+              class="px-4 py-4 flex flex-row justify-between items-center border-b-[1.5px] border-light-gray-two"
             >
-              Add money to your wallet using the following bank details
-            </app-normal-text>
-          </app-info-box>
-          <app-details :details="confirmationDetails" />
+              <app-icon name="grp-black" custom-class="!h-[35px]" />
+
+              <div class="flex justify-end flex-row">
+                <app-normal-text class="!text-black font-[500] !text-base">
+                  GRP
+                </app-normal-text>
+
+                <app-content-editable
+                  defaultValue=""
+                  placeholder="0"
+                  class="!font-[500] !text-base text-black min-w-[10px] pl-1"
+                  v-model="grp_amount"
+                  type="tel"
+                />
+              </div>
+            </div>
+
+            <div
+              class="absolute w-full h-[40px] flex flex-col px-6 left-0 bottom-[35%] justify-center"
+            >
+              <app-icon name="switch-currency" custom-class="size-4 bg-white" />
+            </div>
+
+            <div class="px-4 py-4 flex flex-row justify-between items-center">
+              <app-image-loader
+                :photo-url="`/images/icons/flags/usd.svg`"
+                class="h-[35px] w-[35px] rounded-full"
+              />
+
+              <app-normal-text class="!text-black font-[500] !text-base">
+                $
+                {{
+                  Logic.Common.convertToMoney(
+                    parseFloat(grp_amount.toString()) / 100 || 0,
+                    true,
+                    ""
+                  )
+                }}
+              </app-normal-text>
+            </div>
+          </div>
         </template>
         <!-- Confirmation details end -->
 
         <!-- Processing -->
         <template v-if="currentPageContent == 'processing'">
-          <app-title-card-container custom-class="!rounded-2xl">
+          <app-title-card-container custom-class="!rounded-[28px]">
             <div class="w-full flex flex-col">
               <app-normal-text class="!text-white !font-normal">
                 Amount
@@ -44,7 +71,7 @@
           </app-title-card-container>
 
           <div
-            class="w-full flex flex-col space-y-2 items-center justify-center pt-3"
+            class="w-full flex flex-col space-y-2 items-center justify-center"
           >
             <app-normal-text class="text-center !font-medium !text-lg">
               Your payment is on the way!
@@ -87,7 +114,31 @@
           class="w-full flex flex-col"
           v-if="currentPageContent === 'processing'"
         >
-          <app-countdown-timer custom-class="!py-5" :duration="100" />
+          <app-button
+            variant="secondary"
+            :class="`!py-4 !bg-[#F0F3F6] !text-veryLightGray !border-transparent`"
+            @click="continueToNext"
+          >
+            Please wait for 9:53
+          </app-button>
+        </div>
+
+        <div
+          class="w-full flex flex-col"
+          v-if="currentPageContent === 'conversion'"
+        >
+          <app-button
+            :class="`!py-5 !px-4 !bg-light-gray-one !text-veryLightGray !border-transparent flex flex-row justify-between items-center`"
+            @click="continueToNext"
+          >
+            <app-normal-text class="!text-left !text-veryLightGray">
+              Rate
+            </app-normal-text>
+
+            <app-normal-text class="!text-right !text-gray-600 !font-[500]">
+              $ 1 = 100 GRP
+            </app-normal-text>
+          </app-button>
         </div>
 
         <div class="w-full flex flex-col">
@@ -109,73 +160,54 @@
   import {
     AppButton,
     AppNormalText,
-    AppDetails,
+    AppImageLoader,
     AppHeaderText,
     AppIcon,
+    AppContentEditable,
     AppTitleCardContainer,
-    AppInfoBox,
-    AppCountdownTimer,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
-  import { reactive } from "vue"
   import { ref } from "vue"
 
   export default defineComponent({
-    name: "AddMoneyPaymentPage",
+    name: "ConvertGRPTokenPage",
     components: {
       AppButton,
       AppNormalText,
-      AppDetails,
+      AppImageLoader,
       AppHeaderText,
       AppIcon,
+      AppContentEditable,
       AppTitleCardContainer,
-      AppInfoBox,
-      AppCountdownTimer,
     },
     setup() {
       const hideBackBtn = ref(false)
 
-      const currentPageContent = ref("confirmation_info")
-      const mainButtonLabel = ref("Confirm")
-      const pageTitle = ref("Make Payment")
+      const currentPageContent = ref("conversion")
+      const mainButtonLabel = ref("Redeem")
+      const pageTitle = ref("GRP Converter")
 
-      const confirmationDetails = reactive([
-        {
-          title: "Bank Name",
-          content: "Capital One",
-        },
-        {
-          title: "Account Number",
-          content: "4833241496",
-        },
-        {
-          title: "Reference Code",
-          content: "278356263782903",
-        },
-      ])
+      const grp_amount = ref(0)
 
       const continueToNext = () => {
-        if (currentPageContent.value === "confirmation_info") {
+        if (currentPageContent.value === "conversion") {
           currentPageContent.value = "processing"
           pageTitle.value = "Processing"
-          mainButtonLabel.value = "Home"
+          mainButtonLabel.value = "Profile"
           hideBackBtn.value = true
         } else {
-          currentPageContent.value = "confirmation_info"
-          mainButtonLabel.value = "Confirm"
-          pageTitle.value = "Make Payment"
-          hideBackBtn.value = false
+          Logic.Common.GoToRoute(`/profile`)
         }
       }
 
       return {
         Logic,
         continueToNext,
-        confirmationDetails,
         hideBackBtn,
         currentPageContent,
         mainButtonLabel,
         pageTitle,
+        grp_amount,
       }
     },
   })

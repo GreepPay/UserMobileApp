@@ -111,7 +111,7 @@
         {
           title: "Default Currency",
           route: "default-currency",
-          icon: " linear-money",
+          icon: "linear-money",
         },
         {
           title: "Login Settings",
