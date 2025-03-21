@@ -62,7 +62,7 @@
             <app-header-text class="font-semibold"> Quick Pay </app-header-text>
             <app-icon
               name="add-circle"
-              class="size-7"
+              custom-class="size-6"
               @click="Logic.Common.GoToRoute(`/beneficiaries`)"
             />
           </div>

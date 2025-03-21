@@ -16,6 +16,7 @@
             v-model="selectedBeneficiary"
             :dataItems="beneficiaries"
             :imageSize="42"
+            :showStatusIcon="true"
           />
         </div>
       </div>
