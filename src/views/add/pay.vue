@@ -2,7 +2,7 @@
   <app-wrapper>
     <subpage-layout :title="pageTitle" :hideBackBtn="hideBackBtn">
       <div
-        class="w-full flex flex-col items-center justify-start px-5 h-full space-y-3"
+        class="w-full flex flex-col items-center justify-start px-4 h-full space-y-3"
       >
         <!-- Confirmation details starts -->
         <template v-if="currentPageContent == 'confirmation_info'">

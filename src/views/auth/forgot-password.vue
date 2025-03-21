@@ -5,10 +5,13 @@
         <app-button
           class="bg-white !text-primary border-[1px] border-primary !py-1 rounded-[5px]"
           @click="Logic.Common.GoToRoute('/auth/login')"
-          >Sign In</app-button
         >
+          Sign In
+        </app-button>
       </template>
-      <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
+      <div
+        class="w-full flex flex-col items-center justify-start h-full space-y-6"
+      >
         <!-- Headers -->
         <div class="w-full flex flex-col items-start justify-start space-y-1">
           <app-header-text> Forgot Password </app-header-text>
@@ -52,43 +55,43 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import {
-  AppHeaderText,
-  AppNormalText,
-  AppFormWrapper,
-  AppTextField,
-  AppButton,
-  AppIcon,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "ForgotPasswordPage",
-  components: {
+  import { defineComponent } from "vue"
+  import {
     AppHeaderText,
     AppNormalText,
     AppFormWrapper,
     AppTextField,
     AppButton,
     AppIcon,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-    return {
-      FormValidations,
-      Logic,
-    };
-  },
-  data() {
-    return {
-      parentRefs: null,
-    };
-  },
-  mounted() {
-    const parentRefs: any = this.$refs;
-    this.parentRefs = parentRefs;
-  },
-});
+  export default defineComponent({
+    name: "ForgotPasswordPage",
+    components: {
+      AppHeaderText,
+      AppNormalText,
+      AppFormWrapper,
+      AppTextField,
+      AppButton,
+      AppIcon,
+    },
+    setup() {
+      const FormValidations = Logic.Form
+
+      return {
+        FormValidations,
+        Logic,
+      }
+    },
+    data() {
+      return {
+        parentRefs: null,
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

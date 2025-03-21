@@ -1,8 +1,8 @@
 <template>
   <app-wrapper>
     <subpage-layout title="GRP Tokens" :hasBottomButton="false">
-      <div class="w-full flex flex-col s justify-start px-5 h-full pt-1">
-        <app-title-card-container custom-class="rounded-[40px] mb-5">
+      <div class="w-full flex flex-col justify-start px-4 h-full pt-1">
+        <app-title-card-container custom-class="rounded-[40px] mb-6">
           <div class="space-y-6 px-4">
             <div
               class="w-full flex flex-col space-y-1 items-center justify-center"
@@ -31,7 +31,7 @@
 
         <!-- Transaction history -->
         <div class="flex flex-col">
-          <div class="w-full flex justify-between items-center pb-4">
+          <div class="w-full flex justify-between items-center pb-4 px-2">
             <app-header-text class="!text-left"> History </app-header-text>
             <app-normal-text
               class="text-primary !text-lg text-right"
@@ -48,10 +48,10 @@
               class="w-full flex flex-row justify-between mb-3 pb-3 border-b-[1px] border-veryLightGray"
             >
               <div class="flex flex-row space-x-2 items-center">
-                <app-icon name="grp-black" custom-class="!h-[45px]" />
+                <app-icon name="grp-black" custom-class="!size-11" />
                 <div class="flex flex-col space-y-[2px]">
-                  <app-normal-text class="font-[500] !text-left !text-sm"
-                    >{{ transaction.title }}
+                  <app-normal-text class="font-[500] !text-left !text-sm">
+                    {{ transaction.title }}
                   </app-normal-text>
                   <app-normal-text
                     class="!text-left text-gray-two !font-light !text-[12px]"

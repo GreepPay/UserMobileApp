@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Add Money">
-      <div class="w-full flex flex-col items-center p-5 pt-3 space-y-8 h-full">
+      <div class="w-full flex flex-col items-center p-4 pt-3 space-y-8 h-full">
         <app-title-card-container>
           <div
             class="flex flex-col space-y-4 justify-center items-center w-full"

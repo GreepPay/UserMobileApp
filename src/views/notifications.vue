@@ -32,12 +32,6 @@
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
 
-  enum TransactionType {
-    Success = "success",
-    Failed = "failed",
-    Info = "info",
-  }
-
   export default defineComponent({
     name: "NotificationsPage",
     components: {
@@ -188,7 +182,6 @@
       return {
         showWelcomeModal,
         notifications,
-
         Logic,
         amount,
       }

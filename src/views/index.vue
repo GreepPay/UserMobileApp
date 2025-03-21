@@ -1,56 +1,64 @@
 <template>
   <app-wrapper>
     <default-index-layout title="Home">
-      <div class="w-full flex flex-col items-center justify-start px-6">
-        <app-title-card-container>
-          <div
-            class="flex flex-col space-y-3 justify-center items-center w-full"
-          >
-            <app-currency-switch
-              :model-value="modelCurrencyValue"
-              default-currency="USD"
-            />
+      <div class="w-full flex flex-col items-center justify-start">
+        <div class="px-4 w-full">
+          <app-title-card-container>
+            <div
+              class="flex flex-col space-y-3 justify-center items-center w-full"
+            >
+              <app-currency-switch
+                :model-value="modelCurrencyValue"
+                default-currency="USD"
+              />
 
-            <div class="w-full py-3 flex flex-col items-center justify-center">
-              <app-normal-text
-                custom-class="!text-white !font-normal !font-sm pb-1  text-center"
-              >
-                Total Balance
-              </app-normal-text>
-
-              <app-header-text custom-class="!text-3xl !leading-6 text-white">
-                ₺
-                {{
-                  !Number.isNaN(parseFloat(amount))
-                    ? Logic.Common.convertToMoney(1000, false, "", false)
-                    : "0"
-                }}
-              </app-header-text>
-            </div>
-
-            <div class="flex w-full justify-between items-center px-6">
               <div
-                class="flex flex-col items-center px-3s"
-                v-for="action in actionBtns"
-                :key="action.route"
-                @click="Logic.Common.GoToRoute(`/${action.route}`)"
+                class="w-full py-3 flex flex-col items-center justify-center"
               >
-                <app-button iconOnly variant="primary" custom-class="bg-white">
-                  <template #icon>
-                    <app-icon :name="action.icon" />
-                  </template>
-                </app-button>
-
-                <app-normal-text class="!text-white !text-lg pt-1.5">
-                  {{ action.text }}
+                <app-normal-text
+                  custom-class="!text-white !font-normal !font-sm pb-1  text-center"
+                >
+                  Total Balance
                 </app-normal-text>
+
+                <app-header-text custom-class="!text-3xl !leading-6 text-white">
+                  ₺
+                  {{
+                    !Number.isNaN(parseFloat(amount))
+                      ? Logic.Common.convertToMoney(1000, false, "", false)
+                      : "0"
+                  }}
+                </app-header-text>
+              </div>
+
+              <div class="flex w-full justify-between items-center px-6">
+                <div
+                  class="flex flex-col items-center px-3s"
+                  v-for="action in actionBtns"
+                  :key="action.route"
+                  @click="Logic.Common.GoToRoute(`/${action.route}`)"
+                >
+                  <app-button
+                    iconOnly
+                    variant="primary"
+                    custom-class="bg-white"
+                  >
+                    <template #icon>
+                      <app-icon :name="action.icon" />
+                    </template>
+                  </app-button>
+
+                  <app-normal-text class="!text-white !text-lg pt-1.5">
+                    {{ action.text }}
+                  </app-normal-text>
+                </div>
               </div>
             </div>
-          </div>
-        </app-title-card-container>
+          </app-title-card-container>
+        </div>
 
         <div class="w-full h-fit py-6">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between px-4">
             <app-header-text class="font-semibold"> Quick Pay </app-header-text>
             <app-icon
               name="add-circle"
@@ -65,7 +73,7 @@
         </div>
 
         <!-- Recent transactions -->
-        <div class="w-full flex flex-col">
+        <div class="w-full flex flex-col px-4">
           <div class="w-full flex justify-between items-center">
             <app-header-text class="!text-left"> Transactions </app-header-text>
             <app-normal-text

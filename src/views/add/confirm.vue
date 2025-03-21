@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Confirm Details">
-      <div class="w-full flex flex-col items-center p-5 pt-2 space-y-4 h-full">
+      <div class="w-full flex flex-col items-center p-4 pt-2 space-y-4 h-full">
         <app-title-card-container custom-class="!rounded-2xl">
           <div class="w-full flex flex-col">
             <app-normal-text class="!text-white !font-normal">

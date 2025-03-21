@@ -5,8 +5,8 @@
     class="w-full flex flex-col h-full"
   >
     <subpage-layout title="Mobile Money Details">
-      <div class="w-full flex flex-col items-center justify-start h-full p-6">
-        <div class="pb-6 w-full">
+      <div class="w-full flex flex-col items-center justify-start h-full p-4">
+        <div class="pb-4 w-full">
           <app-text-field
             :has-title="false"
             type="text"
@@ -20,7 +20,7 @@
           </app-text-field>
         </div>
 
-        <div class="pb-6 w-full">
+        <div class="pb-4 w-full">
           <app-text-field
             :has-title="false"
             type="text"
@@ -34,7 +34,7 @@
           </app-text-field>
         </div>
 
-        <div class="pb-6 w-full">
+        <div class="pb-4 w-full">
           <app-text-field
             :has-title="false"
             type="tel"
@@ -48,7 +48,7 @@
           </app-text-field>
         </div>
 
-        <div class="pb-6 w-full">
+        <div class="pb-4 w-full">
           <app-select
             :placeholder="'Select Provider'"
             :hasTitle="false"
@@ -62,7 +62,7 @@
           </app-select>
         </div>
 
-        <div class="pb-6 w-full">
+        <div class="pb-4 w-full">
           <app-select
             :placeholder="'Reason For Sending'"
             :hasTitle="false"

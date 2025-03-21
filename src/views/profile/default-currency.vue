@@ -4,7 +4,7 @@
       <app-form-wrapper
         ref="formComponent"
         :parent-refs="parentRefs"
-        class="w-full p-5"
+        class="w-full p-4"
       >
         <div class="w-full flex flex-col space-y-2">
           <div

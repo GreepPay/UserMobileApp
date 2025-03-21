@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Profile">
-      <div class="py-4 px-5">
+      <div class="p-4 ">
         <app-title-card-container>
           <div class="flex items-center space-x-2 -mt-4">
             <app-avatar
@@ -11,9 +11,9 @@
             />
 
             <div class="h-fit space-y-2">
-              <app-header-text class="!text-white"
-                >Raymond Akinola</app-header-text
-              >
+              <app-header-text class="!text-white">
+                Raymond Akinola
+              </app-header-text>
 
               <div
                 class="flex items-center p-1.5 pr-3 bg-[#0A141E59] rounded-full w-fit"
@@ -42,9 +42,9 @@
           @click="Logic.Common.GoToRoute(`/profile/${item.route}`)"
         >
           <app-icon :name="item.icon" custom-class="size-6" />
-          <app-header-text custom-class="flex-1 font-medium  !text-lg  ">
+          <app-normal-text custom-class="flex-1 !font-medium  !text-lg ">
             {{ item.title }}
-          </app-header-text>
+          </app-normal-text>
         </div>
       </div>
 
@@ -75,7 +75,7 @@
     AppSearch,
     AppTitleCardContainer,
     AppNormalText,
-    AppHeaderText, 
+    AppHeaderText,
     AppButton,
     AppIcon,
     AppAvatar,
@@ -89,7 +89,7 @@
       AppSearch,
       AppTitleCardContainer,
       AppNormalText,
-      AppHeaderText, 
+      AppHeaderText,
       AppButton,
       AppIcon,
       AppAvatar,

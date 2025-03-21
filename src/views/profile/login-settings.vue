@@ -2,7 +2,7 @@
   <app-wrapper>
     <subpage-layout title="Login Settings">
       <div
-        class="w-full flex flex-col items-center justify-start h-full space-y-6 p-5"
+        class="w-full flex flex-col items-center justify-start h-full space-y-6 p-4"
       >
         <app-form-wrapper
           ref="formComponent"
@@ -54,9 +54,11 @@
           </app-text-field>
 
           <!-- Forgot Passcode -->
-          <app-header-text custom-class="!text-green !text-lg px-2">
+          <app-normal-text
+            custom-class="!text-green !font-medium !text-base px-2"
+          >
             Forgot Passcode?
-          </app-header-text>
+          </app-normal-text>
         </app-form-wrapper>
 
         <!-- Bottom section -->
@@ -78,14 +80,14 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive } from "vue"
+  import { reactive } from "vue"
   import { defineComponent } from "vue"
   import {
     BeneficiaryList,
     AppSearch,
     AppTitleCardContainer,
     AppNormalText,
-    AppHeaderText, 
+    AppHeaderText,
     AppButton,
     AppTextField,
     AppInfoBox,
@@ -99,7 +101,7 @@
       AppSearch,
       AppTitleCardContainer,
       AppNormalText,
-      AppHeaderText, 
+      AppHeaderText,
       AppButton,
       AppTextField,
       AppInfoBox,

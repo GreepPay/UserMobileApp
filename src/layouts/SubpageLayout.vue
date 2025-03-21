@@ -1,10 +1,7 @@
 <template>
   <div
     class="w-full flex flex-col lg:text-sm mdlg:text-[12px] relative h-full text-xs !overflow-y-auto font-poppins"
-    style="
-      padding-top: calc(env(safe-area-inset-top) + 0px) !important;
-      padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-    "
+    style="padding-top: calc(env(safe-area-inset-top) + 0px) !important"
   >
     <div class="w-full flex flex-col relative h-full overflow-y-auto">
       <!-- Top section -->
@@ -30,11 +27,6 @@
       <!-- Content -->
       <slot />
     </div>
-
-    <div
-      class="w-full fixed h-[env(safe-area-inset-bottom)] bottom-0 left-0 bg-white z-[89899989998898] dark:bg-black"
-    ></div>
-    <div class="py-5 w-full"></div>
   </div>
 </template>
 

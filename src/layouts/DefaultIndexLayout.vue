@@ -3,8 +3,7 @@
     class="w-full h-full flex flex-col pb-4 lg:text-sm mdlg:text-[12px] text-xs font-poppins"
     style="
       padding-top: calc(env(safe-area-inset-top) + 0px) !important;
-      padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-    "
+           "
   >
     <div class="w-full flex flex-col relative h-full overflow-y-auto">
       <!-- Top section -->
@@ -13,7 +12,7 @@
       >
         <app-image-loader
           :photo-url="'/images/temps/profile-1.png'"
-          custom-class="size-10   rounded-full"
+          custom-class="!size-10   rounded-full"
           @click="Logic.Common.GoToRoute(`/profile`)"
         />
 
