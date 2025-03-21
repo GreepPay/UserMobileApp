@@ -27,49 +27,30 @@
 </template>
 
 <script lang="ts">
-  import { ref,   } from "vue"
-  import { defineComponent } from "vue"
-  import {
-    BeneficiaryList,
-    AppSearch,
-    AppTitleCardContainer,
-    AppNormalText,
-    AppHeaderText,
-    AppButton,
+import { ref } from "vue";
+import { defineComponent } from "vue";
+import { AppAvatar, AppIcon, AppDetails } from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "ProfilePersonalInfo",
+  components: {
     AppAvatar,
     AppIcon,
     AppDetails,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const userDetails = [
+      { title: "First & Last Name", content: "Raymond Ray" },
+      { title: "Phone Number", content: "+234 802 222 4591" },
+      { title: "Email Address", content: "draykintola@gmail.com" },
+      { title: "State, Country", content: "Ibadan, Nigeria" },
+    ];
 
-  export default defineComponent({
-    name: "ProfilePersonalInfo",
-    components: {
-      BeneficiaryList,
-      AppSearch,
-      AppTitleCardContainer,
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppAvatar,
-      AppIcon,
-      AppDetails,
-    },
-    setup() {
-      const amount = ref("1000")
-
-      const userDetails = [
-        { title: "First & Last Name", content: "Raymond Ray" },
-        { title: "Phone Number", content: "+234 802 222 4591" },
-        { title: "Email Address", content: "draykintola@gmail.com" },
-        { title: "State, Country", content: "Ibadan, Nigeria" },
-      ]
-
-      return {
-        Logic,
-        amount,
-        userDetails,
-      }
-    },
-  })
+    return {
+      Logic,
+      userDetails,
+    };
+  },
+});
 </script>

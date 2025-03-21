@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Profile">
-      <div class="p-4 ">
+      <div class="p-4">
         <app-title-card-container>
           <div class="flex items-center space-x-2 -mt-4">
             <app-avatar
@@ -68,63 +68,59 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive } from "vue"
-  import { defineComponent } from "vue"
-  import {
-    BeneficiaryList,
-    AppSearch,
+import { ref, reactive } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppTitleCardContainer,
+  AppNormalText,
+  AppHeaderText,
+  AppButton,
+  AppIcon,
+  AppAvatar,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "WalletProfilePage",
+  components: {
     AppTitleCardContainer,
     AppNormalText,
     AppHeaderText,
     AppButton,
     AppIcon,
     AppAvatar,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const amount = ref("1000");
+    const profileSettings = reactive<
+      {
+        title: string;
+        route: string;
+        icon: string;
+      }[]
+    >([
+      {
+        title: "Personal Info",
+        route: "personal-info",
+        icon: "linear-user",
+      },
+      {
+        title: "Default Currency",
+        route: "default-currency",
+        icon: "linear-money",
+      },
+      {
+        title: "Login Settings",
+        route: "login-settings",
+        icon: "linear-security-shield",
+      },
+    ]);
 
-  export default defineComponent({
-    name: "WalletProfilePage",
-    components: {
-      BeneficiaryList,
-      AppSearch,
-      AppTitleCardContainer,
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppIcon,
-      AppAvatar,
-    },
-    setup() {
-      const amount = ref("1000")
-      const profileSettings = reactive<
-        {
-          title: string
-          route: string
-          icon: string
-        }[]
-      >([
-        {
-          title: "Personal Info",
-          route: "personal-info",
-          icon: "linear-user",
-        },
-        {
-          title: "Default Currency",
-          route: "default-currency",
-          icon: "linear-money",
-        },
-        {
-          title: "Login Settings",
-          route: "login-settings",
-          icon: "linear-security-shield",
-        },
-      ])
-
-      return {
-        Logic,
-        profileSettings,
-        amount,
-      }
-    },
-  })
+    return {
+      Logic,
+      profileSettings,
+      amount,
+    };
+  },
+});
 </script>

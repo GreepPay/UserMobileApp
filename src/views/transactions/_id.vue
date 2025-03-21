@@ -55,179 +55,40 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive } from "vue"
-  import { defineComponent } from "vue"
-  import {
-    BeneficiaryList,
-    AppSearch,
+import { ref, reactive } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppTitleCardContainer,
+  AppNormalText,
+  AppHeaderText,
+  AppButton,
+  AppIcon,
+  AppDetails,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "TransactionsDetailsPage",
+  components: {
     AppTitleCardContainer,
     AppNormalText,
     AppHeaderText,
     AppButton,
     AppIcon,
-    AppTextField,
     AppDetails,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const txnDetails = [
+      { title: "Sent To", content: "Timms Closet Ventures" },
+      { title: "Transfer Type", content: "Wallet" },
+      { title: "Amount", content: "₦33,000 ($22)" },
+      { title: "Time", content: "Feb 20, 2025" },
+    ];
 
-  export default defineComponent({
-    name: "TransactionsDetailsPage",
-    components: {
-      BeneficiaryList,
-      AppSearch,
-      AppTitleCardContainer,
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppIcon,
-      AppTextField,
-      AppDetails,
-    },
-    setup() {
-      const amount = ref("1000")
-      const transactions = reactive<
-        {
-          id: string | number
-          title: string
-          amount: number
-          transactionType: "credit" | "debit"
-          type: "redeemed" | "sent" | "received" | "added"
-          status: "processing" | "failed" | "success"
-          date: string
-        }[]
-      >([
-        {
-          id: 1,
-          title: "Redeemed Points",
-          amount: 50,
-          transactionType: "debit",
-          type: "redeemed",
-          status: "processing",
-          date: "2025-03-18",
-        },
-        {
-          id: 2,
-          title: "Redeemed Points",
-          amount: 50,
-          transactionType: "debit",
-          type: "redeemed",
-          status: "failed",
-          date: "2025-03-18",
-        },
-        {
-          id: 3,
-          title: "Redeemed Points",
-          amount: 50,
-          transactionType: "debit",
-          type: "redeemed",
-          status: "success",
-          date: "2025-03-18",
-        },
-
-        {
-          id: 4,
-          title: "Sent Payment",
-          amount: 100,
-          transactionType: "debit",
-          type: "sent",
-          status: "processing",
-          date: "2025-03-18",
-        },
-        {
-          id: 5,
-          title: "Sent Payment",
-          amount: 100,
-          transactionType: "debit",
-          type: "sent",
-          status: "failed",
-          date: "2025-03-18",
-        },
-        {
-          id: 6,
-          title: "Sent Payment",
-          amount: 100,
-          transactionType: "debit",
-          type: "sent",
-          status: "success",
-          date: "2025-03-18",
-        },
-
-        {
-          id: 7,
-          title: "Received Payment",
-          amount: 200,
-          transactionType: "credit",
-          type: "received",
-          status: "processing",
-          date: "2025-03-18",
-        },
-        {
-          id: 8,
-          title: "Received Payment",
-          amount: 200,
-          transactionType: "credit",
-          type: "received",
-          status: "failed",
-          date: "2025-03-18",
-        },
-        {
-          id: 9,
-          title: "Received Payment",
-          amount: 200,
-          transactionType: "credit",
-          type: "received",
-          status: "success",
-          date: "2025-03-18",
-        },
-
-        {
-          id: 10,
-          title: "Added Funds",
-          amount: 500,
-          transactionType: "credit",
-          type: "added",
-          status: "processing",
-          date: "2025-03-18",
-        },
-        {
-          id: 11,
-          title: "Added Funds",
-          amount: 500,
-          transactionType: "credit",
-          type: "added",
-          status: "failed",
-          date: "2025-03-18",
-        },
-        {
-          id: 12,
-          title: "Added Funds",
-          amount: 500,
-          transactionType: "credit",
-          type: "added",
-          status: "success",
-          date: "2025-03-18",
-        },
-      ])
-
-      //   const txnDetails = {
-      //     "Bank name": "Script Bank",
-      //     accountName: "Dasa Script",
-      //     referenceCode: "09802323672",
-      //   }
-
-      const txnDetails = [
-        { title: "Sent To", content: "Timms Closet Ventures" },
-        { title: "Transfer Type", content: "Wallet" },
-        { title: "Amount", content: "₦33,000 ($22)" },
-        { title: "Time", content: "Feb 20, 2025" },
-      ]
-
-      return {
-        txnDetails,
-        Logic,
-        transactions,
-        amount,
-      }
-    },
-  })
+    return {
+      txnDetails,
+      Logic,
+    };
+  },
+});
 </script>

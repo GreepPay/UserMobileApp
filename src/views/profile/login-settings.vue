@@ -82,10 +82,7 @@
 <script lang="ts">
   import { reactive } from "vue"
   import { defineComponent } from "vue"
-  import {
-    BeneficiaryList,
-    AppSearch,
-    AppTitleCardContainer,
+  import { 
     AppNormalText,
     AppHeaderText,
     AppButton,
@@ -96,10 +93,7 @@
 
   export default defineComponent({
     name: "ProfileLoginSettings",
-    components: {
-      BeneficiaryList,
-      AppSearch,
-      AppTitleCardContainer,
+    components: { 
       AppNormalText,
       AppHeaderText,
       AppButton,

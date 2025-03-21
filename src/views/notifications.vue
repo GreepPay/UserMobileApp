@@ -18,184 +18,162 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref } from "vue"
-  import {
-    AppImageLoader,
-    AppNormalText,
-    AppHeaderText,
+import { defineComponent, ref } from "vue";
+import { AppButton, AppNotifications } from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "NotificationsPage",
+  components: {
     AppButton,
     AppNotifications,
-    AppIcon,
-    AppTitleCardContainer,
-    AppModal,
-    HorizontalUserList,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const notifications = [
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description: "₺200   .   Pay noew",
+        type: "failed",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "info",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "success",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "failed",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "failed",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "info",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "success",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "failed",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "failed",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "info",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "success",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "failed",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "failed",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "info",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "success",
+        date: "Today",
+      },
+      {
+        id: 1,
+        title: "Timms Milestone",
+        description:
+          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+        type: "failed",
+        date: "Today",
+      },
+    ];
 
-  export default defineComponent({
-    name: "NotificationsPage",
-    components: {
-      AppImageLoader,
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppNotifications,
-      AppIcon,
-      AppModal,
-      AppTitleCardContainer,
-      HorizontalUserList,
-    },
-    setup() {
-      const amount = ref("1000")
-      const showWelcomeModal = ref(true)
-
-      const notifications = [
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description: "₺200   .   Pay noew",
-          type: "failed",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "info",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "success",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "failed",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "failed",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "info",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "success",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "failed",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "failed",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "info",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "success",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "failed",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "failed",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "info",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "success",
-          date: "Today",
-        },
-        {
-          id: 1,
-          title: "Timms Milestone",
-          description:
-            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-          type: "failed",
-          date: "Today",
-        },
-      ]
-
-      return {
-        showWelcomeModal,
-        notifications,
-        Logic,
-        amount,
-      }
-    },
-  })
+    return {
+      notifications,
+      Logic,
+    };
+  },
+});
 </script>
 
 <style scoped>
-  /* Hide scrollbar but allow horizontal scrolling */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+/* Hide scrollbar but allow horizontal scrolling */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 </style>

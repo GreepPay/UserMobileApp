@@ -110,9 +110,9 @@
     name: "SendMoneyEnterAmountPage",
     components: {
       AppHeaderText,
+      AppNormalText,
       AppButton,
       AppKeyboard,
-      AppNormalText,
       AppTitleCardContainer,
       AppCurrencySwitch,
       AppAvatar,

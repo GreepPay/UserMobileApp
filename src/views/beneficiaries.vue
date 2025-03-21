@@ -25,8 +25,7 @@
 </template>
 
 <script lang="ts">
-import { ref, computed } from "vue";
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { BeneficiaryList, AppSearch } from "@greep/ui-components";
 
 export default defineComponent({

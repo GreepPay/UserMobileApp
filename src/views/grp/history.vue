@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <subpage-layout title="GRP Tokens">
-      <div class="w-full flex flex-col items-center p-5 space-y-3 h-full">
+      <div class="w-full flex flex-col items-center p-4 space-y-3 h-full">
         <!-- Date filter selector -->
         <div class="w-full flex flex-row items-center">
           <div class="w-1/2 flex flex-col">
@@ -48,7 +48,7 @@
             is-wrapper
             @OnOptionSelected="
               (option) => {
-                currentOptionName = option.value
+                currentOptionName = option.value;
               }
             "
           >
@@ -57,8 +57,9 @@
             >
               <app-normal-text
                 custom-class="!text-black !font-semibold !text-left !text-sm"
-                >{{ currentOptionName }}</app-normal-text
               >
+                {{ currentOptionName }}
+              </app-normal-text>
               <app-icon name="dropdown" custom-class="!h-[6px]" />
             </div>
           </app-select>
@@ -101,8 +102,8 @@
             <div class="flex flex-row space-x-2 justify-end">
               <app-normal-text class="font-[500] !text-right !text-sm">
                 {{ transaction.type == "debit" ? "-" : "+" }}
-                {{ transaction.amount }}</app-normal-text
-              >
+                {{ transaction.amount }}
+              </app-normal-text>
             </div>
           </div>
         </div>
@@ -112,230 +113,220 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive } from "vue"
-  import { defineComponent } from "vue"
-  import {
-    BeneficiaryList,
-    AppSearch,
+import { ref, reactive } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppTitleCardContainer,
+  AppNormalText,
+  AppButton,
+  AppIcon,
+  AppTextField,
+  AppSelect,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "WalletRedeemokenHistory",
+  components: {
     AppTitleCardContainer,
     AppNormalText,
-    AppHeaderText,
-    AppTransactions,
     AppButton,
     AppIcon,
     AppTextField,
     AppSelect,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const selectedDate = ref("");
 
-  export default defineComponent({
-    name: "WalletRedeemokenHistory",
-    components: {
-      BeneficiaryList,
-      AppSearch,
-      AppTitleCardContainer,
-      AppNormalText,
-      AppHeaderText,
-      AppTransactions,
-      AppButton,
-      AppIcon,
-      AppTextField,
-      AppSelect,
-    },
-    setup() {
-      const amount = ref("1000")
-      const selectedDate = ref("")
+    const transactionHistory = [
+      {
+        title: "Earned",
+        date: "Today",
+        type: "credit",
+        amount: 1000,
+      },
+      {
+        title: "Redeemed",
+        date: "Yesterday",
+        type: "debit",
+        amount: 500,
+      },
+      {
+        title: "Earned",
+        date: "2 days ago",
+        type: "credit",
+        amount: 2000,
+      },
+      {
+        title: "Redeemed",
+        date: "3 days ago",
+        type: "debit",
+        amount: 1000,
+      },
+      {
+        title: "Earned",
+        date: "4 days ago",
+        type: "credit",
+        amount: 1500,
+      },
+      {
+        title: "Earned",
+        date: "Today",
+        type: "credit",
+        amount: 1000,
+      },
+      {
+        title: "Redeemed",
+        date: "Yesterday",
+        type: "debit",
+        amount: 500,
+      },
+      {
+        title: "Earned",
+        date: "2 days ago",
+        type: "credit",
+        amount: 2000,
+      },
+      {
+        title: "Redeemed",
+        date: "3 days ago",
+        type: "debit",
+        amount: 1000,
+      },
+      {
+        title: "Earned",
+        date: "4 days ago",
+        type: "credit",
+        amount: 1500,
+      },
+      {
+        title: "Earned",
+        date: "Today",
+        type: "credit",
+        amount: 1000,
+      },
+      {
+        title: "Redeemed",
+        date: "Yesterday",
+        type: "debit",
+        amount: 500,
+      },
+      {
+        title: "Earned",
+        date: "2 days ago",
+        type: "credit",
+        amount: 2000,
+      },
+      {
+        title: "Redeemed",
+        date: "3 days ago",
+        type: "debit",
+        amount: 1000,
+      },
+      {
+        title: "Earned",
+        date: "4 days ago",
+        type: "credit",
+        amount: 1500,
+      },
+      {
+        title: "Earned",
+        date: "Today",
+        type: "credit",
+        amount: 1000,
+      },
+      {
+        title: "Redeemed",
+        date: "Yesterday",
+        type: "debit",
+        amount: 500,
+      },
+      {
+        title: "Earned",
+        date: "2 days ago",
+        type: "credit",
+        amount: 2000,
+      },
+      {
+        title: "Redeemed",
+        date: "3 days ago",
+        type: "debit",
+        amount: 1000,
+      },
+      {
+        title: "Earned",
+        date: "4 days ago",
+        type: "credit",
+        amount: 1500,
+      },
+    ];
 
-      const transactionHistory = [
-        {
-          title: "Earned",
-          date: "Today",
-          type: "credit",
-          amount: 1000,
-        },
-        {
-          title: "Redeemed",
-          date: "Yesterday",
-          type: "debit",
-          amount: 500,
-        },
-        {
-          title: "Earned",
-          date: "2 days ago",
-          type: "credit",
-          amount: 2000,
-        },
-        {
-          title: "Redeemed",
-          date: "3 days ago",
-          type: "debit",
-          amount: 1000,
-        },
-        {
-          title: "Earned",
-          date: "4 days ago",
-          type: "credit",
-          amount: 1500,
-        },
-        {
-          title: "Earned",
-          date: "Today",
-          type: "credit",
-          amount: 1000,
-        },
-        {
-          title: "Redeemed",
-          date: "Yesterday",
-          type: "debit",
-          amount: 500,
-        },
-        {
-          title: "Earned",
-          date: "2 days ago",
-          type: "credit",
-          amount: 2000,
-        },
-        {
-          title: "Redeemed",
-          date: "3 days ago",
-          type: "debit",
-          amount: 1000,
-        },
-        {
-          title: "Earned",
-          date: "4 days ago",
-          type: "credit",
-          amount: 1500,
-        },
-        {
-          title: "Earned",
-          date: "Today",
-          type: "credit",
-          amount: 1000,
-        },
-        {
-          title: "Redeemed",
-          date: "Yesterday",
-          type: "debit",
-          amount: 500,
-        },
-        {
-          title: "Earned",
-          date: "2 days ago",
-          type: "credit",
-          amount: 2000,
-        },
-        {
-          title: "Redeemed",
-          date: "3 days ago",
-          type: "debit",
-          amount: 1000,
-        },
-        {
-          title: "Earned",
-          date: "4 days ago",
-          type: "credit",
-          amount: 1500,
-        },
-        {
-          title: "Earned",
-          date: "Today",
-          type: "credit",
-          amount: 1000,
-        },
-        {
-          title: "Redeemed",
-          date: "Yesterday",
-          type: "debit",
-          amount: 500,
-        },
-        {
-          title: "Earned",
-          date: "2 days ago",
-          type: "credit",
-          amount: 2000,
-        },
-        {
-          title: "Redeemed",
-          date: "3 days ago",
-          type: "debit",
-          amount: 1000,
-        },
-        {
-          title: "Earned",
-          date: "4 days ago",
-          type: "credit",
-          amount: 1500,
-        },
-      ]
+    const filterSetup = reactive({
+      from: "",
+      to: "",
+      period: "",
+    });
+    const currentOptionName = ref("January, 2025");
 
-      const filterSetup = reactive({
-        from: "",
-        to: "",
-        period: "",
-      })
-      const currentOptionName = ref("January, 2025")
+    const monthFilterOption = [
+      {
+        value: "January, 2025",
+        key: "january_2025",
+      },
+      {
+        value: "February, 2025",
+        key: "february_2025",
+      },
+      {
+        value: "March, 2025",
+        key: "march_2025",
+      },
+      {
+        value: "April, 2025",
+        key: "april_2025",
+      },
+      {
+        value: "May, 2025",
+        key: "may_2025",
+      },
+      {
+        value: "June, 2025",
+        key: "june_2025",
+      },
+      {
+        value: "July, 2025",
+        key: "july_2025",
+      },
+      {
+        value: "August, 2025",
+        key: "august_2025",
+      },
+      {
+        value: "September, 2025",
+        key: "september_2025",
+      },
+      {
+        value: "October, 2025",
+        key: "october_2025",
+      },
+      {
+        value: "November, 2025",
+        key: "november_2025",
+      },
+      {
+        value: "December, 2025",
+        key: "december_2025",
+      },
+    ];
 
-      const monthFilterOption = [
-        {
-          value: "January, 2025",
-          key: "january_2025",
-        },
-        {
-          value: "February, 2025",
-          key: "february_2025",
-        },
-        {
-          value: "March, 2025",
-          key: "march_2025",
-        },
-        {
-          value: "April, 2025",
-          key: "april_2025",
-        },
-        {
-          value: "May, 2025",
-          key: "may_2025",
-        },
-        {
-          value: "June, 2025",
-          key: "june_2025",
-        },
-        {
-          value: "July, 2025",
-          key: "july_2025",
-        },
-        {
-          value: "August, 2025",
-          key: "august_2025",
-        },
-        {
-          value: "September, 2025",
-          key: "september_2025",
-        },
-        {
-          value: "October, 2025",
-          key: "october_2025",
-        },
-        {
-          value: "November, 2025",
-          key: "november_2025",
-        },
-        {
-          value: "December, 2025",
-          key: "december_2025",
-        },
-      ]
-
-      return {
-        Logic,
-        transactionHistory,
-        amount,
-        selectedDate,
-        currentOptionName,
-        filterSetup,
-        monthFilterOption,
-      }
-    },
-  })
+    return {
+      Logic,
+      transactionHistory,
+      selectedDate,
+      currentOptionName,
+      filterSetup,
+      monthFilterOption,
+    };
+  },
+});
 </script>

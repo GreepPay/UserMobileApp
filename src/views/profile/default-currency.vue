@@ -56,99 +56,90 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive } from "vue"
-  import { defineComponent } from "vue"
-  import {
-    BeneficiaryList,
-    AppSearch,
-    AppTitleCardContainer,
+import {  reactive } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppNormalText,
+  AppButton,
+  AppFormWrapper,
+  AppImageLoader,
+  AppIcon,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "ProfileDefualtCurrency",
+  components: {
     AppNormalText,
-    AppHeaderText,
     AppButton,
     AppFormWrapper,
     AppImageLoader,
     AppIcon,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const FormValidations = Logic.Form;
+    const availableCurrencies = reactive([
+      {
+        code: "TRY",
+        name: "Turkish Lira",
+      },
+      {
+        code: "USD",
+        name: "United States Dollar",
+      },
+      {
+        code: "USDC",
+        name: "USDC",
+      },
+      {
+        code: "NGN",
+        name: "Nigerian Naira",
+      },
+      {
+        code: "GHS",
+        name: "Ghanaian Cedis",
+      },
+      {
+        code: "XLM",
+        name: "XLM",
+      },
+      {
+        code: "ZAR",
+        name: "South African Rand",
+      },
+      {
+        code: "EUR",
+        name: "Euro",
+      },
+    ]);
 
-  export default defineComponent({
-    name: "ProfileDefualtCurrency",
-    components: {
-      BeneficiaryList,
-      AppSearch,
-      AppTitleCardContainer,
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppFormWrapper,
-      AppImageLoader,
-      AppIcon,
-    },
-    setup() {
-      const FormValidations = Logic.Form
-      const availableCurrencies = reactive([
-        {
-          code: "TRY",
-          name: "Turkish Lira",
-        },
-        {
-          code: "USD",
-          name: "United States Dollar",
-        },
-        {
-          code: "USDC",
-          name: "USDC",
-        },
-        {
-          code: "NGN",
-          name: "Nigerian Naira",
-        },
-        {
-          code: "GHS",
-          name: "Ghanaian Cedis",
-        },
-        {
-          code: "XLM",
-          name: "XLM",
-        },
-        {
-          code: "ZAR",
-          name: "South African Rand",
-        },
-        {
-          code: "EUR",
-          name: "Euro",
-        },
-      ])
+    const formData = reactive<{
+      preferred_currency: string;
+    }>({
+      preferred_currency: "TRY",
+    });
 
-      const formData = reactive<{
-        preferred_currency: string
-      }>({
-        preferred_currency: "TRY",
-      })
+    const handleConfirm = () => { 
+      console.log("Form Data:", formData);
+    };
 
-      const handleConfirm = () => {
-        // Perform your logic here to save the form data.
-        console.log("Form Data:", formData)
-      }
+    return {
+      Logic,
+      formData,
+      FormValidations,
+      availableCurrencies,
+      handleConfirm,
+    };
+  },
 
-      return {
-        Logic,
-        formData,
-        FormValidations,
-        availableCurrencies,
-        handleConfirm,
-      }
-    },
-
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

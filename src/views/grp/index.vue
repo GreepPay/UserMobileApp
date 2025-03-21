@@ -75,64 +75,64 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue"
-  import {
+import { defineComponent } from "vue";
+import {
+  AppButton,
+  AppNormalText,
+  AppHeaderText,
+  AppIcon,
+  AppTitleCardContainer,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+import { reactive } from "vue";
+
+export default defineComponent({
+  name: "GRPTokenPage",
+  components: {
     AppButton,
-    AppNormalText,
     AppHeaderText,
+    AppNormalText,
     AppIcon,
     AppTitleCardContainer,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  import { reactive } from "vue"
+  },
+  setup() {
+    const transactionHistory = reactive([
+      {
+        title: "Earned",
+        date: "Today",
+        type: "credit",
+        amount: 1000,
+      },
+      {
+        title: "Redeemed",
+        date: "Yesterday",
+        type: "debit",
+        amount: 500,
+      },
+      {
+        title: "Earned",
+        date: "2 days ago",
+        type: "credit",
+        amount: 2000,
+      },
+      {
+        title: "Redeemed",
+        date: "3 days ago",
+        type: "debit",
+        amount: 1000,
+      },
+      {
+        title: "Earned",
+        date: "4 days ago",
+        type: "credit",
+        amount: 1500,
+      },
+    ]);
 
-  export default defineComponent({
-    name: "GRPTokenPage",
-    components: {
-      AppButton,
-      AppHeaderText,
-      AppNormalText,
-      AppIcon,
-      AppTitleCardContainer,
-    },
-    setup() {
-      const transactionHistory = reactive([
-        {
-          title: "Earned",
-          date: "Today",
-          type: "credit",
-          amount: 1000,
-        },
-        {
-          title: "Redeemed",
-          date: "Yesterday",
-          type: "debit",
-          amount: 500,
-        },
-        {
-          title: "Earned",
-          date: "2 days ago",
-          type: "credit",
-          amount: 2000,
-        },
-        {
-          title: "Redeemed",
-          date: "3 days ago",
-          type: "debit",
-          amount: 1000,
-        },
-        {
-          title: "Earned",
-          date: "4 days ago",
-          type: "credit",
-          amount: 1500,
-        },
-      ])
-
-      return {
-        Logic,
-        transactionHistory,
-      }
-    },
-  })
+    return {
+      Logic,
+      transactionHistory,
+    };
+  },
+});
 </script>

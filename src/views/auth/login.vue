@@ -42,43 +42,43 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
-  import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+import { defineComponent, reactive } from "vue";
+import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components";
+import { Logic } from "@greep/logic";
 
-  export default defineComponent({
-    name: "LoginPage",
-    components: {
-      AppFormWrapper,
-      AppTextField,
-      AppButton,
-    },
-    setup() {
-      const FormValidations = Logic.Form
+export default defineComponent({
+  name: "LoginPage",
+  components: {
+    AppFormWrapper,
+    AppTextField,
+    AppButton,
+  },
+  setup() {
+    const FormValidations = Logic.Form;
 
-      const formData = reactive({
-        email: "",
-      })
+    const formData = reactive({
+      email: "",
+    });
 
-      const handleNext = () => {
-        Logic.Common.GoToRoute("/auth/verify-email")
-      }
+    const handleNext = () => {
+      Logic.Common.GoToRoute("/auth/verify-email");
+    };
 
-      return {
-        FormValidations,
-        Logic,
-        formData,
-        handleNext,
-      }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    return {
+      FormValidations,
+      Logic,
+      formData,
+      handleNext,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

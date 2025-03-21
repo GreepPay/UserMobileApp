@@ -245,7 +245,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue"
+  import { defineComponent, watch, ref } from "vue"
   import AppWrapper from "../../components/AppWrapper.vue"
   import { Logic } from "@greep/logic"
   import {
@@ -253,9 +253,7 @@
     AppHeaderText,
     AppButton,
     AppSwiper,
-  } from "@greep/ui-components"
-  import { ref } from "vue"
-  import { watch } from "vue"
+  } from "@greep/ui-components" 
   import { SwiperSlide } from "swiper/vue"
 
   export default defineComponent({

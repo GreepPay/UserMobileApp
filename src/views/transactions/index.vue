@@ -48,7 +48,7 @@
             is-wrapper
             @OnOptionSelected="
               (option) => {
-                currentOptionName = option.value
+                currentOptionName = option.value;
               }
             "
           >
@@ -88,225 +88,215 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive } from "vue"
-  import { defineComponent } from "vue"
-  import {
-    BeneficiaryList,
-    AppSearch,
-    AppTitleCardContainer,
+import { ref, reactive } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppNormalText,
+  AppHeaderText,
+  AppTransactions,
+  AppIcon,
+  AppTextField,
+  AppSelect,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "TransactionsPage",
+  components: {
     AppNormalText,
     AppHeaderText,
     AppTransactions,
-    AppButton,
     AppIcon,
     AppTextField,
     AppSelect,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const transactions = reactive<
+      {
+        id: string | number;
+        title: string;
+        amount: number;
+        transactionType: "credit" | "debit";
+        type: "redeemed" | "sent" | "received" | "added";
+        status: "processing" | "failed" | "success";
+        date: string;
+      }[]
+    >([
+      {
+        id: 6,
+        title: "Sent Payment",
+        amount: 100,
+        transactionType: "debit",
+        type: "sent",
+        status: "success",
+        date: "2025-03-18",
+      },
+      {
+        id: 12,
+        title: "Added Funds",
+        amount: 500,
+        transactionType: "credit",
+        type: "added",
+        status: "processing",
+        date: "2025-03-18",
+      },
+      {
+        id: 8,
+        title: "Received Payment",
+        amount: 200,
+        transactionType: "credit",
+        type: "received",
+        status: "success",
+        date: "2025-03-18",
+      },
+      {
+        id: 2,
+        title: "Redeemed Points",
+        amount: 50,
+        transactionType: "debit",
+        type: "redeemed",
+        status: "success",
+        date: "2025-03-18",
+      },
+      {
+        id: 10,
+        title: "Added Funds",
+        amount: 500,
+        transactionType: "credit",
+        type: "added",
+        status: "processing",
+        date: "2025-03-18",
+      },
+      {
+        id: 3,
+        title: "Redeemed Points",
+        amount: 50,
+        transactionType: "debit",
+        type: "redeemed",
+        status: "failed",
+        date: "2025-03-18",
+      },
+      {
+        id: 5,
+        title: "Sent Payment",
+        amount: 100,
+        transactionType: "debit",
+        type: "sent",
+        status: "failed",
+        date: "2025-03-18",
+      },
+      {
+        id: 9,
+        title: "Received Payment",
+        amount: 200,
+        transactionType: "credit",
+        type: "received",
+        status: "success",
+        date: "2025-03-18",
+      },
+      {
+        id: 7,
+        title: "Received Payment",
+        amount: 200,
+        transactionType: "credit",
+        type: "received",
+        status: "success",
+        date: "2025-03-18",
+      },
+      {
+        id: 4,
+        title: "Sent Payment",
+        amount: 100,
+        transactionType: "debit",
+        type: "sent",
+        status: "processing",
+        date: "2025-03-18",
+      },
+      {
+        id: 11,
+        title: "Added Funds",
+        amount: 500,
+        transactionType: "credit",
+        type: "added",
+        status: "failed",
+        date: "2025-03-18",
+      },
+      {
+        id: 1,
+        title: "Redeemed Points",
+        amount: 50,
+        transactionType: "debit",
+        type: "redeemed",
+        status: "failed",
+        date: "2025-03-18",
+      },
+    ]);
 
-  export default defineComponent({
-    name: "TransactionsPage",
-    components: {
-      BeneficiaryList,
-      AppSearch,
-      AppTitleCardContainer,
-      AppNormalText,
-      AppHeaderText,
-      AppTransactions,
-      AppButton,
-      AppIcon,
-      AppTextField,
-      AppSelect,
-    },
-    setup() {
-      const amount = ref("1000")
-      const transactions = reactive<
-        {
-          id: string | number
-          title: string
-          amount: number
-          transactionType: "credit" | "debit"
-          type: "redeemed" | "sent" | "received" | "added"
-          status: "processing" | "failed" | "success"
-          date: string
-        }[]
-      >([
-        {
-          id: 6,
-          title: "Sent Payment",
-          amount: 100,
-          transactionType: "debit",
-          type: "sent",
-          status: "success",
-          date: "2025-03-18",
-        },
-        {
-          id: 12,
-          title: "Added Funds",
-          amount: 500,
-          transactionType: "credit",
-          type: "added",
-          status: "processing",
-          date: "2025-03-18",
-        },
-        {
-          id: 8,
-          title: "Received Payment",
-          amount: 200,
-          transactionType: "credit",
-          type: "received",
-          status: "success",
-          date: "2025-03-18",
-        },
-        {
-          id: 2,
-          title: "Redeemed Points",
-          amount: 50,
-          transactionType: "debit",
-          type: "redeemed",
-          status: "success",
-          date: "2025-03-18",
-        },
-        {
-          id: 10,
-          title: "Added Funds",
-          amount: 500,
-          transactionType: "credit",
-          type: "added",
-          status: "processing",
-          date: "2025-03-18",
-        },
-        {
-          id: 3,
-          title: "Redeemed Points",
-          amount: 50,
-          transactionType: "debit",
-          type: "redeemed",
-          status: "failed",
-          date: "2025-03-18",
-        },
-        {
-          id: 5,
-          title: "Sent Payment",
-          amount: 100,
-          transactionType: "debit",
-          type: "sent",
-          status: "failed",
-          date: "2025-03-18",
-        },
-        {
-          id: 9,
-          title: "Received Payment",
-          amount: 200,
-          transactionType: "credit",
-          type: "received",
-          status: "success",
-          date: "2025-03-18",
-        },
-        {
-          id: 7,
-          title: "Received Payment",
-          amount: 200,
-          transactionType: "credit",
-          type: "received",
-          status: "success",
-          date: "2025-03-18",
-        },
-        {
-          id: 4,
-          title: "Sent Payment",
-          amount: 100,
-          transactionType: "debit",
-          type: "sent",
-          status: "processing",
-          date: "2025-03-18",
-        },
-        {
-          id: 11,
-          title: "Added Funds",
-          amount: 500,
-          transactionType: "credit",
-          type: "added",
-          status: "failed",
-          date: "2025-03-18",
-        },
-        {
-          id: 1,
-          title: "Redeemed Points",
-          amount: 50,
-          transactionType: "debit",
-          type: "redeemed",
-          status: "failed",
-          date: "2025-03-18",
-        },
-      ])
+    const filterSetup = reactive({
+      from: "",
+      to: "",
+      period: "",
+    });
+    const currentOptionName = ref("January, 2025");
 
-      const filterSetup = reactive({
-        from: "",
-        to: "",
-        period: "",
-      })
-      const currentOptionName = ref("January, 2025")
+    const monthFilterOption = [
+      {
+        value: "January, 2025",
+        key: "january_2025",
+      },
+      {
+        value: "February, 2025",
+        key: "february_2025",
+      },
+      {
+        value: "March, 2025",
+        key: "march_2025",
+      },
+      {
+        value: "April, 2025",
+        key: "april_2025",
+      },
+      {
+        value: "May, 2025",
+        key: "may_2025",
+      },
+      {
+        value: "June, 2025",
+        key: "june_2025",
+      },
+      {
+        value: "July, 2025",
+        key: "july_2025",
+      },
+      {
+        value: "August, 2025",
+        key: "august_2025",
+      },
+      {
+        value: "September, 2025",
+        key: "september_2025",
+      },
+      {
+        value: "October, 2025",
+        key: "october_2025",
+      },
+      {
+        value: "November, 2025",
+        key: "november_2025",
+      },
+      {
+        value: "December, 2025",
+        key: "december_2025",
+      },
+    ];
 
-      const monthFilterOption = [
-        {
-          value: "January, 2025",
-          key: "january_2025",
-        },
-        {
-          value: "February, 2025",
-          key: "february_2025",
-        },
-        {
-          value: "March, 2025",
-          key: "march_2025",
-        },
-        {
-          value: "April, 2025",
-          key: "april_2025",
-        },
-        {
-          value: "May, 2025",
-          key: "may_2025",
-        },
-        {
-          value: "June, 2025",
-          key: "june_2025",
-        },
-        {
-          value: "July, 2025",
-          key: "july_2025",
-        },
-        {
-          value: "August, 2025",
-          key: "august_2025",
-        },
-        {
-          value: "September, 2025",
-          key: "september_2025",
-        },
-        {
-          value: "October, 2025",
-          key: "october_2025",
-        },
-        {
-          value: "November, 2025",
-          key: "november_2025",
-        },
-        {
-          value: "December, 2025",
-          key: "december_2025",
-        },
-      ]
-
-      return {
-        Logic,
-        transactions,
-        amount,
-        currentOptionName,
-        filterSetup,
-        monthFilterOption,
-      }
-    },
-  })
+    return {
+      Logic,
+      transactions,
+      currentOptionName,
+      filterSetup,
+      monthFilterOption,
+    };
+  },
+});
 </script>

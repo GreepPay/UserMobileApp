@@ -46,114 +46,90 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, computed } from "vue"
-  import {
-    AppHeaderText,
+import { defineComponent, ref, computed } from "vue";
+import {
+  AppButton,
+  BeneficiaryList,
+  AppSearch,
+  AppTabs,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "SelectBeneficiaryPage",
+  components: {
     AppButton,
-    AppKeyboard,
-    AppNormalText,
-    AppTitleCardContainer,
-    AppCurrencySwitch,
     BeneficiaryList,
     AppSearch,
     AppTabs,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const searchQuery = ref("");
+    const activeTab = ref("recents");
+    const selectedBeneficiary = ref(null);
 
-  export default defineComponent({
-    name: "SelectBeneficiaryPage",
-    components: {
-      AppHeaderText,
-      AppButton,
-      AppKeyboard,
-      AppNormalText,
-      AppTitleCardContainer,
-      AppCurrencySwitch,
-      BeneficiaryList,
-      AppSearch,
-      AppTabs,
-    },
-    setup() {
-      const modelCurrencyValue = ref("USD")
-      const amount = ref("0")
-      const maximumAmount = 10000
-      const searchQuery = ref("")
-      const activeTab = ref("recents")
-      const selectedBeneficiary = ref(null)
+    const beneficiaries = ref([
+      {
+        id: 1,
+        image: "images/temps/profile-1.png",
+        name: "Samwell Taiwo",
+        description: "Greep User",
+        isBeneficiary: false,
+      },
+      {
+        id: 2,
+        image: "images/temps/profile-2.png",
+        name: "Jane Smith",
+        description: "Greep Merchant",
+        isBeneficiary: true,
+      },
+      {
+        id: 3,
+        image: "images/temps/profile-1.png",
+        name: "John Doe",
+        description: "Greep User",
+        isBeneficiary: false,
+      },
+      {
+        id: 4,
+        image: "images/temps/profile-2.png",
+        name: "Sarah Johnson",
+        description: "Greep Merchant",
+        isBeneficiary: true,
+      },
+    ]);
 
-      const amountIsValid = () => {
-        return (
-          parseFloat(amount.value) > 0 &&
-          parseFloat(amount.value) <= maximumAmount
-        )
-      }
+    const tabs = [
+      { key: "recents", label: "Recents" },
+      { key: "beneficiaries", label: "Beneficiaries" },
+    ];
 
-      const beneficiaries = ref([
-        {
-          id: 1,
-          image: "images/temps/profile-1.png",
-          name: "Samwell Taiwo",
-          description: "Greep User",
-          isBeneficiary: false,
-        },
-        {
-          id: 2,
-          image: "images/temps/profile-2.png",
-          name: "Jane Smith",
-          description: "Greep Merchant",
-          isBeneficiary: true,
-        },
-        {
-          id: 3,
-          image: "images/temps/profile-1.png",
-          name: "John Doe",
-          description: "Greep User",
-          isBeneficiary: false,
-        },
-        {
-          id: 4,
-          image: "images/temps/profile-2.png",
-          name: "Sarah Johnson",
-          description: "Greep Merchant",
-          isBeneficiary: true,
-        },
-      ])
+    // Computed property to filter beneficiaries based on active tab and search query
+    const filteredBeneficiaries = computed(() => {
+      return beneficiaries.value.filter((user) => {
+        const matchesSearch = user.name
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase());
+        const matchesTab =
+          activeTab.value === "recents" ||
+          (activeTab.value === "beneficiaries" && user.isBeneficiary);
+        return matchesSearch && matchesTab;
+      });
+    });
 
-      const tabs = [
-        { key: "recents", label: "Recents" },
-        { key: "beneficiaries", label: "Beneficiaries" },
-      ]
+    const continueToNext = () => {
+      Logic.Common.GoToRoute("/send/enter-amount");
+    };
 
-      // Computed property to filter beneficiaries based on active tab and search query
-      const filteredBeneficiaries = computed(() => {
-        return beneficiaries.value.filter((user) => {
-          const matchesSearch = user.name
-            .toLowerCase()
-            .includes(searchQuery.value.toLowerCase())
-          const matchesTab =
-            activeTab.value === "recents" ||
-            (activeTab.value === "beneficiaries" && user.isBeneficiary)
-          return matchesSearch && matchesTab
-        })
-      })
-
-      const continueToNext = () => {
-        Logic.Common.GoToRoute("/send/enter-amount")
-      }
-
-      return {
-        amount,
-        Logic,
-        maximumAmount,
-        continueToNext,
-        amountIsValid,
-        modelCurrencyValue,
-        activeTab,
-        tabs,
-        filteredBeneficiaries,
-        selectedBeneficiary,
-        searchQuery,
-      }
-    },
-  })
+    return {
+      Logic,
+      continueToNext,
+      activeTab,
+      tabs,
+      filteredBeneficiaries,
+      selectedBeneficiary,
+      searchQuery,
+    };
+  },
+});
 </script>
