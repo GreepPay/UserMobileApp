@@ -17,6 +17,7 @@
 
               <div
                 class="flex items-center p-1.5 pr-3 bg-[#0A141E59] rounded-full w-fit"
+                @click="Logic.Common.GoToRoute('/grp')"
               >
                 <app-icon
                   name="grp-green-and-white"
