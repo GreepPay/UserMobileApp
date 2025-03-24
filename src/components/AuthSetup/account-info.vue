@@ -7,10 +7,34 @@
     >
       <app-info-box>
         <app-normal-text custom-class="!leading-5">
-          <span class="font-semibold">Alright, let's get you rolling!</span>
-          Help us get to know you and your business.
+          <span class="font-semibold"> Let's get started! </span>
+          Help us know you.
         </app-normal-text>
       </app-info-box>
+
+      <div class="flex flex-col space-y-2">
+        <div
+          class="relative flex items-center justify-center space-x-2 h-[80px] w-[100px]"
+        >
+          <app-avatar
+            src="/images/temps/profile-1.png"
+            alt="Raymond"
+            :size="80"
+          />
+
+          <div
+            class="flex items-center border-[4px] border-white rounded-full justify-center absolute bottom-0 right-0 size-10 bg-black"
+          >
+            <app-icon name="linear-gallery" custom-class="size-6" />
+          </div>
+        </div>
+
+        <app-info-box>
+          <app-normal-text custom-class="!leading-5">
+            Profile Picture Upload
+          </app-normal-text>
+        </app-info-box>
+      </div>
 
       <app-text-field
         :has-title="false"
@@ -98,6 +122,8 @@
     AppInfoBox,
     AppNormalText,
     AppSelect,
+    AppAvatar,
+    AppIcon,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
   import { Country, State } from "country-state-city"
@@ -110,6 +136,8 @@
       AppInfoBox,
       AppNormalText,
       AppSelect,
+      AppAvatar,
+      AppIcon,
     },
     props: {},
     name: "AuthSetupAccountInfo",

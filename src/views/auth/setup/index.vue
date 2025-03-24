@@ -8,6 +8,10 @@
           <auth-setup-account-info />
         </template>
 
+        <template v-if="currentPage == 'kyc_verification'">
+          <auth-setup-kyc-verification />
+        </template>
+
         <template v-if="currentPage == 'pick_currency'">
           <auth-setup-pick-currency />
         </template>
@@ -41,6 +45,7 @@
     AuthSetupPickCurrency,
     AuthSetupVerifyEmail,
     AuthSetupVerifyPhone,
+    AuthSetupKycVerification,
   } from "../../../components/AuthSetup"
 
   export default defineComponent({
@@ -52,6 +57,7 @@
       AuthSetupVerifyEmail,
       AuthSetupVerifyPhone,
       AppOnboardingLayout,
+      AuthSetupKycVerification,
     },
     setup() {
       const FormValidations = Logic.Form
@@ -64,6 +70,17 @@
             key: "account_info",
             action_btn: {
               label: "Next",
+              handler: () => {
+                currentPage.value = "kyc_verification"
+              },
+              is_disabled: false,
+            },
+          },
+          {
+            title: "KYC Verification",
+            key: "kyc_verification",
+            action_btn: {
+              label: "Verify",
               handler: () => {
                 currentPage.value = "pick_currency"
               },
