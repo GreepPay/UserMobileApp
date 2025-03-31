@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
     <app-form-wrapper
-      ref="formComponent"
+      ref="formWrapper"
       :parent-refs="parentRefs"
       class="w-full flex flex-col space-y-[20px] h-full"
     >
@@ -13,7 +13,7 @@
         </app-normal-text>
 
         <app-otp-input
-          v-model="formData.otp_code"
+          v-model="formData.otp"
           type="tel"
           :number-of-input="4"
           :should-reset-o-t-p="true"
@@ -37,12 +37,14 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
+  import { defineComponent, reactive, computed, ref } from "vue"
   import {
     AppFormWrapper,
     AppNormalText,
     AppOtpInput,
   } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
+  const auth = Logic.Auth
 
   export default defineComponent({
     components: {
@@ -53,17 +55,24 @@
     props: {},
     name: "AuthSetupVerifyEmail",
     setup() {
-      const formData = reactive<{ otp_code: string }>({
-        otp_code: "",
-      })
+      const formWrapper = ref()
+      const loading = ref(false)
 
+      // computed
+      const isFormValid = computed(() => formWrapper.value?.validate())
+
+      const formData = reactive<{ otp: string }>({ otp: "" })
+      auth.VerifyUserOtpPayload = { otp: formData.otp }
+
+      // VerifyUserOtpPayload
       const handleOTPChange = () => {
-        // formData.otp_code = value;
+        // formData.otp = value;
         console.log("otp change")
       }
 
       return {
         formData,
+        formWrapper,
         handleOTPChange,
       }
     },

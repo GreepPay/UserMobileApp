@@ -39,6 +39,7 @@ export default defineComponent({
   setup() {
     const FormValidations = Logic.Form;
 
+
     const handleNext = () => {
       Logic.Common.GoToRoute("/auth/welcome");
     };

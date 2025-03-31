@@ -6,7 +6,7 @@
       >
         <!-- Form -->
         <app-form-wrapper
-          ref="formComponent"
+          ref="formWrapper"
           :parent-refs="parentRefs"
           class="w-full flex flex-col space-y-3 pt-2"
         >
@@ -21,6 +21,17 @@
             :rules="[FormValidations.RequiredRule, FormValidations.EmailRule]"
           >
           </app-text-field>
+
+          <app-text-field
+            :has-title="false"
+            type="password"
+            placeholder="Password"
+            ref="password"
+            name="password"
+            use-floating-label
+            v-model="formData.password"
+            :rules="[FormValidations.RequiredRule]"
+          />
         </app-form-wrapper>
       </div>
 
@@ -32,7 +43,9 @@
         <app-button
           variant="secondary"
           class="!py-4 col-span-4"
-          @click="handleNext"
+          @click="handleSignIn"
+          :disabled="!isFormValid"
+          :loading="loading"
         >
           Next
         </app-button>
@@ -42,43 +55,69 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
-import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components";
-import { Logic } from "@greep/logic";
+  import { defineComponent, reactive, ref, computed } from "vue"
+  import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
+  const auth = Logic.Auth
 
-export default defineComponent({
-  name: "LoginPage",
-  components: {
-    AppFormWrapper,
-    AppTextField,
-    AppButton,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
+  export default defineComponent({
+    name: "LoginPage",
+    components: {
+      AppFormWrapper,
+      AppTextField,
+      AppButton,
+    },
+    setup() {
+      const FormValidations = Logic.Form
+      const formWrapper = ref()
+      const loading = ref(false)
 
-    const formData = reactive({
-      email: "",
-    });
+      // Create an instance of Auth
+      const formData = reactive({ email: "", password: "" })
 
-    const handleNext = () => {
-      Logic.Common.GoToRoute("/auth/verify-email");
-    };
+      // computed
+      const isFormValid = computed(() => formWrapper.value?.validate())
 
-    return {
-      FormValidations,
-      Logic,
-      formData,
-      handleNext,
-    };
-  },
-  data() {
-    return {
-      parentRefs: [],
-    };
-  },
-  mounted() {
-    const parentRefs: any = this.$refs;
-    this.parentRefs = parentRefs;
-  },
-});
+      // Function to handle sign-in
+      const handleSignIn = async () => {
+        // loading.value = true
+        // Set the SignInPayload before calling SignIn
+        auth.SignInPayload = {
+          email: formData.email,
+          password: formData.password,
+        }
+
+        // Call SignIn method
+        const response = await auth.SignIn(true)
+
+        // confirm if response is before next step
+        // if (response) {
+        //   console.log("Login successful:", response)
+        // } else {
+        //   console.error("Login failed")
+        // }
+        Logic.Common.GoToRoute("/auth/verify-email")
+      }
+ 
+
+      return {
+        FormValidations,
+        Logic,
+        formData,
+        formWrapper,
+        isFormValid,
+        loading,
+        handleSignIn,
+      }
+    },
+    data() {
+      return {
+        parentRefs: [],
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

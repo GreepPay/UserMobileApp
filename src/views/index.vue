@@ -162,6 +162,8 @@
       AppCurrencySwitch,
     },
     setup() {
+      // const Test =  reactive(Logic.Auth.Test);
+
       const amount = ref("1000")
       const modelCurrencyValue = ref("USD")
       const showWelcomeModal = ref(true)
