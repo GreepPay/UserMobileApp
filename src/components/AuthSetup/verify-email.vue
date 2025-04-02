@@ -15,7 +15,7 @@
         <app-otp-input
           v-model="formData.otp"
           type="tel"
-          :number-of-input="4"
+          :number-of-input="numberOfInputs"
           :should-reset-o-t-p="true"
           @change-o-t-p="handleOTPChange"
         />
@@ -54,7 +54,14 @@
     },
     props: {},
     name: "AuthSetupVerifyEmail",
-    setup() {
+    props: {
+      numberOfInputs: {
+        type: Number,
+        default: 4,
+      },
+    },
+    emits: ["verify-otp"],
+    setup(_, { emit }) {
       const formWrapper = ref()
       const loading = ref(false)
 
@@ -62,12 +69,24 @@
       const isFormValid = computed(() => formWrapper.value?.validate())
 
       const formData = reactive<{ otp: string }>({ otp: "" })
-      auth.VerifyUserOtpPayload = { otp: formData.otp }
+      auth.VerifyUserOtpPayload.otp = formData.otp
 
       // VerifyUserOtpPayload
-      const handleOTPChange = () => {
+      const handleOTPChange = (updatedValue: number) => {
         // formData.otp = value;
-        console.log("otp change")
+        // console.log(
+        //   "otp change",
+        //   formData.otp,
+        //   updatedValue.toString().length,
+        //   _.numberOfInputs
+        // )
+        // VerifyUserOTP
+        if (updatedValue.toString().length === _.numberOfInputs) {
+          // formData.otp = updatedValue
+          auth.VerifyUserOtpPayload.otp = updatedValue.toString()
+          // handleVerifyEmail()
+          emit("verify-otp")
+        }
       }
 
       return {

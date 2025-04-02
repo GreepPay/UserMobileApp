@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
     <app-form-wrapper
-      ref="formComponent"
+      ref="formWrapper"
       :parent-refs="parentRefs"
       class="w-full flex flex-col space-y-[20px] h-full"
     >
@@ -11,8 +11,9 @@
           Help us know you.
         </app-normal-text>
       </app-info-box>
+      <!-- {{ isFormValid }} -->
 
-      <div class="flex flex-col space-y-2">
+      <!-- <div class="flex flex-col space-y-2">
         <div
           class="relative flex items-center justify-center space-x-2 h-[80px] w-[100px]"
         >
@@ -34,16 +35,16 @@
             Profile Picture Upload
           </app-normal-text>
         </app-info-box>
-      </div>
+      </div> -->
 
       <app-text-field
         :has-title="false"
         type="text"
         placeholder="First Name"
-        ref="firstName"
+        ref="first_name"
         name="First Name"
         use-floating-label
-        v-model="formData.firstName"
+        v-model="formData.first_name"
         :rules="[FormValidations.RequiredRule]"
       >
       </app-text-field>
@@ -52,15 +53,15 @@
         :has-title="false"
         type="text"
         placeholder="Last Name"
-        ref="lastName"
+        ref="last_name"
         name="Last Name"
         use-floating-label
-        v-model="formData.lastName"
+        v-model="formData.last_name"
         :rules="[FormValidations.RequiredRule]"
       >
       </app-text-field>
 
-      <app-text-field
+      <!-- <app-text-field
         :has-title="false"
         type="tel"
         placeholder="Phone Number"
@@ -70,7 +71,7 @@
         v-model="formData.phoneNumber"
         :rules="[FormValidations.RequiredRule]"
       >
-      </app-text-field>
+      </app-text-field> -->
 
       <app-text-field
         :has-title="false"
@@ -115,7 +116,14 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, onMounted, watch, ref } from "vue"
+  import {
+    defineComponent,
+    reactive,
+    onMounted,
+    watch,
+    ref,
+    computed,
+  } from "vue"
   import {
     AppFormWrapper,
     AppTextField,
@@ -128,6 +136,7 @@
   import { Logic } from "@greep/logic"
   import { Country, State } from "country-state-city"
   import { SelectOption } from "@greep/ui-components/src/types"
+  const auth = Logic.Auth
 
   export default defineComponent({
     components: {
@@ -141,25 +150,36 @@
     },
     props: {},
     name: "AuthSetupAccountInfo",
-    setup() {
+    emits: ["update:isValid"],
+    setup(_, { emit }) {
       const FormValidations = Logic.Form
+      const formWrapper = ref<any>(null)
 
       const formData = reactive({
-        firstName: "",
-        lastName: "",
+        first_name: "",
+        last_name: "",
         email: "",
-        phoneNumber: "",
+        // phoneNumber: "",
         country: "",
         state: "",
       })
 
       const showStateSelector = ref(true)
-
       const stateIsoCode = ref("")
       const countryCode = ref("")
 
       const countries = reactive<SelectOption[]>([])
       const states = reactive<SelectOption[]>([])
+
+      const updateSignUpPayload = () => {
+        auth.SignUpPayload.country = countryCode.value
+        auth.SignUpPayload.state = countryCode.value
+        // auth.SignUpPayload.default_currency = countryCode.value
+        auth.SignUpPayload.email = countryCode.value
+        auth.SignUpPayload.first_name = countryCode.value
+        auth.SignUpPayload.last_name = countryCode.value
+        // auth.SignUpPayload.password = countryCode.value
+      }
 
       const setCountries = () => {
         countries.length = 0
@@ -197,6 +217,25 @@
         }, 100)
       })
 
+      const isFormValid = computed(() => {
+        return formWrapper.value ? formWrapper.value.validate() : false
+      })
+
+      // Watch for changes and emit updated valid state
+      // watch(
+      //   isFormValid,
+      //   (newVal) => {
+      //     emit("update:isValid", newVal)
+      //   },
+      //   { deep: true }
+      // )
+
+      const validateForm = () => {
+        if (formWrapper.value) {
+          const isValid = formWrapper.value.validate()
+          emit("update:isValid", isValid)
+        }
+      }
       return {
         FormValidations,
         Logic,
@@ -206,6 +245,8 @@
         stateIsoCode,
         countryCode,
         showStateSelector,
+        formWrapper,
+        isFormValid,
       }
     },
     data() {

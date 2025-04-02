@@ -80,7 +80,7 @@
 
       // Function to handle sign-in
       const handleSignIn = async () => {
-        // loading.value = true
+        loading.value = true
         // Set the SignInPayload before calling SignIn
         auth.SignInPayload = {
           email: formData.email,
@@ -90,15 +90,17 @@
         // Call SignIn method
         const response = await auth.SignIn(true)
 
+        loading.value = false
+        console.log("response", response)
+
         // confirm if response is before next step
-        // if (response) {
-        //   console.log("Login successful:", response)
-        // } else {
-        //   console.error("Login failed")
-        // }
+        if (response) {
+          console.log("Login successful:", response)
+        } else {
+          console.error("Login failed")
+        }
         Logic.Common.GoToRoute("/auth/verify-email")
       }
- 
 
       return {
         FormValidations,

@@ -9,6 +9,7 @@
           Sign In
         </app-button>
       </template>
+
       <div
         class="w-full flex flex-col items-center justify-start h-full space-y-6"
       >

@@ -4,7 +4,7 @@
       <div
         class="w-full flex flex-col items-center justify-start h-full space-y-6 px-4"
       >
-        <auth-setup-verify-email />
+        <auth-setup-verify-email @verify-otp="handleVerification" />
       </div>
 
       <!-- Bottom section -->
@@ -15,7 +15,8 @@
         <app-button
           variant="secondary"
           class="!py-4 col-span-4"
-          @click="handleNext"
+          :loading="loading"
+          @click="handleVerifyEmail"
         >
           Next
         </app-button>
@@ -25,30 +26,44 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { Logic } from "@greep/logic";
-import { AppButton } from "@greep/ui-components";
-import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue";
+  import { defineComponent, ref } from "vue"
+  import { AppButton } from "@greep/ui-components"
+  import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue"
+  import { Logic } from "@greep/logic"
+  const auth = Logic.Auth
 
-export default defineComponent({
-  name: "VerifyEmailPage",
-  components: {
-    AuthSetupVerifyEmail,
-    AppButton,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
+  export default defineComponent({
+    name: "VerifyEmailPage",
+    components: {
+      AuthSetupVerifyEmail,
+      AppButton,
+    },
+    setup() {
+      const loading = ref(false)
+      const FormValidations = Logic.Form
+      const handleVerification = () => {
+        console.log(87667)
+        console.log(" auth.VerifyUserOtpPayload ", auth.VerifyUserOtpPayload)
+      }
 
+      const handleNext = () => {
+        Logic.Common.GoToRoute("/auth/welcome")
+      }
+      const handleVerifyEmail = async () => {
+        loading.value = true
+        const response = await auth.VerifyUserOTP(true)
+        loading.value = false
+        Logic.Common.GoToRoute("/auth/verify-email")
+      }
 
-    const handleNext = () => {
-      Logic.Common.GoToRoute("/auth/welcome");
-    };
-
-    return {
-      FormValidations,
-      Logic,
-      handleNext,
-    };
-  },
-});
+      return {
+        loading,
+        FormValidations,
+        Logic,
+        handleNext,
+        handleVerification,
+        handleVerifyEmail,
+      }
+    },
+  })
 </script>

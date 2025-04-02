@@ -1,10 +1,19 @@
 <template>
   <app-wrapper>
-    <app-onboarding-layout v-model="currentPage" :page-setting="pageSettings">
+    <app-onboarding-layout
+      v-model="currentPage"
+      :page-setting="pageSettings"
+      :disableBtn="computedDisableBtn"
+    >
       <div
         class="w-full flex flex-col items-center justify-start h-full space-y-6 px-4 py-4"
       >
-        <template v-if="currentPage == 'account_info'">
+        <!-- v-model:isValid="accountInfoValid" -->
+        <template
+          v-if="currentPage == 'account_info'"
+          ref="accountInfoRef"
+          @update:isValid="updateAccountInfoValid"
+        >
           <auth-setup-account-info />
         </template>
 
@@ -36,7 +45,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, reactive } from "vue"
+  import { defineComponent, ref, reactive, computed } from "vue"
   import { AppOnboardingLayout } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
   import {
@@ -62,6 +71,12 @@
     setup() {
       const FormValidations = Logic.Form
       const currentPage = ref("account_info")
+      const accountInfoValid = ref(false)
+      const accountInfoRef = ref(null)
+      const updateAccountInfoValid = (isValid: boolean) => {
+        accountInfoValid.value = isValid
+      }
+
       const pageSettings = reactive({
         main_title: "Setup",
         pages: [
@@ -134,6 +149,14 @@
         ],
       })
 
+      const computedDisableBtn = computed(() => {
+        // If the current page is account_info, disable the Next button if there is a validation error
+        if (currentPage.value === "account_info") {
+          return !accountInfoValid.value
+        }
+        return false
+      })
+
       const handleNext = () => {
         Logic.Common.GoToRoute("/")
       }
@@ -143,6 +166,10 @@
         Logic,
         currentPage,
         pageSettings,
+        computedDisableBtn,
+        accountInfoValid,
+        accountInfoRef,
+        updateAccountInfoValid,
       }
     },
     data() {
