@@ -81,9 +81,16 @@
         //   _.numberOfInputs
         // )
         // VerifyUserOTP
+        console.log('updatedValue', updatedValue);
+        
         if (updatedValue.toString().length === _.numberOfInputs) {
           // formData.otp = updatedValue
-          auth.VerifyUserOtpPayload.otp = updatedValue.toString()
+
+          auth.VerifyUserOtpPayload = {
+            ...auth.VerifyUserOtpPayload,
+            otp: updatedValue.toString(),
+          }
+
           // handleVerifyEmail()
           emit("verify-otp")
         }

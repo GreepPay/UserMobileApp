@@ -11,7 +11,6 @@
           Help us know you.
         </app-normal-text>
       </app-info-box>
-      <!-- {{ isFormValid }} -->
 
       <!-- <div class="flex flex-col space-y-2">
         <div
@@ -116,14 +115,7 @@
 </template>
 
 <script lang="ts">
-  import {
-    defineComponent,
-    reactive,
-    onMounted,
-    watch,
-    ref,
-    computed,
-  } from "vue"
+  import { defineComponent, reactive, onMounted, watch, ref } from "vue"
   import {
     AppFormWrapper,
     AppTextField,
@@ -148,18 +140,19 @@
       AppAvatar,
       AppIcon,
     },
-    props: {},
+    props: {
+      attemptToNext: Boolean, // Declare attemptToNext as a prop
+    },
     name: "AuthSetupAccountInfo",
-    emits: ["update:isValid"],
-    setup(_, { emit }) {
+    emits: ["update:isValid" /* "update:attemptToNext"*/],
+    setup(props, { emit }) {
       const FormValidations = Logic.Form
       const formWrapper = ref<any>(null)
 
       const formData = reactive({
-        first_name: "",
-        last_name: "",
-        email: "",
-        // phoneNumber: "",
+        first_name: "Daniel",
+        last_name: "Script",
+        email: "daniel_script@gmai.co",
         country: "",
         state: "",
       })
@@ -167,18 +160,26 @@
       const showStateSelector = ref(true)
       const stateIsoCode = ref("")
       const countryCode = ref("")
-
       const countries = reactive<SelectOption[]>([])
       const states = reactive<SelectOption[]>([])
 
       const updateSignUpPayload = () => {
-        auth.SignUpPayload.country = countryCode.value
-        auth.SignUpPayload.state = countryCode.value
-        // auth.SignUpPayload.default_currency = countryCode.value
-        auth.SignUpPayload.email = countryCode.value
-        auth.SignUpPayload.first_name = countryCode.value
-        auth.SignUpPayload.last_name = countryCode.value
-        // auth.SignUpPayload.password = countryCode.value
+        auth.SignUpPayload = {
+          ...auth.SignUpPayload,
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          email: formData.email,
+          country: countryCode.value,
+          state: stateIsoCode.value,
+        }
+      }
+
+      const validateForm = () => {
+        if (formWrapper.value) {
+          const isValid = formWrapper.value.validate()
+          if (isValid) updateSignUpPayload()
+          emit("update:isValid", isValid)
+        }
       }
 
       const setCountries = () => {
@@ -205,37 +206,24 @@
         }
       }
 
-      onMounted(() => {
-        setCountries()
-      })
-
+      //
       watch(countryCode, () => {
         setStates()
         showStateSelector.value = false
-        setTimeout(() => {
-          showStateSelector.value = true
-        }, 100)
+        setTimeout(() => (showStateSelector.value = true), 100)
       })
 
-      const isFormValid = computed(() => {
-        return formWrapper.value ? formWrapper.value.validate() : false
-      })
-
-      // Watch for changes and emit updated valid state
-      // watch(
-      //   isFormValid,
-      //   (newVal) => {
-      //     emit("update:isValid", newVal)
-      //   },
-      //   { deep: true }
-      // )
-
-      const validateForm = () => {
-        if (formWrapper.value) {
-          const isValid = formWrapper.value.validate()
-          emit("update:isValid", isValid)
+      watch(
+        () => props.attemptToNext,
+        (newVal) => {
+          // emit("update:attemptToNext", newVal)
+          if (newVal) validateForm()
         }
-      }
+      )
+
+      //
+      onMounted(() => setCountries())
+
       return {
         FormValidations,
         Logic,
@@ -246,7 +234,6 @@
         countryCode,
         showStateSelector,
         formWrapper,
-        isFormValid,
       }
     },
     data() {

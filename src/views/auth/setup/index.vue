@@ -1,20 +1,14 @@
 <template>
   <app-wrapper>
-    <app-onboarding-layout
-      v-model="currentPage"
-      :page-setting="pageSettings"
-      :disableBtn="computedDisableBtn"
-    >
+    <app-onboarding-layout v-model="currentPage" :page-setting="pageSettings">
       <div
         class="w-full flex flex-col items-center justify-start h-full space-y-6 px-4 py-4"
       >
-        <!-- v-model:isValid="accountInfoValid" -->
-        <template
-          v-if="currentPage == 'account_info'"
-          ref="accountInfoRef"
-          @update:isValid="updateAccountInfoValid"
-        >
-          <auth-setup-account-info />
+        <template v-if="currentPage == 'account_info'">
+          <auth-setup-account-info
+            :attemptToNext="attemptToNext"
+            @update:isValid="handleIsAccountInfoValid"
+          />
         </template>
 
         <template v-if="currentPage == 'kyc_verification'">
@@ -22,7 +16,10 @@
         </template>
 
         <template v-if="currentPage == 'pick_currency'">
-          <auth-setup-pick-currency />
+          <auth-setup-pick-currency
+            :attemptToNext="attemptToNext"
+            @next="handlePickCurrencyNext"
+          />
         </template>
 
         <template v-if="currentPage == 'verify_phone'">
@@ -69,13 +66,10 @@
       AuthSetupKycVerification,
     },
     setup() {
-      const FormValidations = Logic.Form
+      // const FormValidations = Logic.Form
       const currentPage = ref("account_info")
       const accountInfoValid = ref(false)
-      const accountInfoRef = ref(null)
-      const updateAccountInfoValid = (isValid: boolean) => {
-        accountInfoValid.value = isValid
-      }
+      const attemptToNext = ref(false)
 
       const pageSettings = reactive({
         main_title: "Setup",
@@ -85,9 +79,7 @@
             key: "account_info",
             action_btn: {
               label: "Next",
-              handler: () => {
-                currentPage.value = "kyc_verification"
-              },
+              handler: () => updateAndResetAttemptToNext(),
               is_disabled: false,
             },
           },
@@ -107,9 +99,10 @@
             key: "pick_currency",
             action_btn: {
               label: "Next",
-              handler: () => {
-                currentPage.value = "verify_phone"
-              },
+              handler: () => updateAndResetAttemptToNext(),
+              // handler: () => {
+              //   currentPage.value = "verify_phone"
+              // },
               is_disabled: false,
             },
           },
@@ -141,7 +134,7 @@
             action_btn: {
               label: "Complete Setup",
               handler: () => {
-                handleNext()
+                handleCompleteSetup()
               },
               is_disabled: false,
             },
@@ -149,27 +142,37 @@
         ],
       })
 
-      const computedDisableBtn = computed(() => {
-        // If the current page is account_info, disable the Next button if there is a validation error
-        if (currentPage.value === "account_info") {
-          return !accountInfoValid.value
-        }
-        return false
-      })
+      // const computedDisableBtn = computed(() => {
+      //   // If the current page is account_info, disable the Next button if there is a validation error
+      //   if (currentPage.value === "account_info") {
+      //     return !accountInfoValid.value
+      //   }
+      //   return false
+      // })
 
-      const handleNext = () => {
+      const updateAndResetAttemptToNext = () => {
+        attemptToNext.value = true
+        setTimeout(() => (attemptToNext.value = false), 1000)
+      }
+      const handleIsAccountInfoValid = (value: boolean) => {
+        accountInfoValid.value = value
+        if (value) currentPage.value = "kyc_verification"
+      }
+      const handlePickCurrencyNext = () => {
+        currentPage.value = "verify_phone"
+      }
+      const handleCompleteSetup = () => {
         Logic.Common.GoToRoute("/")
       }
 
       return {
-        FormValidations,
-        Logic,
+        // FormValidations,
+        // Logic,
         currentPage,
-        pageSettings,
-        computedDisableBtn,
-        accountInfoValid,
-        accountInfoRef,
-        updateAccountInfoValid,
+        pageSettings, 
+        attemptToNext,
+        handleIsAccountInfoValid,
+        handlePickCurrencyNext,
       }
     },
     data() {

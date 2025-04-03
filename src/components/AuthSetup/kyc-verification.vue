@@ -28,8 +28,8 @@
         :has-title="false"
         type="number"
         placeholder="Enter 11-digit NIN number"
-        ref="email"
-        name="Email"
+        ref="id_number"
+        name="ID_Number"
         v-model="formData.code"
         :rules="[FormValidations.RequiredRule]"
       >

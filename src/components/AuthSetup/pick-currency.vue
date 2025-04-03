@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
+  import { defineComponent, reactive, ref, watch } from "vue"
   import {
     AppFormWrapper,
     AppInfoBox,
@@ -56,6 +56,7 @@
     AppImageLoader,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
+  const auth = Logic.Auth
 
   export default defineComponent({
     components: {
@@ -65,9 +66,14 @@
       AppIcon,
       AppImageLoader,
     },
-    props: {},
+    props: {
+      attemptToNext: Boolean, // Declare attemptToNext as a prop
+    },
     name: "AuthSetupPickCurrency",
-    setup() {
+    emits: ["next"],
+    setup(props, { emit }) {
+      const FormValidations = Logic.Form
+      const formWrapper = ref<any>(null)
       const availableCurrencies = reactive([
         {
           code: "TRY",
@@ -103,16 +109,29 @@
         },
       ])
 
-      const formData = reactive<{
-        preferred_currency: string
-      }>({
-        preferred_currency: "TRY",
-      })
+      const formData = reactive({ preferred_currency: "TRY" })
 
-      return {
-        formData,
-        availableCurrencies,
+      const updateSignUpPayload = () => {
+        console.log(" auth.SignUpPayload ", auth.SignUpPayload)
+
+        auth.SignUpPayload = {
+          ...auth.SignUpPayload,
+          default_currency: formData.preferred_currency,
+        }
+        console.log(" auth.SignUpPayload ", auth.SignUpPayload)
       }
+
+      watch(
+        () => props.attemptToNext,
+        (newVal) => {
+          if (newVal) {
+            updateSignUpPayload()
+            emit("next")
+          }
+        }
+      )
+
+      return { FormValidations, formWrapper, formData, availableCurrencies }
     },
     data() {
       return {

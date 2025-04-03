@@ -44,6 +44,7 @@
       const handleVerification = () => {
         console.log(87667)
         console.log(" auth.VerifyUserOtpPayload ", auth.VerifyUserOtpPayload)
+        
       }
 
       const handleNext = () => {
