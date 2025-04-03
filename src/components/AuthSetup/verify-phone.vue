@@ -13,9 +13,9 @@
         </app-normal-text>
 
         <app-otp-input
-          v-model="formData.otp_code"
+          v-model="formData.otp"
           type="tel"
-          :number-of-input="4"
+          :number-of-input="numberOfInputs"
           :should-reset-o-t-p="true"
           @change-o-t-p="handleOTPChange"
         />
@@ -43,6 +43,8 @@
     AppNormalText,
     AppOtpInput,
   } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
+  const auth = Logic.Auth
 
   export default defineComponent({
     components: {
@@ -50,15 +52,30 @@
       AppNormalText,
       AppOtpInput,
     },
-    props: {},
+    props: {
+      numberOfInputs: {
+        type: Number,
+        default: 4,
+      },
+    },
     name: "AuthSetupVerifyEmail",
-    setup() {
-      const formData = reactive<{ otp_code: string }>({
-        otp_code: "",
-      })
+    emits: ["verified"],
+    setup(_, { emit }) {
+      const formData = reactive({ otp: "" })
 
-      const handleOTPChange = () => {
-        console.log("otp changed")
+      const handleOTPChange = (updatedValue: number) => {
+        if (updatedValue.toString().length === _.numberOfInputs) {
+          auth.VerifyUserOtpPayload = {
+            ...auth.VerifyUserOtpPayload,
+            otp: updatedValue.toString(),
+          }
+          handleVerifyPhone()
+        }
+      }
+
+      const handleVerifyPhone = async () => {
+        const response = await auth.VerifyUserOTP(true)
+        if (response) emit("verified", response)
       }
 
       return {

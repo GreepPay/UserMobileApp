@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
     <app-form-wrapper
-      ref="formComponent"
+      ref="formWrapper"
       :parent-refs="parentRefs"
       class="w-full flex flex-col space-y-[20px] h-full"
     >
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
+  import { defineComponent, reactive, watch, ref } from "vue"
   import {
     AppFormWrapper,
     AppTextField,
@@ -49,6 +49,7 @@
     AppNormalText,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
+  const auth = Logic.Auth
 
   export default defineComponent({
     components: {
@@ -57,20 +58,47 @@
       AppInfoBox,
       AppNormalText,
     },
-    props: {},
+    props: { attemptToNext: Boolean },
     name: "AuthSetupAccountInfo",
-    setup() {
+    emits: ["update:isValid"],
+
+    setup(props, { emit }) {
       const FormValidations = Logic.Form
+      const formWrapper = ref<any>(null)
 
       const formData = reactive({
         passcode: "",
         confirm_passcode: "",
       })
 
+      const updateSignUpPayloadAndSignUp = () => {
+        auth.SignUpPayload = {
+          ...auth.SignUpPayload,
+          password: formData.passcode,
+        }
+      }
+
+      const validateForm = () => {
+        if (formWrapper.value) {
+          const isValid = formWrapper.value.validate()
+          if (isValid) updateSignUpPayloadAndSignUp()
+          emit("update:isValid", isValid)
+        }
+      }
+
+      //
+      watch(
+        () => props.attemptToNext,
+        (newVal) => {
+          if (newVal) validateForm()
+        }
+      )
+
       return {
         FormValidations,
         Logic,
         formData,
+        formWrapper,
       }
     },
     data() {

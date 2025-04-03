@@ -66,14 +66,14 @@
       AppIcon,
       AppImageLoader,
     },
-    props: {
-      attemptToNext: Boolean, // Declare attemptToNext as a prop
-    },
+    props: { attemptToNext: Boolean },
     name: "AuthSetupPickCurrency",
     emits: ["next"],
+    
     setup(props, { emit }) {
       const FormValidations = Logic.Form
       const formWrapper = ref<any>(null)
+      const formData = reactive({ preferred_currency: "TRY" })
       const availableCurrencies = reactive([
         {
           code: "TRY",
@@ -109,16 +109,11 @@
         },
       ])
 
-      const formData = reactive({ preferred_currency: "TRY" })
-
       const updateSignUpPayload = () => {
-        console.log(" auth.SignUpPayload ", auth.SignUpPayload)
-
         auth.SignUpPayload = {
           ...auth.SignUpPayload,
           default_currency: formData.preferred_currency,
         }
-        console.log(" auth.SignUpPayload ", auth.SignUpPayload)
       }
 
       watch(

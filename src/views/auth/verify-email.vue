@@ -4,7 +4,7 @@
       <div
         class="w-full flex flex-col items-center justify-start h-full space-y-6 px-4"
       >
-        <auth-setup-verify-email @verify-otp="handleVerification" />
+        <auth-setup-verify-email @verified="isEmailVerified = $event" />
       </div>
 
       <!-- Bottom section -->
@@ -16,7 +16,8 @@
           variant="secondary"
           class="!py-4 col-span-4"
           :loading="loading"
-          @click="handleVerifyEmail"
+          :disabled="!isEmailVerified"
+          @click="emit('next')"
         >
           Next
         </app-button>
@@ -38,32 +39,28 @@
       AuthSetupVerifyEmail,
       AppButton,
     },
-    setup() {
+    emits: ["next"],
+    setup(_, { emit }) {
       const loading = ref(false)
-      const FormValidations = Logic.Form
-      const handleVerification = () => {
+      const isEmailVerified = ref(false)
+
+      const handleVerifiedEmail = () => {
         console.log(87667)
         console.log(" auth.VerifyUserOtpPayload ", auth.VerifyUserOtpPayload)
-        
       }
 
       const handleNext = () => {
         Logic.Common.GoToRoute("/auth/welcome")
       }
-      const handleVerifyEmail = async () => {
-        loading.value = true
-        const response = await auth.VerifyUserOTP(true)
-        loading.value = false
-        Logic.Common.GoToRoute("/auth/verify-email")
-      }
 
       return {
         loading,
-        FormValidations,
         Logic,
+        isEmailVerified,
         handleNext,
-        handleVerification,
-        handleVerifyEmail,
+        handleVerifiedEmail,
+        // handleVerifyEmail,
+        emit,
       }
     },
   })

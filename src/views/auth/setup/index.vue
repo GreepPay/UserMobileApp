@@ -23,15 +23,18 @@
         </template>
 
         <template v-if="currentPage == 'verify_phone'">
-          <auth-setup-verify-phone />
+          <auth-setup-verify-phone @verified="isPhoneVerified = true" />
         </template>
 
         <template v-if="currentPage == 'verify_email'">
-          <auth-setup-verify-email />
+          <auth-setup-verify-email @verified="isEmailVerified = true" />
         </template>
 
         <template v-if="currentPage == 'set_passcode'">
-          <auth-setup-set-passcode />
+          <auth-setup-set-passcode
+            :attemptToNext="attemptToNext"
+            @update:isValid="validateAndSignUserUp"
+          />
         </template>
 
         <!-- Spacer -->
@@ -44,7 +47,6 @@
 <script lang="ts">
   import { defineComponent, ref, reactive, computed } from "vue"
   import { AppOnboardingLayout } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
   import {
     AuthSetupAccountInfo,
     AuthSetupSetPasscode,
@@ -53,6 +55,8 @@
     AuthSetupVerifyPhone,
     AuthSetupKycVerification,
   } from "../../../components/AuthSetup"
+  import { Logic } from "@greep/logic"
+  const auth = Logic.Auth
 
   export default defineComponent({
     name: "SetupAccountIndex",
@@ -66,10 +70,19 @@
       AuthSetupKycVerification,
     },
     setup() {
-      // const FormValidations = Logic.Form
       const currentPage = ref("account_info")
       const accountInfoValid = ref(false)
+      const isPhoneVerified = ref(false)
+      const isEmailVerified = ref(false)
+      const isLoading = ref(false)
       const attemptToNext = ref(false)
+
+      const isBtnLoading = computed(() => {
+        if (currentPage.value === "verify_phone" && !isPhoneVerified.value) {
+          return true
+        }
+        return false
+      })
 
       const pageSettings = reactive({
         main_title: "Setup",
@@ -112,9 +125,13 @@
             action_btn: {
               label: "Next",
               handler: () => {
-                currentPage.value = "verify_email"
+                if (isPhoneVerified.value) {
+                  isPhoneVerified.value = false
+                  currentPage.value = "verify_email"
+                }
               },
               is_disabled: false,
+              loading: false,
             },
           },
           {
@@ -123,7 +140,10 @@
             action_btn: {
               label: "Next",
               handler: () => {
-                currentPage.value = "set_passcode"
+                if (isEmailVerified.value) {
+                  isEmailVerified.value = false
+                  currentPage.value = "set_passcode"
+                }
               },
               is_disabled: false,
             },
@@ -134,9 +154,12 @@
             action_btn: {
               label: "Complete Setup",
               handler: () => {
-                handleCompleteSetup()
+                updateAndResetAttemptToNext()
+                // console.log(67890)
+                // handleCompleteSetup()
               },
               is_disabled: false,
+              loading: isLoading.value,
             },
           },
         ],
@@ -164,15 +187,35 @@
       const handleCompleteSetup = () => {
         Logic.Common.GoToRoute("/")
       }
+      const validateAndSignUserUp = async (isValid: boolean) => {
+        console.log("isValid", isValid)
 
+        if (isValid) {
+          // Call SignUp method
+          const response = await auth.SignUp(true)
+          console.log("response", response)
+
+          if (response) {
+            console.log("Sign up successful:", response)
+          } else {
+            console.error("Sign up failed")
+            Logic.Common.GoToRoute("/auth/login")
+          }
+        }
+        isLoading.value = true
+      }
       return {
         // FormValidations,
         // Logic,
         currentPage,
-        pageSettings, 
+        pageSettings,
         attemptToNext,
+        isPhoneVerified,
+        isEmailVerified,
+        isBtnLoading,
         handleIsAccountInfoValid,
         handlePickCurrencyNext,
+        validateAndSignUserUp,
       }
     },
     data() {

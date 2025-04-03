@@ -52,7 +52,6 @@
       AppNormalText,
       AppOtpInput,
     },
-    props: {},
     name: "AuthSetupVerifyEmail",
     props: {
       numberOfInputs: {
@@ -60,40 +59,27 @@
         default: 4,
       },
     },
-    emits: ["verify-otp"],
+    emits: ["verified"],
     setup(_, { emit }) {
       const formWrapper = ref()
       const loading = ref(false)
 
-      // computed
-      const isFormValid = computed(() => formWrapper.value?.validate())
-
-      const formData = reactive<{ otp: string }>({ otp: "" })
-      auth.VerifyUserOtpPayload.otp = formData.otp
+      const formData = reactive({ otp: "" })
 
       // VerifyUserOtpPayload
       const handleOTPChange = (updatedValue: number) => {
-        // formData.otp = value;
-        // console.log(
-        //   "otp change",
-        //   formData.otp,
-        //   updatedValue.toString().length,
-        //   _.numberOfInputs
-        // )
-        // VerifyUserOTP
-        console.log('updatedValue', updatedValue);
-        
         if (updatedValue.toString().length === _.numberOfInputs) {
-          // formData.otp = updatedValue
-
           auth.VerifyUserOtpPayload = {
             ...auth.VerifyUserOtpPayload,
             otp: updatedValue.toString(),
           }
-
-          // handleVerifyEmail()
-          emit("verify-otp")
+          handleVerifyEmail()
         }
+      }
+
+      const handleVerifyEmail = async () => {
+        const response = await auth.VerifyUserOTP(true)
+        if (response) emit("verified", response)
       }
 
       return {

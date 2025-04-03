@@ -141,10 +141,10 @@
       AppIcon,
     },
     props: {
-      attemptToNext: Boolean, // Declare attemptToNext as a prop
+      attemptToNext: Boolean,
     },
     name: "AuthSetupAccountInfo",
-    emits: ["update:isValid" /* "update:attemptToNext"*/],
+    emits: ["update:isValid"],
     setup(props, { emit }) {
       const FormValidations = Logic.Form
       const formWrapper = ref<any>(null)
@@ -216,7 +216,6 @@
       watch(
         () => props.attemptToNext,
         (newVal) => {
-          // emit("update:attemptToNext", newVal)
           if (newVal) validateForm()
         }
       )
