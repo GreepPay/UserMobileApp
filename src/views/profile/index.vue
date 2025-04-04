@@ -5,14 +5,25 @@
         <app-title-card-container>
           <div class="flex items-center space-x-2 -mt-4">
             <app-avatar
-              src="/images/temps/profile-1.png"
+              :src="
+                AuthUser?.profile?.profile_picture ||
+                '/images/profile-image.svg'
+              "
               alt="Raymond"
               :size="88"
             />
 
+            <app-image-loader
+              :photo-url="
+                AuthUser?.profile?.profile_picture ||
+                '/images/profile-image.svg'
+              "
+              custom-class="!h-[88px] !w-[88px]"
+            />
+
             <div class="h-fit space-y-2">
               <app-header-text class="!text-white">
-                Raymond Akinola
+                {{ AuthUser.first_name }} {{ AuthUser.last_name }}
               </app-header-text>
 
               <div
@@ -24,7 +35,13 @@
                   custom-class="size-6 mx-auto"
                 />
                 <app-header-text class="!text-white !text-lg px-2">
-                  1000
+                  {{
+                    Logic.Common.convertToMoney(
+                      AuthUser.wallet?.point_balance,
+                      true,
+                      ""
+                    )
+                  }}
                 </app-header-text>
 
                 <app-icon name="white-arrow-right" />
@@ -57,7 +74,7 @@
         "
       >
         <app-button
-          custom-class="!w-full !py-4  !px-8"
+          custom-class="!w-full !py-4  !border-red !text-red !border-[1.5px] hover:!bg-red/20"
           :outlined="true"
           variant="danger"
         >
@@ -69,59 +86,67 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive } from "vue";
-import { defineComponent } from "vue";
-import {
-  AppTitleCardContainer,
-  AppNormalText,
-  AppHeaderText,
-  AppButton,
-  AppIcon,
-  AppAvatar,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "WalletProfilePage",
-  components: {
+  import { ref, reactive, onMounted } from "vue"
+  import { defineComponent } from "vue"
+  import {
     AppTitleCardContainer,
     AppNormalText,
     AppHeaderText,
     AppButton,
     AppIcon,
     AppAvatar,
-  },
-  setup() {
-    const amount = ref("1000");
-    const profileSettings = reactive<
-      {
-        title: string;
-        route: string;
-        icon: string;
-      }[]
-    >([
-      {
-        title: "Personal Info",
-        route: "personal-info",
-        icon: "linear-user",
-      },
-      {
-        title: "Default Currency",
-        route: "default-currency",
-        icon: "linear-money",
-      },
-      {
-        title: "Login Settings",
-        route: "login-settings",
-        icon: "linear-security-shield",
-      },
-    ]);
+  } from "@greep/ui-components"
+  import { User } from "@greep/logic/src/gql/graphql"
+  import { Logic } from "@greep/logic"
 
-    return {
-      Logic,
-      profileSettings,
-      amount,
-    };
-  },
-});
+  export default defineComponent({
+    name: "WalletProfilePage",
+    components: {
+      AppTitleCardContainer,
+      AppNormalText,
+      AppHeaderText,
+      AppButton,
+      AppIcon,
+      AppAvatar,
+    },
+    setup() {
+      const amount = ref("1000")
+      const AuthUser = ref<User>(Logic.Auth.AuthUser)
+
+      const profileSettings = reactive<
+        {
+          title: string
+          route: string
+          icon: string
+        }[]
+      >([
+        {
+          title: "Personal Info",
+          route: "info",
+          icon: "linear-user",
+        },
+        {
+          title: "Default Currency",
+          route: "default-currency",
+          icon: "linear-money",
+        },
+        {
+          title: "Login Settings",
+          route: "login-settings",
+          icon: "linear-security-shield",
+        },
+      ])
+
+      onMounted(() => {
+        Logic.Auth.watchProperty("AuthUser", AuthUser)
+      })
+
+      return {
+        Logic,
+        profileSettings,
+        amount,
+        AuthUser,
+      }
+    },
+  })
 </script>

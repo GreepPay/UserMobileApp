@@ -5,11 +5,9 @@
         <app-button
           class="bg-white !text-primary border-[1px] border-primary !py-1 rounded-[5px]"
           @click="Logic.Common.GoToRoute('/auth/login')"
+          >Sign In</app-button
         >
-          Sign In
-        </app-button>
       </template>
-
       <div
         class="w-full flex flex-col items-center justify-start h-full space-y-6"
       >

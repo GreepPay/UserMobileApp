@@ -33,22 +33,17 @@
 
               <div class="flex w-full justify-between items-center px-6">
                 <div
-                  class="flex flex-col items-center px-3s"
+                  class="flex flex-col items-center px-3"
                   v-for="action in actionBtns"
                   :key="action.route"
                   @click="Logic.Common.GoToRoute(`/${action.route}`)"
                 >
-                  <app-button
-                    iconOnly
-                    variant="primary"
-                    custom-class="bg-white"
+                  <div
+                    class="size-10 rounded-full bg-white flex items-center justify-center"
                   >
-                    <template #icon>
-                      <app-icon :name="action.icon" />
-                    </template>
-                  </app-button>
-
-                  <app-normal-text class="!text-white !text-lg pt-1.5">
+                    <app-icon :name="action.icon" custom-class="!size-5" />
+                  </div>
+                  <app-normal-text class="!text-white pt-1.5">
                     {{ action.text }}
                   </app-normal-text>
                 </div>
@@ -247,8 +242,6 @@
         { id: 5, name: "Samuel", avatar: "/images/temps/profile-1.png" },
         { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
       ])
-
-      
 
       const defaultCurrency = ref("USD")
 

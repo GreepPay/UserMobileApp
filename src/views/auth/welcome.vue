@@ -133,6 +133,8 @@
           return
         }
 
+        console.log(67)
+
         Logic.Common.showLoader({
           show: true,
           loading: true,

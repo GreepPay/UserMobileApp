@@ -13,13 +13,15 @@
   import { getPlatforms } from "@ionic/vue"
   import { useRoute, useRouter } from "vue-router"
   import { Logic } from "@greep/logic"
-  import { SetFrontendLogic } from "@greep/ui-components"
+  import { SetFrontendLogic, AppAlert, AppLoader } from "@greep/ui-components"
 
   export default defineComponent({
     name: "App",
     components: {
       IonApp,
       IonRouterOutlet,
+      AppAlert,
+      AppLoader,
     },
     setup() {
       const router: any = useRouter()
@@ -84,6 +86,10 @@
             }
           }
         )
+
+        // Register watchers
+        Logic.Common.watchProperty("alertSetup", alertSetup)
+        Logic.Common.watchProperty("loaderSetup", loaderSetup)
       })
 
       handleMountActions()
