@@ -63,11 +63,8 @@
       AuthSetupKycVerification,
     },
     setup() {
-      const currentPage = ref("account_info")
-      // const accountInfoValid = ref(false)
-      // const isPhoneVerified = ref(false)
-      // const isEmailVerified = ref(false)
-      const attemptToNext = ref(false)
+      const currentPage = ref("kyc_verification")
+      // const currentPage = ref("account_info")
 
       const accountInfoRef = ref<any>(null)
       const kycVerificationRef = ref<any>(null)
@@ -75,12 +72,6 @@
       const setPasswordRef = ref<any>(null)
       const verifyEmailRef = ref<any>(null)
 
-      // const isBtnLoading = computed(() => {
-      // if (currentPage.value === "verify_phone" && !isPhoneVerified.value) {
-      //     return true
-      //   }
-      //   return false
-      // })
       const currentPlatform = computed(() => {
         return getPlatforms()[0]
       })
@@ -107,16 +98,6 @@
             action_btn: {
               label: "Next",
               handler: () => accountInfoHandler(),
-              is_disabled: false,
-              loading: false,
-            },
-          },
-          {
-            title: "KYC Verification",
-            key: "kyc_verification",
-            action_btn: {
-              label: "Verify",
-              handler: () => kycVerificationHandler(),
               is_disabled: false,
               loading: false,
             },
@@ -151,21 +132,18 @@
               loading: false,
             },
           },
+          {
+            title: "KYC Verification",
+            key: "kyc_verification",
+            action_btn: {
+              label: "Verify",
+              handler: () => kycVerificationHandler(),
+              is_disabled: false,
+              loading: false,
+            },
+          },
         ],
       })
-
-      // const computedDisableBtn = computed(() => {
-      //   // If the current page is account_info, disable the Next button if there is a validation error
-      //   if (currentPage.value === "account_info") {
-      //     return !accountInfoValid.value
-      //   }
-      //   return false
-      // })
-
-      // const handleIsAccountInfoValid = (value: boolean) => {
-      //   accountInfoValid.value = value
-      //   if (value) currentPage.value = "kyc_verification"
-      // }
 
       // setup steps handlers
       const accountInfoHandler = () => {
@@ -178,20 +156,8 @@
           Logic.Auth.SignUpPayload.state = formData.state
           Logic.Auth.SignUpPayload.country = formData.country
 
-          currentPage.value = "kyc_verification"
+          currentPage.value = "pick_currency"
         }
-      }
-
-      const kycVerificationHandler = () => {
-        const formData = kycVerificationRef.value?.continueWithForm()
-        // if (formData && Logic.Auth.SignUpPayload) {
-        //   Logic.Auth.SignUpPayload.documents = [
-        //     formData.international_passport,
-        //     formData.business_document,
-        //   ]
-        // }
-        if (!formData) return
-        currentPage.value = "pick_currency"
       }
 
       const pickCurrencyHandler = () => {
@@ -206,25 +172,19 @@
       const setPasswordHandler = () => {
         const formData = setPasswordRef.value?.continueWithForm()
 
-        console.log(" Logic.Auth.SignUpPayload", Logic.Auth.SignUpPayload)
-
         if (formData && Logic.Auth.SignUpPayload) {
           Logic.Auth.SignUpPayload.password = formData.password
 
           // set loadingstate for this flow
-          pageSettings.pages[3].action_btn.loading = true
+          pageSettings.pages[2].action_btn.loading = true
 
           // Send signup request
-          Logic.Auth.SignUp(true, (progress) => {
-            console.log("progress", progress)
-          })?.then((response) => {
-            console.log("response", response)
-
+          Logic.Auth.SignUp(true, (progress) => {})?.then((response) => {
             if (response) {
               currentPage.value = "verify_email"
-              pageSettings.pages[3].action_btn.loading = true
+              pageSettings.pages[2].action_btn.loading = true
             } else {
-              pageSettings.pages[3].action_btn.loading = true
+              pageSettings.pages[2].action_btn.loading = true
             }
           })
         }
@@ -232,7 +192,6 @@
 
       const verifyEmailHandler = () => {
         const otpCode = verifyEmailRef.value?.continueWithForm()
-        console.log("otpCode", otpCode)
 
         if (otpCode) {
           Logic.Auth.VerifyUserOTPayload = {
@@ -240,7 +199,7 @@
             otp: otpCode,
           }
 
-          pageSettings.pages[4].action_btn.loading = true
+          pageSettings.pages[3].action_btn.loading = true
 
           Logic.Auth.VerifyUserOTP()?.then(async (response) => {
             if (response) {
@@ -249,22 +208,59 @@
                 password: localStorage.getItem("auth_pass"),
               }
 
+              pageSettings.pages[3].action_btn.loading = false
               await Logic.Auth.SignIn(true)
               await Logic.Auth.GetAuthUser()
 
-              pageSettings.pages[4].action_btn.loading = false
+              currentPage.value = "kyc_verification"
 
-              // Check if passcode has been set
-              if (localStorage.getItem("auth_passcode")) {
-                Logic.Common.GoToRoute("/")
-              } else {
-                Logic.Common.GoToRoute("/auth/set-passcode")
-              }
+              // // Check if passcode has been set
+              // if (localStorage.getItem("auth_passcode")) {
+              //   Logic.Common.GoToRoute("/")
+              // } else {
+              //   Logic.Common.GoToRoute("/auth/set-passcode")
+              // }
             } else {
-              pageSettings.pages[4].action_btn.loading = false
+              pageSettings.pages[3].action_btn.loading = false
             }
           })
         }
+      }
+
+      const kycVerificationHandler = async () => {
+        const formData = kycVerificationRef.value?.continueWithForm()
+        // if (formData && Logic.Auth.SignUpPayload) {
+        //   Logic.Auth.SignUpPayload.documents = [
+        //     formData.international_passport,
+        //     formData.business_document,
+        //   ]
+        // }
+        if (!formData) return
+        console.log("Logic.Auth.AuthUser", Logic.Auth.AuthUser)
+
+        Logic.Auth.VerifyUserIdentityPayload = {
+          user_uuid: Logic.Auth.AuthUser?.uuid || "Test",
+          id_number: formData.idNumber,
+          // pdate this to be default country
+          id_country: Logic.Auth.SignUpPayload?.default_currency || "Nigeria",
+          id_type: formData.idType,
+        }
+
+        // console.log("VerifyUserIdentity", VerifyUserIdentity)
+
+        //  id_country: Scalars['String'];
+        //   id_number: Scalars['String'];
+        //   id_type: Scalars['String'];
+        //   user_uuid:
+        await Logic.Auth.VerifyUserIdentity()
+        // await Logic.Auth.GetAuthUser()
+
+        // Check if passcode has been set
+        // if (localStorage.getItem("auth_passcode")) {
+        //   Logic.Common.GoToRoute("/")
+        // } else {
+        //   Logic.Common.GoToRoute("/auth/set-passcode")
+        // }
       }
 
       onMounted(() => {
@@ -275,13 +271,8 @@
         })
       })
       return {
-        // FormValidations,
-        // Logic,
         currentPage,
         pageSettings,
-        attemptToNext,
-        // isPhoneVerified,
-        // isEmailVerified,
         accountInfoRef,
         kycVerificationRef,
         pickCurrencyRef,

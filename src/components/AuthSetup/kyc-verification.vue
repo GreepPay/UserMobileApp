@@ -18,7 +18,7 @@
         :paddings="'py-4 !px-3'"
         :options="idVerificationMethods"
         ref="reason"
-        v-model="formData.idMethod"
+        v-model="formData.idType"
         use-floating-label
         auto-complete
       >
@@ -27,19 +27,20 @@
       <app-text-field
         :has-title="false"
         type="number"
-        placeholder="Enter 11-digit NIN number"
+        placeholder="Enter ID number"
         ref="id_number"
         name="ID_Number"
-        v-model="formData.code"
+        v-model="formData.idNumber"
         :rules="[FormValidations.RequiredRule]"
       >
+        <!-- placeholder="Enter 11-digit NIN number" -->
       </app-text-field>
     </app-form-wrapper>
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
+  import { defineComponent, reactive, onMounted, ref } from "vue"
   import {
     AppFormWrapper,
     AppTextField,
@@ -48,6 +49,7 @@
     AppSelect,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
+  import { supportedCountries } from "../../composable"
 
   export default defineComponent({
     components: {
@@ -62,26 +64,31 @@
     setup() {
       const FormValidations = Logic.Form
 
-      const formData = reactive({
-        idMethod: "nin",
-        code: "234",
-      })
+      const formData = reactive({ idType: "", idNumber: "" })
 
-      const idVerificationMethods = [
-        { key: "nin", value: "National Identification Number (NIN)" },
-        { key: "bvn", value: "Bank Verification Number (BVN)" },
-        { key: "passport", value: "International Passport" },
-        { key: "dl", value: "Driver’s License" },
-        { key: "voter", value: "Voter’s Card" },
-      ]
+      const idVerificationMethods = ref(
+        supportedCountries[0].idVerificationMethods
+      )
+
+      const getIdMethodsForCountry = () => {
+        const defaultCurrency =
+          Logic.Auth.SignUpPayload?.default_currency || "NGN"
+        if (!defaultCurrency) return
+
+        idVerificationMethods.value =
+          supportedCountries.find((c) => c.currency === defaultCurrency)
+            ?.idVerificationMethods || []
+      }
 
       const continueWithForm = () => {
-        if (formData.idMethod && formData.code) {
+        if (formData.idType && formData.idNumber) {
           return formData
         } else {
           return
         }
       }
+
+      onMounted(() => getIdMethodsForCountry())
 
       return {
         FormValidations,

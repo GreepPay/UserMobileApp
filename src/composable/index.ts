@@ -3,34 +3,24 @@ import { computed, reactive } from "vue"
 
 export const availableCurrencies = reactive([
   {
-    code: "TRY",
-    name: "Turkish Lira",
-    symbol: "₺",
-  },
-  {
-    code: "USD",
-    name: "United States Dollar",
-    symbol: "$",
-  },
-  {
-    code: "USDC",
-    name: "USDC",
-    symbol: "$",
-  },
-  {
     code: "NGN",
     name: "Nigerian Naira",
     symbol: "₦",
   },
   {
-    code: "GHS",
-    name: "Ghanaian Cedis",
-    symbol: "₵",
+    code: "KES",
+    name: "Kenyan Shilling",
+    symbol: "KSh",
   },
   {
-    code: "XLM",
-    name: "XLM",
-    symbol: "XLM",
+    code: "UGX",
+    name: "Ugandan Shilling",
+    symbol: "USh",
+  },
+  {
+    code: "GHS",
+    name: "Ghanaian Cedi",
+    symbol: "₵",
   },
   {
     code: "ZAR",
@@ -38,9 +28,19 @@ export const availableCurrencies = reactive([
     symbol: "R",
   },
   {
-    code: "EUR",
-    name: "Euro",
-    symbol: "€",
+    code: "AOA",
+    name: "Angolan Kwanza",
+    symbol: "Kz",
+  },
+  {
+    code: "ZMW",
+    name: "Zambian Kwacha",
+    symbol: "ZK",
+  },
+  {
+    code: "ZWL",
+    name: "Zimbabwean Dollar",
+    symbol: "Z$",
   },
 ])
 
@@ -73,3 +73,83 @@ export const safeAreaInsetBottom = computed(() => {
 
   return isAndroid && bottomInset === 0 ? 20 : bottomInset
 })
+
+export const supportedCountries = reactive([
+  {
+    country: "Nigeria",
+    isoCode: "NG",
+    currency: "NGN",
+    idVerificationMethods: [
+      { key: "bvn", value: "Bank Verification Number (BVN)" },
+      // { key: "phone", value: "Phone Number" },
+      { key: "nin", value: "National Identification Number (NIN)" },
+      { key: "dl", value: "Driver’s License" },
+      { key: "voter", value: "Voter’s Card" },
+      { key: "passport", value: "International Passport" },
+    ],
+  },
+  {
+    country: "Kenya",
+    isoCode: "KE",
+    currency: "KES",
+    idVerificationMethods: [
+      { key: "nid", value: "National ID" },
+      { key: "passport", value: "International Passport" },
+      { key: "kra_pin", value: "Kenya KRA PIN" },
+    ],
+  },
+  {
+    country: "Uganda",
+    isoCode: "UG",
+    currency: "UGX",
+    idVerificationMethods: [
+      { key: "nin", value: "National Identification Number (NIN)" },
+    ],
+  },
+  {
+    country: "Ghana",
+    isoCode: "GH",
+    currency: "GHS",
+    idVerificationMethods: [
+      { key: "passport", value: "International Passport" },
+      { key: "dl", value: "Driver’s License" },
+      { key: "voter", value: "Voter’s ID" },
+      { key: "tin", value: "Taxpayer Identification Number (TIN)" },
+      { key: "ssnit", value: "Social Security Number (SSNIT ID)" },
+      { key: "digital_address", value: "Ghana Digital Address" },
+    ],
+  },
+  {
+    country: "South Africa",
+    isoCode: "ZA",
+    currency: "ZAR",
+    idVerificationMethods: [
+      { key: "sa_id", value: "South African National ID" },
+    ],
+  },
+  {
+    country: "Angola",
+    isoCode: "AO",
+    currency: "AOA",
+    idVerificationMethods: [
+      { key: "national_id", value: "Angola National ID" },
+    ],
+  },
+  {
+    country: "Zambia",
+    isoCode: "ZM",
+    currency: "ZMW",
+    idVerificationMethods: [
+      { key: "nrc", value: "National Registration Card (NRC)" },
+    ],
+  },
+  {
+    country: "Zimbabwe",
+    isoCode: "ZW",
+    currency: "ZWL",
+    idVerificationMethods: [
+      { key: "national_id", value: "Zimbabwe National ID" },
+      { key: "credit_check", value: "Credit Check" },
+    ],
+  },
+])

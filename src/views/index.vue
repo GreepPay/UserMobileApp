@@ -9,7 +9,7 @@
             >
               <app-currency-switch
                 :model-value="modelCurrencyValue"
-                default-currency="USD"
+                default-currency="NGN"
               />
 
               <div
@@ -159,10 +159,8 @@
       AppCurrencySwitch,
     },
     setup() {
-      // const Test =  reactive(Logic.Auth.Test);
-
       const amount = ref("1000")
-      const modelCurrencyValue = ref("USD")
+      const modelCurrencyValue = ref("NGN")
       const showWelcomeModal = ref(true)
       const actionBtns = [
         {
@@ -243,9 +241,8 @@
         { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
       ])
 
-      const defaultCurrency = ref("USD")
-
-      const selectedCurrency = ref("USD")
+      const defaultCurrency = ref("NGN")
+      const selectedCurrency = ref("NGN")
 
       const currentPlatform = computed(() => {
         return getPlatforms()[0]
@@ -253,7 +250,7 @@
 
       const setPageDefaults = () => {
         defaultCurrency.value =
-          Logic.Auth.AuthUser?.profile?.default_currency || "USD"
+          Logic.Auth.AuthUser?.profile?.default_currency || "NGN"
         selectedCurrency.value = defaultCurrency.value
       }
 

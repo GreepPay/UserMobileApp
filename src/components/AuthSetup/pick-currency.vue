@@ -54,9 +54,8 @@
     AppNormalText,
     AppIcon,
     AppImageLoader,
-  } from "@greep/ui-components" 
+  } from "@greep/ui-components"
   import { availableCurrencies } from "../../composable"
- 
 
   export default defineComponent({
     components: {
@@ -68,7 +67,7 @@
     },
     props: {},
     setup() {
-      const formData = reactive({ preferred_currency: "TRY" })
+      const formData = reactive({ preferred_currency: "NGN" })
 
       const continueWithForm = () => {
         if (formData.preferred_currency) {
@@ -79,8 +78,6 @@
       }
 
       return {
-        // FormValidations,
-        // formWrapper,
         formData,
         availableCurrencies,
         continueWithForm,
