@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
     <app-form-wrapper
-      ref="formWrapper"
+      ref="formComponent"
       :parent-refs="parentRefs"
       class="w-full flex flex-col space-y-[20px] h-full"
     >
@@ -13,7 +13,7 @@
         </app-normal-text>
 
         <app-otp-input
-          v-model="formData.otp"
+          v-model="otpCode"
           type="tel"
           :number-of-input="numberOfInputs"
           :should-reset-o-t-p="true"
@@ -27,7 +27,10 @@
             Didn’t receive any code?
           </app-normal-text>
 
-          <app-normal-text class="text-center text-primary font-semibold">
+          <app-normal-text
+            class="text-center text-primary font-semibold"
+            @click="resentVerifyEmail"
+          >
             Resend?
           </app-normal-text>
         </div>
@@ -59,31 +62,42 @@
         default: 4,
       },
     },
-    emits: ["verified"],
     setup(_, { emit }) {
-      const formWrapper = ref()
+      const FormValidations = Logic.Form
+      const formComponent = ref()
       const formData = reactive({ otp: "" })
+      const otpCode = ref("")
 
-      // VerifyUserOtpPayload
-      const handleOTPChange = (updatedValue: number) => {
-        if (updatedValue.toString().length === _.numberOfInputs) {
-          auth.VerifyUserOtpPayload = {
-            ...auth.VerifyUserOtpPayload,
-            otp: updatedValue.toString(),
-          }
-          handleVerifyEmail()
+      const handleOTPChange = () => {
+        // formData.otp_code = value;
+      }
+
+      const resentVerifyEmail = () => {
+        Logic.Auth.ResendEmailOTP(localStorage.getItem("auth_email") || "")
+        Logic.Common.showAlert({
+          show: true,
+          message:
+            "A new verification email has been sent to your email address.",
+          type: "success",
+        })
+      }
+
+      const continueWithForm = () => {
+        console.log("otpCode.value", otpCode.value)
+
+        if (otpCode.value.toString().length == 4) {
+          return otpCode.value.toString()
+        } else {
+          return
         }
       }
 
-      const handleVerifyEmail = async () => {
-        const response = await auth.VerifyUserOTP(true)
-        if (response) emit("verified", response)
-      }
-
       return {
-        formData,
-        formWrapper,
+        otpCode,
+        FormValidations,
         handleOTPChange,
+        resentVerifyEmail,
+        continueWithForm,
       }
     },
     data() {

@@ -25,7 +25,7 @@
         </template>
 
         <template v-if="currentPage == 'verify_email'">
-          <auth-setup-verify-email />
+          <auth-setup-verify-email ref="verifyEmailRef" />
         </template>
 
         <!-- Spacer -->
@@ -65,9 +65,8 @@
     setup() {
       const currentPage = ref("account_info")
       // const accountInfoValid = ref(false)
-      const isPhoneVerified = ref(false)
-      const isEmailVerified = ref(false)
-      const isLoading = ref(false)
+      // const isPhoneVerified = ref(false)
+      // const isEmailVerified = ref(false)
       const attemptToNext = ref(false)
 
       const accountInfoRef = ref<any>(null)
@@ -77,7 +76,7 @@
       const verifyEmailRef = ref<any>(null)
 
       // const isBtnLoading = computed(() => {
-      //   if (currentPage.value === "verify_phone" && !isPhoneVerified.value) {
+      // if (currentPage.value === "verify_phone" && !isPhoneVerified.value) {
       //     return true
       //   }
       //   return false
@@ -147,12 +146,7 @@
             key: "verify_email",
             action_btn: {
               label: "Next",
-              handler: () => {
-                if (isEmailVerified.value) {
-                  isEmailVerified.value = false
-                  currentPage.value = "set_password"
-                }
-              },
+              handler: () => verifyEmailHandler(),
               is_disabled: false,
               loading: false,
             },
@@ -168,31 +162,10 @@
       //   return false
       // })
 
-      const updateAndResetAttemptToNext = () => {
-        attemptToNext.value = true
-        setTimeout(() => (attemptToNext.value = false), 1000)
-      }
       // const handleIsAccountInfoValid = (value: boolean) => {
       //   accountInfoValid.value = value
       //   if (value) currentPage.value = "kyc_verification"
       // }
-      const validateAndSignUserUp = async (isValid: boolean) => {
-        console.log("isValid", isValid)
-
-        // if (isValid) {
-        //   // Call SignUp method
-        //   const response = await auth.SignUp(true)
-        //   console.log("response", response)
-
-        //   if (response) {
-        //     console.log("Sign up successful:", response)
-        //   } else {
-        //     console.error("Sign up failed")
-        //     Logic.Common.GoToRoute("/auth/login")
-        //   }
-        // }
-        // isLoading.value = true
-      }
 
       // setup steps handlers
       const accountInfoHandler = () => {
@@ -247,51 +220,51 @@
           })?.then((response) => {
             console.log("response", response)
 
-            // if (response) {
-            //   currentPage.value = "verify_email"
-            //   pageSettings.pages[3].action_btn.loading = true
-            // } else {
-            //   pageSettings.pages[3].action_btn.loading = true
-            // }
+            if (response) {
+              currentPage.value = "verify_email"
+              pageSettings.pages[3].action_btn.loading = true
+            } else {
+              pageSettings.pages[3].action_btn.loading = true
+            }
           })
         }
       }
 
       const verifyEmailHandler = () => {
-        console.log("Handling Verify Email")
         const otpCode = verifyEmailRef.value?.continueWithForm()
+        console.log("otpCode", otpCode)
 
-        // if (otpCode) {
-        //   Logic.Auth.VerifyUserOTPForm = {
-        //     user_uuid: Logic.Auth.AuthUser?.uuid,
-        //     otp: otpCode,
-        //   }
+        if (otpCode) {
+          Logic.Auth.VerifyUserOTPayload = {
+            user_uuid: Logic.Auth.AuthUser?.uuid,
+            otp: otpCode,
+          }
 
-        //   pageSettings.pages[4].action_btn.loading = true
+          pageSettings.pages[4].action_btn.loading = true
 
-        //   Logic.Auth.VerifyUserOTP()?.then(async (response) => {
-        //     if (response) {
-        //       Logic.Auth.SignInForm = {
-        //         email: localStorage.getItem("auth_email"),
-        //         password: localStorage.getItem("auth_pass"),
-        //       }
+          Logic.Auth.VerifyUserOTP()?.then(async (response) => {
+            if (response) {
+              Logic.Auth.SignInPayload = {
+                email: localStorage.getItem("auth_email"),
+                password: localStorage.getItem("auth_pass"),
+              }
 
-        //       await Logic.Auth.SignIn(true)
-        //       await Logic.Auth.GetAuthUser()
+              await Logic.Auth.SignIn(true)
+              await Logic.Auth.GetAuthUser()
 
-        //       pageSettings.pages[4].action_btn.loading = false
+              pageSettings.pages[4].action_btn.loading = false
 
-        //       // Check if passcode has been set
-        //       if (localStorage.getItem("auth_passcode")) {
-        //         Logic.Common.GoToRoute("/")
-        //       } else {
-        //         Logic.Common.GoToRoute("/auth/set-passcode")
-        //       }
-        //     } else {
-        //       pageSettings.pages[4].action_btn.loading = false
-        //     }
-        //   })
-        // }
+              // Check if passcode has been set
+              if (localStorage.getItem("auth_passcode")) {
+                Logic.Common.GoToRoute("/")
+              } else {
+                Logic.Common.GoToRoute("/auth/set-passcode")
+              }
+            } else {
+              pageSettings.pages[4].action_btn.loading = false
+            }
+          })
+        }
       }
 
       onMounted(() => {
@@ -307,9 +280,8 @@
         currentPage,
         pageSettings,
         attemptToNext,
-        isPhoneVerified,
-        isEmailVerified,
-        validateAndSignUserUp,
+        // isPhoneVerified,
+        // isEmailVerified,
         accountInfoRef,
         kycVerificationRef,
         pickCurrencyRef,

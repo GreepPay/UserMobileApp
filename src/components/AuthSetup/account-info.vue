@@ -60,18 +60,6 @@
       >
       </app-text-field>
 
-      <!-- <app-text-field
-        :has-title="false"
-        type="tel"
-        placeholder="Phone Number"
-        ref="phoneNumber"
-        name="Phone Number"
-        use-floating-label
-        v-model="formData.phoneNumber"
-        :rules="[FormValidations.RequiredRule]"
-      >
-      </app-text-field> -->
-
       <app-text-field
         :has-title="false"
         type="text"
@@ -139,12 +127,7 @@
       AppAvatar,
       AppIcon,
     },
-    props: {
-      // attemptToNext: {
-      //   type: Boolean,
-      //   default: false,
-      // },
-    },
+    props: {},
     name: "AuthSetupAccountInfo",
     setup() {
       const FormValidations = Logic.Form
@@ -154,8 +137,8 @@
         first_name: "Daniel",
         last_name: "Script",
         email: "daniel_script@gmai.co",
-        country: "",
-        state: "",
+        country: "Afghanistan",
+        state: "Badakhshan",
       })
 
       const showStateSelector = ref(true)
