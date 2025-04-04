@@ -6,7 +6,7 @@
       >
         <!-- Form -->
         <app-form-wrapper
-          ref="formWrapper"
+          ref="formComponent"
           :parent-refs="parentRefs"
           class="w-full flex flex-col space-y-3 pt-2"
         >
@@ -44,8 +44,7 @@
           variant="secondary"
           class="!py-4 col-span-4"
           @click="handleSignIn"
-          :disabled="!isFormValid"
-          :loading="loading"
+          :loading="loadingState"
         >
           Next
         </app-button>
@@ -69,46 +68,86 @@
     },
     setup() {
       const FormValidations = Logic.Form
-      const formWrapper = ref()
+      const formComponent = ref()
       const loading = ref(false)
+      const loadingState = ref(false)
 
       // Create an instance of Auth
       const formData = reactive({ email: "", password: "" })
 
       // computed
-      const isFormValid = computed(() => formWrapper.value?.validate())
+      // const isFormValid = computed(() => formComponent.value?.validate())
 
       // Function to handle sign-in
       const handleSignIn = async () => {
-        loading.value = true
-        // Set the SignInPayload before calling SignIn
-        auth.SignInPayload = {
-          email: formData.email,
-          password: formData.password,
+        const state = formComponent.value?.validate()
+
+        console.log(state)
+
+        if (state) {
+          loadingState.value = true
+          Logic.Auth.SignInPayload = {
+            email: formData.email,
+            password: formData.password,
+          }
+
+          try {
+            await Logic.Auth.SignIn(true)
+            await Logic.Auth.GetAuthUser()
+            loadingState.value = false
+
+            // Check if passcode has been set
+            if (localStorage.getItem("auth_passcode")) {
+              console.log(6789)
+              Logic.Common.GoToRoute("/")
+            } else {
+              console.log(67283923)
+              // Save auth email and pass
+              localStorage.setItem(
+                "auth_email",
+                Logic.Auth.SignInPayload?.email || ""
+              )
+              localStorage.setItem(
+                "auth_pass",
+                Logic.Auth.SignInPayload?.password || ""
+              )
+              Logic.Common.GoToRoute("/auth/set-passcode")
+            }
+          } catch {
+            loadingState.value = false
+          }
         }
 
-        // Call SignIn method
-        const response = await auth.SignIn(true)
+        // loading.value = true
+        // // Set the SignInPayload before calling SignIn
+        // auth.SignInPayload = {
+        //   email: formData.email,
+        //   password: formData.password,
+        // }
 
-        loading.value = false
-        console.log("response", response)
+        // // Call SignIn method
+        // const response = await auth.SignIn(true)
 
-        // confirm if response is before next step
-        if (response) {
-          console.log("Login successful:", response)
-        } else {
-          console.error("Login failed")
-        }
-        Logic.Common.GoToRoute("/auth/verify-email")
+        // loading.value = false
+        // console.log("response", response)
+
+        // // confirm if response is before next step
+        // if (response) {
+        //   console.log("Login successful:", response)
+        // } else {
+        //   console.error("Login failed")
+        // }
+        // Logic.Common.GoToRoute("/auth/verify-email")
       }
 
       return {
         FormValidations,
         Logic,
         formData,
-        formWrapper,
-        isFormValid,
+        formComponent,
+        // isFormValid,
         loading,
+        loadingState,
         handleSignIn,
       }
     },

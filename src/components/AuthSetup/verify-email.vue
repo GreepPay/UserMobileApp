@@ -62,8 +62,6 @@
     emits: ["verified"],
     setup(_, { emit }) {
       const formWrapper = ref()
-      const loading = ref(false)
-
       const formData = reactive({ otp: "" })
 
       // VerifyUserOtpPayload

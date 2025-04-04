@@ -128,7 +128,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref } from "vue"
+  import { defineComponent, reactive, ref, onMounted, computed } from "vue"
   import {
     AppNormalText,
     AppHeaderText,
@@ -141,6 +141,8 @@
     AppCurrencySwitch,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
+  import { getPlatforms, onIonViewDidEnter } from "@ionic/vue"
+  // import { User } from "@greep/logic/src/gql/graphql";
 
   interface User {
     id: number
@@ -246,6 +248,41 @@
         { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
       ])
 
+      
+
+      const defaultCurrency = ref("USD")
+
+      const selectedCurrency = ref("USD")
+
+      const currentPlatform = computed(() => {
+        return getPlatforms()[0]
+      })
+
+      const setPageDefaults = () => {
+        defaultCurrency.value =
+          Logic.Auth.AuthUser?.profile?.default_currency || "USD"
+        selectedCurrency.value = defaultCurrency.value
+      }
+
+      onIonViewDidEnter(() => {
+        setPageDefaults()
+      })
+
+      onMounted(() => {
+        // Register reactive data
+        // Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
+        // Logic.Wallet.watchProperty(
+        //   "ManyPointTransactions",
+        //   ManyPointTransactions
+        // )
+        // Logic.Wallet.watchProperty(
+        //   "CurrentGlobalExchangeRate",
+        //   CurrentGlobalExchangeRate
+        // )
+        // Logic.Auth.watchProperty("AuthUser", AuthUser)
+        setPageDefaults()
+      })
+
       return {
         showWelcomeModal,
         transactions,
@@ -254,6 +291,7 @@
         actionBtns,
         amount,
         modelCurrencyValue,
+        currentPlatform,
       }
     },
   })

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
     <app-form-wrapper
-      ref="formWrapper"
+      ref="formComponent"
       :parent-refs="parentRefs"
       class="w-full flex flex-col space-y-[20px] h-full"
     >
@@ -128,7 +128,6 @@
   import { Logic } from "@greep/logic"
   import { Country, State } from "country-state-city"
   import { SelectOption } from "@greep/ui-components/src/types"
-  const auth = Logic.Auth
 
   export default defineComponent({
     components: {
@@ -141,13 +140,15 @@
       AppIcon,
     },
     props: {
-      attemptToNext: Boolean,
+      // attemptToNext: {
+      //   type: Boolean,
+      //   default: false,
+      // },
     },
     name: "AuthSetupAccountInfo",
-    emits: ["update:isValid"],
-    setup(props, { emit }) {
+    setup() {
       const FormValidations = Logic.Form
-      const formWrapper = ref<any>(null)
+      const formComponent = ref<any>(null)
 
       const formData = reactive({
         first_name: "Daniel",
@@ -163,22 +164,41 @@
       const countries = reactive<SelectOption[]>([])
       const states = reactive<SelectOption[]>([])
 
-      const updateSignUpPayload = () => {
-        auth.SignUpPayload = {
-          ...auth.SignUpPayload,
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          email: formData.email,
-          country: countryCode.value,
-          state: stateIsoCode.value,
-        }
-      }
+      // const updateSignUpPayload = () => {
+      //   auth.SignUpPayload = {
+      //     ...auth.SignUpPayload,
+      //     first_name: formData.first_name,
+      //     last_name: formData.last_name,
+      //     email: formData.email,
+      //     country: countryCode.value,
+      //     state: stateIsoCode.value,
+      //   }
+      // }
 
-      const validateForm = () => {
-        if (formWrapper.value) {
-          const isValid = formWrapper.value.validate()
-          if (isValid) updateSignUpPayload()
-          emit("update:isValid", isValid)
+      // const validateForm = () => {
+      //   if (formComponent.value) {
+      //     const isValid = formComponent.value.validate()
+      //     if (isValid) updateSignUpPayload()
+      //     emit("update:isValid", isValid)
+      //   }
+      // }
+
+      const continueWithForm = () => {
+        const state = formComponent.value?.validate()
+        if (state) {
+          // Proceed with form submission
+          formData.country =
+            Country.getCountryByCode(countryCode.value)?.name || ""
+
+          formData.state =
+            State.getStateByCodeAndCountry(
+              stateIsoCode.value,
+              countryCode.value
+            )?.name || ""
+
+          return formData
+        } else {
+          return
         }
       }
 
@@ -213,13 +233,6 @@
         setTimeout(() => (showStateSelector.value = true), 100)
       })
 
-      watch(
-        () => props.attemptToNext,
-        (newVal) => {
-          if (newVal) validateForm()
-        }
-      )
-
       //
       onMounted(() => setCountries())
 
@@ -232,7 +245,8 @@
         stateIsoCode,
         countryCode,
         showStateSelector,
-        formWrapper,
+        formComponent,
+        continueWithForm,
       }
     },
     data() {

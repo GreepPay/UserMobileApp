@@ -1,12 +1,14 @@
 <template>
   <ion-app class="font-poppins">
     <ion-router-outlet />
+    <app-alert v-if="alertSetup.show" :setup="alertSetup" />
+    <app-loader v-if="loaderSetup.show" :setup="loaderSetup" />
   </ion-app>
 </template>
 
 <script lang="ts">
   import { IonApp, IonRouterOutlet } from "@ionic/vue"
-  import { defineComponent, onMounted } from "vue"
+  import { defineComponent, onMounted, ref } from "vue"
   import { App as CapacitorApp, URLOpenListenerEvent } from "@capacitor/app"
   import { getPlatforms } from "@ionic/vue"
   import { useRoute, useRouter } from "vue-router"
@@ -22,6 +24,9 @@
     setup() {
       const router: any = useRouter()
       const route: any = useRoute()
+
+      const alertSetup = ref(Logic.Common.alertSetup)
+      const loaderSetup = ref(Logic.Common.loaderSetup)
 
       // Set routers
       Logic.Common.SetRouter(router)
@@ -40,8 +45,25 @@
         (import.meta as any).env.VITE_API_URL ?? "http://localhost:3000/graphql"
       )
 
+      const handleMountActions = () => {
+        const currentAuthUser = Logic.Auth.AuthUser
+
+        // If user is authenticated
+        if (currentAuthUser) {
+          Logic.Auth.GetAuthUser()
+          if (localStorage.getItem("auth_passcode")) {
+            Logic.Common.GoToRoute("/auth/welcome")
+          }
+        } else {
+          // Go to start page
+          // Only if the path does not contain /auth
+          if (!window.location.pathname.includes("/auth")) {
+            Logic.Common.GoToRoute("/start")
+          }
+        }
+      }
+
       onMounted(() => {
-        // Logic.Common.GoToRoute("/auth/login");
         // deep link config
         CapacitorApp.addListener(
           "appUrlOpen",
@@ -64,7 +86,12 @@
         )
       })
 
-      return {}
+      handleMountActions()
+
+      return {
+        alertSetup,
+        loaderSetup,
+      }
     },
   })
 </script>

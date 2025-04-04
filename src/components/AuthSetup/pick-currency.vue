@@ -54,9 +54,9 @@
     AppNormalText,
     AppIcon,
     AppImageLoader,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  const auth = Logic.Auth
+  } from "@greep/ui-components" 
+  import { availableCurrencies } from "../../composable"
+ 
 
   export default defineComponent({
     components: {
@@ -66,67 +66,25 @@
       AppIcon,
       AppImageLoader,
     },
-    props: { attemptToNext: Boolean },
-    name: "AuthSetupPickCurrency",
-    emits: ["next"],
-    
-    setup(props, { emit }) {
-      const FormValidations = Logic.Form
-      const formWrapper = ref<any>(null)
+    props: {},
+    setup() {
       const formData = reactive({ preferred_currency: "TRY" })
-      const availableCurrencies = reactive([
-        {
-          code: "TRY",
-          name: "Turkish Lira",
-        },
-        {
-          code: "USD",
-          name: "United States Dollar",
-        },
-        {
-          code: "USDC",
-          name: "USDC",
-        },
-        {
-          code: "NGN",
-          name: "Nigerian Naira",
-        },
-        {
-          code: "GHS",
-          name: "Ghanaian Cedis",
-        },
-        {
-          code: "XLM",
-          name: "XLM",
-        },
-        {
-          code: "ZAR",
-          name: "South African Rand",
-        },
-        {
-          code: "EUR",
-          name: "Euro",
-        },
-      ])
 
-      const updateSignUpPayload = () => {
-        auth.SignUpPayload = {
-          ...auth.SignUpPayload,
-          default_currency: formData.preferred_currency,
+      const continueWithForm = () => {
+        if (formData.preferred_currency) {
+          return formData
+        } else {
+          return
         }
       }
 
-      watch(
-        () => props.attemptToNext,
-        (newVal) => {
-          if (newVal) {
-            updateSignUpPayload()
-            emit("next")
-          }
-        }
-      )
-
-      return { FormValidations, formWrapper, formData, availableCurrencies }
+      return {
+        // FormValidations,
+        // formWrapper,
+        formData,
+        availableCurrencies,
+        continueWithForm,
+      }
     },
     data() {
       return {

@@ -63,8 +63,8 @@
       const FormValidations = Logic.Form
 
       const formData = reactive({
-        idMethod: "",
-        code: "",
+        idMethod: "nin",
+        code: "234",
       })
 
       const idVerificationMethods = [
@@ -75,11 +75,20 @@
         { key: "voter", value: "Voter’s Card" },
       ]
 
+      const continueWithForm = () => {
+        if (formData.idMethod && formData.code) {
+          return formData
+        } else {
+          return
+        }
+      }
+
       return {
         FormValidations,
         Logic,
         formData,
         idVerificationMethods,
+        continueWithForm,
       }
     },
     data() {

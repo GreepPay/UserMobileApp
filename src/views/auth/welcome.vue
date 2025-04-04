@@ -10,7 +10,9 @@
       <!-- Top section -->
       <div class="w-full flex flex-row items-center justify-center pt-4">
         <app-image-loader
-          :photo-url="'/images/temps/profile-2.png'"
+          :photo-url="
+            AuthUser?.profile?.profile_picture || '/images/profile-image.svg'
+          "
           custom-class="h-[96px] w-[96px] rounded-full"
         />
       </div>
@@ -36,7 +38,7 @@
         </app-normal-text>
 
         <div class="w-full flex flex-row space-x-0 items-center justify-center">
-          <div v-for="index in 5" :key="index" class="px-3">
+          <div v-for="index in 6" :key="index" class="px-3">
             <div
               :class="`h-[15px] w-[15px] rounded-full ${
                 index <= formData.passcode.length
@@ -65,7 +67,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, watch, reactive } from "vue"
+  import { defineComponent, watch, reactive, ref, onMounted } from "vue"
   import {
     AppHeaderText,
     AppNormalText,
@@ -73,6 +75,7 @@
     AppImageLoader,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
+  import { User } from "@greep/logic/src/gql/graphql"
 
   export default defineComponent({
     name: "WelcomePage",
@@ -83,20 +86,71 @@
       AppImageLoader,
     },
     setup() {
-      const FormValidations = Logic.Form
+      const AuthUser = ref<User>(Logic.Auth.AuthUser)
 
       const formData = reactive({
         passcode: "",
       })
 
-      watch(formData, () => {
-        console.log(formData)
+      watch(formData, async () => {
+        if (formData.passcode.length === 6) {
+          await isFilled()
+        }
+      })
+
+      const isFilled = async () => {
+        const authPasscode = localStorage.getItem("auth_passcode")
+
+        if (formData.passcode != authPasscode) {
+          Logic.Common.showAlert({
+            show: true,
+            type: "error",
+            message: "Invalid passcode. Please try again.",
+          })
+          formData.passcode = ""
+          return
+        }
+
+        const encryptedAuthData = localStorage.getItem("auth_encrypted_data")
+
+        try {
+          const authData: any = Logic.Common.decryptData(
+            encryptedAuthData || "",
+            authPasscode
+          )
+
+          Logic.Auth.SignInPayload = {
+            email: authData.email,
+            password: authData.password,
+          }
+        } catch (error) {
+          Logic.Common.showAlert({
+            show: true,
+            type: "error",
+            message: "Invalid passcode. Please try again.",
+          })
+          formData.passcode = ""
+          return
+        }
+
+        Logic.Common.showLoader({
+          show: true,
+          loading: true,
+        })
+
+        await Logic.Auth.SignIn(true)
+        Logic.Common.hideLoader()
+        Logic.Common.GoToRoute("/")
+      }
+
+      onMounted(() => {
+        Logic.Auth.watchProperty("AuthUser", AuthUser)
       })
 
       return {
-        FormValidations,
         Logic,
         formData,
+        AuthUser,
       }
     },
   })
