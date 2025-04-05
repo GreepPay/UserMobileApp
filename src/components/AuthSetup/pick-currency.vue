@@ -22,11 +22,11 @@
           <div class="flex flex-row space-x-3 items-center">
             <app-image-loader
               :photo-url="`/images/icons/flags/${currency.code.toLocaleLowerCase()}.svg`"
-              class="h-[40px] w-[40px] rounded-full"
+              class="size-10 rounded-full"
             />
 
             <app-normal-text custom-class="!text-left">
-              {{ currency.name }}
+              {{ currency.name }} {{ currency.code }}
             </app-normal-text>
           </div>
 
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref, watch } from "vue"
+  import { defineComponent, reactive } from "vue"
   import {
     AppFormWrapper,
     AppInfoBox,

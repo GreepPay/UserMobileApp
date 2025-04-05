@@ -43,7 +43,6 @@
     AuthSetupSetPassword,
     AuthSetupPickCurrency,
     AuthSetupVerifyEmail,
-    // AuthSetupVerifyPhone,
     AuthSetupKycVerification,
   } from "../../../components/AuthSetup"
   import { getPlatforms } from "@ionic/vue"
@@ -58,13 +57,11 @@
       AuthSetupSetPassword,
       AuthSetupPickCurrency,
       AuthSetupVerifyEmail,
-      // AuthSetupVerifyPhone,
       AppOnboardingLayout,
       AuthSetupKycVerification,
     },
     setup() {
-      const currentPage = ref("kyc_verification")
-      // const currentPage = ref("account_info")
+      const currentPage = ref("account_info")
 
       const accountInfoRef = ref<any>(null)
       const kycVerificationRef = ref<any>(null)
@@ -181,6 +178,16 @@
           // Send signup request
           Logic.Auth.SignUp(true, (progress) => {})?.then((response) => {
             if (response) {
+              // Save auth email and pass
+              localStorage.setItem(
+                "auth_email",
+                Logic.Auth.SignUpPayload?.email || ""
+              )
+              localStorage.setItem(
+                "auth_pass",
+                Logic.Auth.SignUpPayload?.password || ""
+              )
+
               currentPage.value = "verify_email"
               pageSettings.pages[2].action_btn.loading = true
             } else {
@@ -213,13 +220,6 @@
               await Logic.Auth.GetAuthUser()
 
               currentPage.value = "kyc_verification"
-
-              // // Check if passcode has been set
-              // if (localStorage.getItem("auth_passcode")) {
-              //   Logic.Common.GoToRoute("/")
-              // } else {
-              //   Logic.Common.GoToRoute("/auth/set-passcode")
-              // }
             } else {
               pageSettings.pages[3].action_btn.loading = false
             }
@@ -229,37 +229,22 @@
 
       const kycVerificationHandler = async () => {
         const formData = kycVerificationRef.value?.continueWithForm()
-        // if (formData && Logic.Auth.SignUpPayload) {
-        //   Logic.Auth.SignUpPayload.documents = [
-        //     formData.international_passport,
-        //     formData.business_document,
-        //   ]
-        // }
-        if (!formData) return
-        console.log("Logic.Auth.AuthUser", Logic.Auth.AuthUser)
 
+        if (!formData) return
         Logic.Auth.VerifyUserIdentityPayload = {
-          user_uuid: Logic.Auth.AuthUser?.uuid || "Test",
+          user_uuid: Logic.Auth.AuthUser?.uuid,
           id_number: formData.idNumber,
-          // pdate this to be default country
-          id_country: Logic.Auth.SignUpPayload?.default_currency || "Nigeria",
+          id_country: formData?.countryIsoCode,
           id_type: formData.idType,
         }
 
-        // console.log("VerifyUserIdentity", VerifyUserIdentity)
-
-        //  id_country: Scalars['String'];
-        //   id_number: Scalars['String'];
-        //   id_type: Scalars['String'];
-        //   user_uuid:
         await Logic.Auth.VerifyUserIdentity()
-        // await Logic.Auth.GetAuthUser()
 
         // Check if passcode has been set
+        Logic.Common.GoToRoute("/auth/set-passcode")
         // if (localStorage.getItem("auth_passcode")) {
         //   Logic.Common.GoToRoute("/")
         // } else {
-        //   Logic.Common.GoToRoute("/auth/set-passcode")
         // }
       }
 

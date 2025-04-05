@@ -57,7 +57,6 @@
   import { defineComponent, reactive, ref, computed } from "vue"
   import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
-  const auth = Logic.Auth
 
   export default defineComponent({
     name: "LoginPage",
@@ -75,14 +74,9 @@
       // Create an instance of Auth
       const formData = reactive({ email: "", password: "" })
 
-      // computed
-      // const isFormValid = computed(() => formComponent.value?.validate())
-
       // Function to handle sign-in
       const handleSignIn = async () => {
         const state = formComponent.value?.validate()
-
-        console.log(state)
 
         if (state) {
           loadingState.value = true
@@ -98,10 +92,8 @@
 
             // Check if passcode has been set
             if (localStorage.getItem("auth_passcode")) {
-              console.log(6789)
               Logic.Common.GoToRoute("/")
             } else {
-              console.log(67283923)
               // Save auth email and pass
               localStorage.setItem(
                 "auth_email",
@@ -117,27 +109,6 @@
             loadingState.value = false
           }
         }
-
-        // loading.value = true
-        // // Set the SignInPayload before calling SignIn
-        // auth.SignInPayload = {
-        //   email: formData.email,
-        //   password: formData.password,
-        // }
-
-        // // Call SignIn method
-        // const response = await auth.SignIn(true)
-
-        // loading.value = false
-        // console.log("response", response)
-
-        // // confirm if response is before next step
-        // if (response) {
-        //   console.log("Login successful:", response)
-        // } else {
-        //   console.error("Login failed")
-        // }
-        // Logic.Common.GoToRoute("/auth/verify-email")
       }
 
       return {
@@ -145,7 +116,6 @@
         Logic,
         formData,
         formComponent,
-        // isFormValid,
         loading,
         loadingState,
         handleSignIn,

@@ -16,7 +16,7 @@
         placeholder="KYC Method *"
         :hasTitle="false"
         :paddings="'py-4 !px-3'"
-        :options="idVerificationMethods"
+        :options="selectedSupportedCountry.idVerificationMethods"
         ref="reason"
         v-model="formData.idType"
         use-floating-label
@@ -29,11 +29,10 @@
         type="number"
         placeholder="Enter ID number"
         ref="id_number"
-        name="ID_Number"
+        name="ID Number"
         v-model="formData.idNumber"
         :rules="[FormValidations.RequiredRule]"
       >
-        <!-- placeholder="Enter 11-digit NIN number" -->
       </app-text-field>
     </app-form-wrapper>
   </div>
@@ -63,28 +62,29 @@
     name: "AuthSetupKycVerification",
     setup() {
       const FormValidations = Logic.Form
-
+      const formComponent = ref()
       const formData = reactive({ idType: "", idNumber: "" })
 
-      const idVerificationMethods = ref(
-        supportedCountries[0].idVerificationMethods
-      )
+      const selectedSupportedCountry = ref(supportedCountries[0])
 
       const getIdMethodsForCountry = () => {
-        const defaultCurrency =
-          Logic.Auth.SignUpPayload?.default_currency || "NGN"
-        if (!defaultCurrency) return
-
-        idVerificationMethods.value =
-          supportedCountries.find((c) => c.currency === defaultCurrency)
-            ?.idVerificationMethods || []
+        const defaultCurrency = Logic.Auth.SignUpPayload?.default_currency
+        if (defaultCurrency) {
+          selectedSupportedCountry.value = supportedCountries.find(
+            (c) => c.currency === defaultCurrency
+          )
+        }
       }
 
       const continueWithForm = () => {
-        if (formData.idType && formData.idNumber) {
-          return formData
-        } else {
-          return
+        const state = formComponent.value?.validate()
+        if (state) {
+          if (formData.idType)
+            return {
+              ...formData,
+              countryIsoCode: selectedSupportedCountry.value?.isoCode || "",
+            }
+          else return
         }
       }
 
@@ -94,7 +94,8 @@
         FormValidations,
         Logic,
         formData,
-        idVerificationMethods,
+        selectedSupportedCountry,
+        formComponent,
         continueWithForm,
       }
     },
