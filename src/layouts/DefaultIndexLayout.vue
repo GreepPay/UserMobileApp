@@ -1,19 +1,20 @@
 <template>
   <div
     class="w-full h-full flex flex-col pb-4 lg:text-sm mdlg:text-[12px] text-xs font-poppins"
-    style="
-      padding-top: calc(env(safe-area-inset-top) + 0px) !important;
-           "
+    style="padding-top: calc(env(safe-area-inset-top) + 0px) !important"
   >
     <div class="w-full flex flex-col relative h-full overflow-y-auto">
       <!-- Top section -->
       <div
         class="w-full flex flex-row items-center justify-between py-4 bg-white px-4 sticky top-0 z-999"
       >
-        <app-image-loader
-          :photo-url="'/images/temps/profile-1.png'"
-          custom-class="!size-10   rounded-full"
-          @click="Logic.Common.GoToRoute(`/profile`)"
+        
+        <app-avatar
+          :src="
+            AuthUser?.profile?.profile_picture || '/images/profile-image.svg'
+          "
+          alt="Raymond"
+          :size="40"
         />
 
         <app-header-text class="!text-left">
@@ -35,14 +36,21 @@
 </template>
 
 <script lang="ts">
-  import { AppHeaderText, AppIcon, AppImageLoader } from "@greep/ui-components"
-  import { ref, defineComponent } from "vue"
+  import { onMounted, defineComponent, ref } from "vue"
+  import {
+    AppHeaderText,
+    AppIcon,
+    AppImageLoader,
+    AppAvatar,
+  } from "@greep/ui-components"
+  import { User } from "@greep/logic/src/gql/graphql"
   import { Logic } from "@greep/logic"
 
   export default defineComponent({
     components: {
       AppHeaderText,
       AppIcon,
+      AppAvatar,
       AppImageLoader,
     },
     props: {
@@ -56,8 +64,15 @@
       },
     },
     name: "DefaultIndexLayout",
+
     setup() {
-      return { Logic }
+      const AuthUser = ref<User>(Logic.Auth.AuthUser)
+
+      onMounted(() => {
+        Logic.Auth.watchProperty("AuthUser", AuthUser)
+      })
+
+      return { Logic, AuthUser }
     },
   })
 </script>
