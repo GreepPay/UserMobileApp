@@ -8,12 +8,11 @@
       <div
         class="w-full flex flex-row items-center justify-between py-4 bg-white px-4 sticky top-0 z-999"
       >
-        
         <app-avatar
           :src="
             AuthUser?.profile?.profile_picture || '/images/profile-image.svg'
           "
-          alt="Raymond"
+          :alt="`${AuthUser.first_name} ${AuthUser.last_name}`"
           :size="40"
         />
 

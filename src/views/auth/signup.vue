@@ -13,7 +13,7 @@
         <div class="w-full flex flex-col items-start justify-start space-y-1">
           <app-header-text> Set up your account </app-header-text>
           <app-normal-text class="!text-gray-500">
-            Create an account to get started
+            Create an account to get started 
           </app-normal-text>
         </div>
 

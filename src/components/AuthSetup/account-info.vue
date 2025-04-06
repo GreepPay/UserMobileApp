@@ -134,11 +134,11 @@
       const formComponent = ref<any>(null)
 
       const formData = reactive({
-        first_name: "Daniel",
-        last_name: "Script",
-        email: "daniel_script@gmai.co",
-        country: "Afghanistan",
-        state: "Badakhshan",
+        first_name: "",
+        last_name: "",
+        email: "",
+        country: "",
+        state: "",
       })
 
       const showStateSelector = ref(true)
@@ -146,25 +146,7 @@
       const countryCode = ref("")
       const countries = reactive<SelectOption[]>([])
       const states = reactive<SelectOption[]>([])
-
-      // const updateSignUpPayload = () => {
-      //   auth.SignUpPayload = {
-      //     ...auth.SignUpPayload,
-      //     first_name: formData.first_name,
-      //     last_name: formData.last_name,
-      //     email: formData.email,
-      //     country: countryCode.value,
-      //     state: stateIsoCode.value,
-      //   }
-      // }
-
-      // const validateForm = () => {
-      //   if (formComponent.value) {
-      //     const isValid = formComponent.value.validate()
-      //     if (isValid) updateSignUpPayload()
-      //     emit("update:isValid", isValid)
-      //   }
-      // }
+ 
 
       const continueWithForm = () => {
         const state = formComponent.value?.validate()
