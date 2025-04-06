@@ -8,13 +8,13 @@
       <div
         class="w-full flex flex-row items-center justify-between py-4 bg-white px-4 sticky top-0 z-999"
       >
-        
         <app-avatar
           :src="
             AuthUser?.profile?.profile_picture || '/images/profile-image.svg'
           "
-          alt="Raymond"
+          :alt="`${AuthUser.first_name} ${AuthUser.last_name}`"
           :size="40"
+          @click="Logic.Common.GoToRoute('/profile')"
         />
 
         <app-header-text class="!text-left">
@@ -22,7 +22,7 @@
         </app-header-text>
 
         <div
-          class="border border-black rounded-full h-9 w-9 rounded-full flex justify-center items-center border-black"
+          class="border h-9 w-9 rounded-full flex justify-center items-center border-black"
           @click="Logic.Common.GoToRoute(`/notifications`)"
         >
           <app-icon name="bell" custom-class="h-6" />
@@ -36,43 +36,37 @@
 </template>
 
 <script lang="ts">
-  import { onMounted, defineComponent, ref } from "vue"
-  import {
+import { onMounted, defineComponent, ref } from "vue";
+import { AppHeaderText, AppIcon, AppAvatar } from "@greep/ui-components";
+import { User } from "@greep/logic/src/gql/graphql";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  components: {
     AppHeaderText,
     AppIcon,
-    AppImageLoader,
     AppAvatar,
-  } from "@greep/ui-components"
-  import { User } from "@greep/logic/src/gql/graphql"
-  import { Logic } from "@greep/logic"
-
-  export default defineComponent({
-    components: {
-      AppHeaderText,
-      AppIcon,
-      AppAvatar,
-      AppImageLoader,
+  },
+  props: {
+    title: {
+      type: String,
+      default: "",
     },
-    props: {
-      title: {
-        type: String,
-        default: "",
-      },
-      useTopPadding: {
-        type: Boolean,
-        default: false,
-      },
+    useTopPadding: {
+      type: Boolean,
+      default: false,
     },
-    name: "DefaultIndexLayout",
+  },
+  name: "DefaultIndexLayout",
 
-    setup() {
-      const AuthUser = ref<User>(Logic.Auth.AuthUser)
+  setup() {
+    const AuthUser = ref<User>(Logic.Auth.AuthUser);
 
-      onMounted(() => {
-        Logic.Auth.watchProperty("AuthUser", AuthUser)
-      })
+    onMounted(() => {
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+    });
 
-      return { Logic, AuthUser }
-    },
-  })
+    return { Logic, AuthUser };
+  },
+});
 </script>

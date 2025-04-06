@@ -32,58 +32,58 @@
 </template>
 
 <script lang="ts">
-  import { AppHeaderText, AppIcon, AppImageLoader } from "@greep/ui-components"
-  import { ref, defineComponent } from "vue"
-  import { useRouter } from "vue-router"
+import { AppHeaderText, AppIcon, AppImageLoader } from "@greep/ui-components";
+import { ref, defineComponent } from "vue";
+import { useRouter } from "vue-router";
 
-  export default defineComponent({
-    components: {
-      AppHeaderText,
-      AppIcon,
-      AppImageLoader,
+export default defineComponent({
+  components: {
+    AppHeaderText,
+    AppIcon,
+    AppImageLoader,
+  },
+  props: {
+    title: {
+      type: String,
+      default: "",
     },
-    props: {
-      title: {
-        type: String,
-        default: "",
-      },
-      useTopPadding: {
-        type: Boolean,
-        default: false,
-      },
+    useTopPadding: {
+      type: Boolean,
+      default: false,
     },
-    name: "DashboardLayout",
-    setup() {
-      const router = useRouter()
-      const selectedTab = ref("")
-      const tabIsActive = (tabName: string) => {
-        const mainName = tabName
+  },
+  name: "DashboardLayout",
+  setup() {
+    const router = useRouter();
+    const selectedTab = ref("");
+    const tabIsActive = (tabName: string) => {
+      const mainName = tabName;
 
-        if (mainName == "base" && router.currentRoute.value.path == "/") {
-          return true
-        } else if (
-          mainName != "base" &&
-          router.currentRoute.value.path.includes(mainName)
-        ) {
-          selectedTab.value = mainName
-          return true
-        }
-        return false
+      if (mainName == "base" && router.currentRoute.value.path == "/") {
+        return true;
+      } else if (
+        mainName != "base" &&
+        router.currentRoute.value.path.includes(mainName)
+      ) {
+        selectedTab.value = mainName;
+        return true;
       }
+      return false;
+    };
 
-      const goBack = () => {
-        window.history.length > 1 ? router.go(-1) : router.push("/")
-      }
+    const goBack = () => {
+      window.history.length > 1 ? router.go(-1) : router.push("/");
+    };
 
-      const goToRoute = (route: string) => {
-        router.push(route)
-      }
+    const goToRoute = (route: string) => {
+      router.push(route);
+    };
 
-      return {
-        tabIsActive,
-        goBack,
-        goToRoute,
-      }
-    },
-  })
+    return {
+      tabIsActive,
+      goBack,
+      goToRoute,
+    };
+  },
+});
 </script>
