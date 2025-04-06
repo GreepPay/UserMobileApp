@@ -1,22 +1,9 @@
 <template>
   <app-wrapper>
-    <auth-layout>
-      <template #top-action>
-        <app-button
-          class="bg-white !text-primary border-[1px] border-primary !py-1 rounded-[5px]"
-          @click="Logic.Common.GoToRoute('/auth/signup')"
-          >Sign Up</app-button
-        >
-      </template>
-      <div class="w-full flex flex-col items-center justify-start h-full space-y-6">
-        <!-- Headers -->
-        <div class="w-full flex flex-col items-start justify-start space-y-1">
-          <app-header-text> Welcome! </app-header-text>
-          <app-normal-text class="!text-gray-500">
-            Login to your account
-          </app-normal-text>
-        </div>
-
+    <subpage-layout title="Sign In">
+      <div
+        class="w-full flex flex-col items-center justify-start h-full space-y-6 px-4"
+      >
         <!-- Form -->
         <app-form-wrapper
           ref="formComponent"
@@ -24,91 +11,119 @@
           class="w-full flex flex-col space-y-3 pt-2"
         >
           <app-text-field
-            :has-title="true"
+            :has-title="false"
             type="email"
-            placeholder="Enter your email"
-            ref="emailRef"
-            name="Email"
-            :rules="[FormValidations.RequiredRule]"
+            placeholder="Enter email address"
+            ref="email"
+            name="Email address"
+            use-floating-label
+            v-model="formData.email"
+            :rules="[FormValidations.RequiredRule, FormValidations.EmailRule]"
           >
-            <template #title> Email </template>
-            <template #inner-prefix>
-              <span class="pr-1">
-                <app-icon name="email" custom-class="h-[13px]" />
-              </span>
-            </template>
           </app-text-field>
+
           <app-text-field
-            :has-title="true"
+            :has-title="false"
             type="password"
-            placeholder="Enter your password"
-            ref="passwordRef"
-            name="Password"
+            placeholder="Password"
+            ref="password"
+            name="password"
+            use-floating-label
+            v-model="formData.password"
             :rules="[FormValidations.RequiredRule]"
-          >
-            <template #title> Password </template>
-            <template #inner-prefix>
-              <span class="pr-1">
-                <app-icon name="password" custom-class="h-[16px]" />
-              </span>
-            </template>
-          </app-text-field>
-
-          <!-- Forgot Password -->
-          <div class="w-full flex flex-row items-center justify-end">
-            <app-normal-text
-              class="text-primary underline cursor-pointer"
-              @click="Logic.Common.GoToRoute('/auth/forgot-password')"
-            >
-              Forgot Password?
-            </app-normal-text>
-          </div>
-
-          <!-- Button -->
-          <div class="w-full flex flex-col items-center justify-center pt-5">
-            <app-button @click.prevent="Logic.Common.GoToRoute('/')" class="w-full py-3">
-              Login
-            </app-button>
-          </div>
+          />
         </app-form-wrapper>
       </div>
-    </auth-layout>
+
+      <!-- Bottom section -->
+      <div
+        class="w-full flex flex-col px-4 fixed z-50 bottom-0 left-0 pt-4 bg-white"
+        style="padding-bottom: calc(env(safe-area-inset-bottom) + 16px)"
+      >
+        <app-button
+          variant="secondary"
+          class="!py-4 col-span-4"
+          @click="handleSignIn"
+          :loading="loadingState"
+        >
+          Next
+        </app-button>
+      </div>
+    </subpage-layout>
   </app-wrapper>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import {
-  AppHeaderText,
-  AppNormalText,
-  AppFormWrapper,
-  AppTextField,
-  AppButton,
-  AppIcon,
-} from "@greep/ui-components";
+import { defineComponent, reactive, ref } from "vue";
+import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
 
 export default defineComponent({
   name: "LoginPage",
   components: {
-    AppHeaderText,
-    AppNormalText,
     AppFormWrapper,
     AppTextField,
     AppButton,
-    AppIcon,
   },
   setup() {
     const FormValidations = Logic.Form;
+    const formComponent = ref();
+    const loading = ref(false);
+    const loadingState = ref(false);
+
+    // Create an instance of Auth
+    const formData = reactive({ email: "", password: "" });
+
+    // Function to handle sign-in
+    const handleSignIn = async () => {
+      const state = formComponent.value?.validate();
+
+      if (state) {
+        loadingState.value = true;
+        Logic.Auth.SignInPayload = {
+          email: formData.email,
+          password: formData.password,
+        };
+
+        try {
+          await Logic.Auth.SignIn(true);
+          await Logic.Auth.GetAuthUser();
+          loadingState.value = false;
+
+          // Check if passcode has been set
+          if (localStorage.getItem("auth_passcode")) {
+            Logic.Common.GoToRoute("/");
+          } else {
+            // Save auth email and pass
+            localStorage.setItem(
+              "auth_email",
+              Logic.Auth.SignInPayload?.email || ""
+            );
+            localStorage.setItem(
+              "auth_pass",
+              Logic.Auth.SignInPayload?.password || ""
+            );
+            Logic.Common.GoToRoute("/auth/set-passcode");
+          }
+        } catch {
+          loadingState.value = false;
+        }
+      }
+    };
 
     return {
       FormValidations,
       Logic,
+      formData,
+      formComponent,
+      loading,
+      loadingState,
+      handleSignIn,
     };
   },
   data() {
     return {
-      parentRefs: null,
+      parentRefs: [],
     };
   },
   mounted() {
