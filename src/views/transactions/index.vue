@@ -92,7 +92,6 @@ import { ref, reactive } from "vue";
 import { defineComponent } from "vue";
 import {
   AppNormalText,
-  AppHeaderText,
   AppTransactions,
   AppIcon,
   AppTextField,
@@ -104,14 +103,13 @@ export default defineComponent({
   name: "TransactionsPage",
   components: {
     AppNormalText,
-    AppHeaderText,
     AppTransactions,
     AppIcon,
     AppTextField,
     AppSelect,
   },
   setup() {
-    const transactions = reactive<
+    const transactions = ref<
       {
         id: string | number;
         title: string;

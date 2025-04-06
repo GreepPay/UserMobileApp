@@ -40,74 +40,72 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, computed, ref } from "vue"
-  import {
+import { defineComponent, ref } from "vue";
+import {
+  AppFormWrapper,
+  AppNormalText,
+  AppOtpInput,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  components: {
     AppFormWrapper,
     AppNormalText,
     AppOtpInput,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  const auth = Logic.Auth
-
-  export default defineComponent({
-    components: {
-      AppFormWrapper,
-      AppNormalText,
-      AppOtpInput,
+  },
+  name: "AuthSetupVerifyEmail",
+  props: {
+    numberOfInputs: {
+      type: Number,
+      default: 4,
     },
-    name: "AuthSetupVerifyEmail",
-    props: {
-      numberOfInputs: {
-        type: Number,
-        default: 4,
-      },
-    },
-    setup(_, { emit }) {
-      const FormValidations = Logic.Form
-      const formComponent = ref()
-      const formData = reactive({ otp: "" })
-      const otpCode = ref("")
+  },
+  setup() {
+    const FormValidations = Logic.Form;
 
-      const handleOTPChange = () => {
-        // formData.otp_code = value;
-      }
+    const otpCode = ref("");
 
-      const resentVerifyEmail = () => {
-        Logic.Auth.ResendEmailOTP(localStorage.getItem("auth_email") || "")
-        Logic.Common.showAlert({
-          show: true,
-          message:
-            "A new verification email has been sent to your email address.",
-          type: "success",
-        })
-      }
+    const handleOTPChange = () => {
+      // formData.otp_code = value;
+    };
 
-      const continueWithForm = () => {
-        console.log("otpCode.value", otpCode.value)
+    const resentVerifyEmail = () => {
+      Logic.Auth.ResendEmailOTP(localStorage.getItem("auth_email") || "");
+      Logic.Common.showAlert({
+        show: true,
+        message:
+          "A new verification email has been sent to your email address.",
+        type: "success",
+      });
+    };
 
-        if (otpCode.value.toString().length == 4) {
-          return otpCode.value.toString()
-        } else {
-          return
-        }
-      }
+    const continueWithForm = () => {
+      console.log("otpCode.value", otpCode.value);
 
-      return {
-        otpCode,
-        FormValidations,
-        handleOTPChange,
-        resentVerifyEmail,
-        continueWithForm,
+      if (otpCode.value.toString().length == 4) {
+        return otpCode.value.toString();
+      } else {
+        return;
       }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    };
+
+    return {
+      otpCode,
+      FormValidations,
+      handleOTPChange,
+      resentVerifyEmail,
+      continueWithForm,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

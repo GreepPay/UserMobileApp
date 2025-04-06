@@ -94,84 +94,53 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from "vue"
-  import {
+import { defineComponent, ref } from "vue";
+import {
+  AppHeaderText,
+  AppButton,
+  AppKeyboard,
+  AppNormalText,
+  AppTitleCardContainer,
+  AppCurrencySwitch,
+  AppAvatar,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "SendMoneyEnterAmountPage",
+  components: {
     AppHeaderText,
+    AppNormalText,
     AppButton,
     AppKeyboard,
-    AppNormalText,
     AppTitleCardContainer,
     AppCurrencySwitch,
     AppAvatar,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const modelCurrencyValue = ref("NGN");
+    const amount = ref("0");
+    const maximumAmount = 10000;
 
-  export default defineComponent({
-    name: "SendMoneyEnterAmountPage",
-    components: {
-      AppHeaderText,
-      AppNormalText,
-      AppButton,
-      AppKeyboard,
-      AppTitleCardContainer,
-      AppCurrencySwitch,
-      AppAvatar,
-    },
-    setup() {
-      const modelCurrencyValue = ref("NGN")
-      const amount = ref("0")
-      const maximumAmount = 10000
+    const amountIsValid = () => {
+      return (
+        parseFloat(amount.value) > 0 &&
+        parseFloat(amount.value) <= maximumAmount
+      );
+    };
 
-      const amountIsValid = () => {
-        return (
-          parseFloat(amount.value) > 0 &&
-          parseFloat(amount.value) <= maximumAmount
-        )
-      }
+    const continueToNext = () => {
+      Logic.Common.GoToRoute("/send/confirm");
+    };
 
-      const beneficiaries = ref([
-        {
-          id: 1,
-          image: "images/temps/profile-1.png",
-          name: "Samwell Taiwo",
-          description: "Greep User",
-          isBeneficiary: false,
-        },
-        {
-          id: 2,
-          image: "images/temps/profile-2.png",
-          name: "Jane Smith",
-          description: "Greep Merchant",
-          isBeneficiary: true,
-        },
-        {
-          id: 3,
-          image: "images/temps/profile-1.png",
-          name: "John Doe",
-          description: "Greep User",
-          isBeneficiary: false,
-        },
-        {
-          id: 4,
-          image: "images/temps/profile-2.png",
-          name: "Sarah Johnson",
-          description: "Greep Merchant",
-          isBeneficiary: true,
-        },
-      ])
-
-      const continueToNext = () => {
-        Logic.Common.GoToRoute("/send/confirm")
-      }
-
-      return {
-        amount,
-        Logic,
-        maximumAmount,
-        continueToNext,
-        amountIsValid,
-        modelCurrencyValue,
-      }
-    },
-  })
+    return {
+      amount,
+      Logic,
+      maximumAmount,
+      continueToNext,
+      amountIsValid,
+      modelCurrencyValue,
+    };
+  },
+});
 </script>

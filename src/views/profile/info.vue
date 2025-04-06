@@ -48,61 +48,60 @@
 </template>
 
 <script lang="ts">
-  import { ref } from "vue"
-  import { defineComponent, computed, onMounted } from "vue"
-  import {
-    AppAvatar,
-    AppIcon,
+import { ref } from "vue";
+import { defineComponent, computed, onMounted } from "vue";
+import {
+  // AppAvatar,
+  // AppIcon,
+  AppDetails,
+  // AppFileAttachment,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "ProfilePersonalInfo",
+  components: {
+    // AppAvatar,
+    // AppIcon,
     AppDetails,
-    AppFileAttachment,
-  } from "@greep/ui-components"
-  import { User } from "@greep/logic/src/gql/graphql"
-  import { Logic } from "@greep/logic"
+    // AppFileAttachment,
+  },
+  setup() {
+    const AuthUser = ref(Logic.Auth.AuthUser);
+    // const userDetails = [
+    //   { title: "First & Last Name", content: "Raymond Ray" },
+    //   { title: "Phone Number", content: "+234 802 222 4591" },
+    //   { title: "Email Address", content: "draykintola@gmail.com" },
+    //   { title: "State, Country", content: "Ibadan, Nigeria" },
+    // ]
 
-  export default defineComponent({
-    name: "ProfilePersonalInfo",
-    components: {
-      AppAvatar,
-      AppIcon,
-      AppDetails,
-      AppFileAttachment,
-    },
-    setup() {
-      const AuthUser = ref<User>(Logic.Auth.AuthUser)
-      // const userDetails = [
-      //   { title: "First & Last Name", content: "Raymond Ray" },
-      //   { title: "Phone Number", content: "+234 802 222 4591" },
-      //   { title: "Email Address", content: "draykintola@gmail.com" },
-      //   { title: "State, Country", content: "Ibadan, Nigeria" },
-      // ]
+    //
+    const userDetails = computed(() => {
+      return [
+        {
+          title: "First & Last Name",
+          content: `${AuthUser.value?.first_name} ${AuthUser.value?.last_name}`,
+        },
+        {
+          title: "Email Address",
+          content: AuthUser.value?.email || "",
+        },
+        {
+          title: "State, Country",
+          content: `${AuthUser.value?.profile?.customer?.city}, ${AuthUser.value?.profile?.customer?.country}`,
+        },
+      ];
+    });
 
-      //
-      const userDetails = computed(() => {
-        return [
-          {
-            title: "First & Last Name",
-            content: `${AuthUser.value?.first_name} ${AuthUser.value?.last_name}`,
-          },
-          {
-            title: "Email Address",
-            content: AuthUser.value?.email,
-          },
-          {
-            title: "State, Country",
-            content: `${AuthUser.value?.profile?.customer?.city}, ${AuthUser.value?.profile?.customer?.country}`,
-          },
-        ]
-      })
+    onMounted(() => {
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+    });
 
-      onMounted(() => {
-        Logic.Auth.watchProperty("AuthUser", AuthUser)
-      })
-
-      return {
-        Logic,
-        userDetails,
-        AuthUser,
-      }
-    },
-  })
+    return {
+      Logic,
+      userDetails,
+      AuthUser,
+    };
+  },
+});
 </script>

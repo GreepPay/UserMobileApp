@@ -12,9 +12,9 @@
         </app-normal-text>
       </app-info-box>
 
-      <div class="w-full flex flex-col space-y-2">
+      <div class="w-full flex flex-col">
         <div
-          class="w-full flex flex-row justify-between items-center py-2"
+          class="w-full flex flex-row justify-between items-center py-2 mb-3"
           v-for="(currency, index) in availableCurrencies"
           :key="index"
           @click="formData.preferred_currency = currency.code"
@@ -47,50 +47,50 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
-  import {
+import { defineComponent, reactive } from "vue";
+import {
+  AppFormWrapper,
+  AppInfoBox,
+  AppNormalText,
+  AppIcon,
+  AppImageLoader,
+} from "@greep/ui-components";
+import { availableCurrencies } from "../../composable";
+
+export default defineComponent({
+  components: {
     AppFormWrapper,
     AppInfoBox,
     AppNormalText,
     AppIcon,
     AppImageLoader,
-  } from "@greep/ui-components"
-  import { availableCurrencies } from "../../composable"
+  },
+  props: {},
+  setup() {
+    const formData = reactive({ preferred_currency: "NGN" });
 
-  export default defineComponent({
-    components: {
-      AppFormWrapper,
-      AppInfoBox,
-      AppNormalText,
-      AppIcon,
-      AppImageLoader,
-    },
-    props: {},
-    setup() {
-      const formData = reactive({ preferred_currency: "NGN" })
+    const continueWithForm = () => {
+      if (formData.preferred_currency) {
+        return formData;
+      } else {
+        return;
+      }
+    };
 
-      const continueWithForm = () => {
-        if (formData.preferred_currency) {
-          return formData
-        } else {
-          return
-        }
-      }
-
-      return {
-        formData,
-        availableCurrencies,
-        continueWithForm,
-      }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    return {
+      formData,
+      availableCurrencies,
+      continueWithForm,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

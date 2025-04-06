@@ -4,16 +4,15 @@
       <div class="w-full flex flex-col items-center justify-start">
         <div class="px-4 w-full">
           <app-title-card-container>
-            <div
-              class="flex flex-col space-y-3 justify-center items-center w-full"
-            >
+            <div class="flex flex-col justify-center items-center w-full">
               <app-currency-switch
                 :model-value="modelCurrencyValue"
-                default-currency="NGN"
+                default_currency="NGN"
+                :availableCurrencies="availableCurrencies"
               />
 
               <div
-                class="w-full py-3 flex flex-col items-center justify-center"
+                class="w-full py-3 flex flex-col items-center justify-center !pt-6"
               >
                 <app-normal-text
                   custom-class="!text-white !font-normal !font-sm pb-1  text-center"
@@ -31,7 +30,7 @@
                 </app-header-text>
               </div>
 
-              <div class="flex w-full justify-between items-center px-6">
+              <div class="flex w-full justify-between items-center px-6 !pt-4">
                 <div
                   class="flex flex-col items-center px-3"
                   v-for="action in actionBtns"
@@ -97,24 +96,27 @@
       "
     >
       <div class="w-full flex flex-col items-center">
-        <app-icon name="green-lovely" custom-class="size-[96px]" />
+        <app-icon name="green-lovely" custom-class="!h-[90px]" />
 
         <div
           class="w-full flex flex-col pt-2 pb-6 px-5 items-center justify-center"
         >
-          <app-header-text class="text-center w-full !text-xl">
+          <app-normal-text
+            class="text-center w-full !text-lg !font-semibold pb-2"
+          >
             Welcome
-          </app-header-text>
+          </app-normal-text>
 
-          <app-normal-text class="text-center !text-lg !text-gray-two w-full">
+          <app-normal-text class="text-center !text-sm !text-gray-two w-full">
             Experience borderless payments without the stress of manual
             conversion to your preferred currency.
           </app-normal-text>
         </div>
 
         <app-button
-          :custom-class="`!bg-secondary !w-full !py-4  !px-8`"
+          :custom-class="`!bg-secondary !w-full !py-4 !px-8 !text-sm`"
           @click="showWelcomeModal = false"
+          variant="secondary"
         >
           Start using Greep
         </app-button>
@@ -138,13 +140,8 @@
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
   import { getPlatforms, onIonViewDidEnter } from "@ionic/vue"
-  // import { User } from "@greep/logic/src/gql/graphql";
-
-  interface User {
-    id: number
-    name: string
-    avatar: string
-  }
+  import { availableCurrencies } from "../composable"
+  import { User } from "@greep/logic/src/gql/graphql"
 
   export default defineComponent({
     name: "IndexPage",
@@ -221,59 +218,21 @@
           transactionType: "debit",
           date: "Today",
         },
-        // {
-        //   id: 2,
-        //   title: "Freelance Payment",
-        //   amount: 50000,
-        //   type: "received",
-        //   transactionType: "credit",
-        //   date: "Yesterday",
-        // },
-        // {
-        //   id: 3,
-        //   title: "Wallet Top-Up",
-        //   amount: 100000,
-        //   type: "added",
-        //   transactionType: "credit",
-        //   date: "2 Days Ago",
-        // },
-        // {
-        //   id: 4,
-        //   title: "Gift Card Redemption",
-        //   amount: 25000,
-        //   type: "redeemed",
-        //   transactionType: "debit",
-        //   date: "Last Week",
-        // },
-        // {
-        //   id: 5,
-        //   title: "Online Shopping",
-        //   amount: 45000,
-        //   type: "sent",
-        //   transactionType: "debit",
-        //   date: "Last Month",
-        // },
       ])
 
       const users = ref<User[]>([
-        { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
-        // { id: 2, name: "Test", avatar: "/images/temps/profile-2.png" },
-        // { id: 3, name: "Sukky", avatar: "/images/temps/profile-1.png" },
-        // { id: 4, name: "Samuel", avatar: "/images/temps/profile-1.png" },
-        // { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
-        // { id: 5, name: "Samuel", avatar: "/images/temps/profile-1.png" },
-        // { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
+        // { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
       ])
 
       const defaultCurrency = ref("NGN")
       const selectedCurrency = ref("NGN")
       const currencySymbol = ref("₦")
 
-      const ManyTransactions = ref(Logic.Wallet.ManyTransactions)
-      const ManyPointTransactions = ref(Logic.Wallet.ManyPointTransactions)
-      const CurrentGlobalExchangeRate = ref(
-        Logic.Wallet.CurrentGlobalExchangeRate
-      )
+      // const ManyTransactions = ref(Logic.Wallet.ManyTransactions)
+      // const ManyPointTransactions = ref(Logic.Wallet.ManyPointTransactions)
+      // const CurrentGlobalExchangeRate = ref(
+      //   Logic.Wallet.CurrentGlobalExchangeRate
+      // )
       const AuthUser = ref<User>(Logic.Auth.AuthUser)
 
       const currentPlatform = computed(() => {
@@ -292,15 +251,15 @@
 
       onMounted(() => {
         // Register reactive data
-        Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
-        Logic.Wallet.watchProperty(
-          "ManyPointTransactions",
-          ManyPointTransactions
-        )
-        Logic.Wallet.watchProperty(
-          "CurrentGlobalExchangeRate",
-          CurrentGlobalExchangeRate
-        )
+        // Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
+        // Logic.Wallet.watchProperty(
+        //   "ManyPointTransactions",
+        //   ManyPointTransactions
+        // )
+        // Logic.Wallet.watchProperty(
+        //   "CurrentGlobalExchangeRate",
+        //   CurrentGlobalExchangeRate
+        // )
         Logic.Auth.watchProperty("AuthUser", AuthUser)
         setPageDefaults()
       })
@@ -318,7 +277,8 @@
         selectedCurrency,
         currencySymbol,
         AuthUser,
-        CurrentGlobalExchangeRate,
+        // CurrentGlobalExchangeRate,
+        availableCurrencies,
       }
     },
   })

@@ -15,7 +15,7 @@
         </app-title-card-container>
 
         <div
-          class="flex py-6 px-5 rounded-3xl items-center w-full justify-between space-x-3 w-full border"
+          class="flex py-6 px-5 rounded-3xl items-center w-full justify-between space-x-3 border"
         >
           <app-normal-text
             custom-class="!text-gray-two !flex-1 capitalize flex-1"
@@ -55,7 +55,6 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive } from "vue";
 import { defineComponent } from "vue";
 import {
   AppTitleCardContainer,

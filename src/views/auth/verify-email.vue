@@ -27,41 +27,41 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from "vue"
-  import { AppButton } from "@greep/ui-components"
-  import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue"
-  import { Logic } from "@greep/logic"
-  const auth = Logic.Auth
+import { defineComponent, ref } from "vue";
+import { AppButton } from "@greep/ui-components";
+import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue";
+import { Logic } from "@greep/logic";
+const auth = Logic.Auth;
 
-  export default defineComponent({
-    name: "VerifyEmailPage",
-    components: {
-      AuthSetupVerifyEmail,
-      AppButton,
-    },
-    emits: ["next"],
-    setup(_, { emit }) {
-      const loading = ref(false)
-      const isEmailVerified = ref(false)
+export default defineComponent({
+  name: "VerifyEmailPage",
+  components: {
+    AuthSetupVerifyEmail,
+    AppButton,
+  },
+  emits: ["next"],
+  setup(_, { emit }) {
+    const loading = ref(false);
+    const isEmailVerified = ref(false);
 
-      const handleVerifiedEmail = () => {
-        console.log(87667)
-        console.log(" auth.VerifyUserOtpPayload ", auth.VerifyUserOtpPayload)
-      }
+    const handleVerifiedEmail = () => {
+      console.log(87667);
+      console.log(" auth.VerifyUserOtpPayload ", auth.VerifyUserOTPayload);
+    };
 
-      const handleNext = () => {
-        Logic.Common.GoToRoute("/auth/welcome")
-      }
+    const handleNext = () => {
+      Logic.Common.GoToRoute("/auth/welcome");
+    };
 
-      return {
-        loading,
-        Logic,
-        isEmailVerified,
-        handleNext,
-        handleVerifiedEmail,
-        // handleVerifyEmail,
-        emit,
-      }
-    },
-  })
+    return {
+      loading,
+      Logic,
+      isEmailVerified,
+      handleNext,
+      handleVerifiedEmail,
+      // handleVerifyEmail,
+      emit,
+    };
+  },
+});
 </script>

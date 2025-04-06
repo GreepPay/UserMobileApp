@@ -46,58 +46,58 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, watch, ref } from "vue"
-  import {
+import { defineComponent, reactive, ref } from "vue";
+import {
+  AppFormWrapper,
+  AppTextField,
+  AppInfoBox,
+  AppNormalText,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  components: {
     AppFormWrapper,
     AppTextField,
     AppInfoBox,
     AppNormalText,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  props: {},
+  name: "AuthSetupPassword",
+  setup() {
+    const FormValidations = Logic.Form;
+    const formComponent = ref<any>(null);
 
-  export default defineComponent({
-    components: {
-      AppFormWrapper,
-      AppTextField,
-      AppInfoBox,
-      AppNormalText,
-    },
-    props: {},
-    name: "AuthSetupPassword",
-    setup() {
-      const FormValidations = Logic.Form
-      const formComponent = ref<any>(null)
+    const formData = reactive({
+      password: "",
+      confirm_password: "",
+    });
 
-      const formData = reactive({
-        password: "DanielScript@10",
-        confirm_password: "DanielScript@10",
-      })
-
-      const continueWithForm = () => {
-        const state = formComponent.value?.validate()
-        if (state) {
-          return formData
-        } else {
-          return
-        }
+    const continueWithForm = () => {
+      const state = formComponent.value?.validate();
+      if (state) {
+        return formData;
+      } else {
+        return;
       }
+    };
 
-      return {
-        FormValidations,
-        Logic,
-        formData,
-        formComponent,
-        continueWithForm,
-      }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    return {
+      FormValidations,
+      Logic,
+      formData,
+      formComponent,
+      continueWithForm,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

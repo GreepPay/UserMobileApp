@@ -67,93 +67,92 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, watch, reactive, ref, onMounted } from "vue"
-  import {
+import { defineComponent, watch, reactive, ref, onMounted } from "vue";
+import {
+  AppHeaderText,
+  AppNormalText,
+  AppKeyboard,
+  AppImageLoader,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "WelcomePage",
+  components: {
     AppHeaderText,
     AppNormalText,
     AppKeyboard,
     AppImageLoader,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  import { User } from "@greep/logic/src/gql/graphql"
+  },
+  setup() {
+    const AuthUser = ref(Logic.Auth.AuthUser);
 
-  export default defineComponent({
-    name: "WelcomePage",
-    components: {
-      AppHeaderText,
-      AppNormalText,
-      AppKeyboard,
-      AppImageLoader,
-    },
-    setup() {
-      const AuthUser = ref<User>(Logic.Auth.AuthUser)
+    const formData = reactive({
+      passcode: "",
+    });
 
-      const formData = reactive({
-        passcode: "",
-      })
+    watch(formData, async () => {
+      if (formData.passcode.length === 6) {
+        await isFilled();
+      }
+    });
 
-      watch(formData, async () => {
-        if (formData.passcode.length === 6) {
-          await isFilled()
-        }
-      })
+    const isFilled = async () => {
+      const authPasscode = localStorage.getItem("auth_passcode");
 
-      const isFilled = async () => {
-        const authPasscode = localStorage.getItem("auth_passcode")
-
-        if (formData.passcode != authPasscode) {
-          Logic.Common.showAlert({
-            show: true,
-            type: "error",
-            message: "Invalid passcode. Please try again.",
-          })
-          formData.passcode = ""
-          return
-        }
-
-        const encryptedAuthData = localStorage.getItem("auth_encrypted_data")
-
-        try {
-          const authData: any = Logic.Common.decryptData(
-            encryptedAuthData || "",
-            authPasscode
-          )
-
-          Logic.Auth.SignInPayload = {
-            email: authData.email,
-            password: authData.password,
-          }
-        } catch (error) {
-          Logic.Common.showAlert({
-            show: true,
-            type: "error",
-            message: "Invalid passcode. Please try again.",
-          })
-          formData.passcode = ""
-          return
-        }
-
-        console.log(67)
-
-        Logic.Common.showLoader({
+      if (formData.passcode != authPasscode) {
+        Logic.Common.showAlert({
           show: true,
-          loading: true,
-        })
-
-        await Logic.Auth.SignIn(true)
-        Logic.Common.hideLoader()
-        Logic.Common.GoToRoute("/")
+          type: "error",
+          message: "Invalid passcode. Please try again.",
+        });
+        formData.passcode = "";
+        return;
       }
 
-      onMounted(() => {
-        Logic.Auth.watchProperty("AuthUser", AuthUser)
-      })
+      const encryptedAuthData = localStorage.getItem("auth_encrypted_data");
 
-      return {
-        Logic,
-        formData,
-        AuthUser,
+      try {
+        const authData: any = Logic.Common.decryptData(
+          encryptedAuthData || "",
+          authPasscode
+        );
+
+        Logic.Auth.SignInPayload = {
+          email: authData.email,
+          password: authData.password,
+        };
+      } catch (error) {
+        Logic.Common.showAlert({
+          show: true,
+          type: "error",
+          message: "Invalid passcode. Please try again.",
+        });
+        formData.passcode = "";
+        return;
       }
-    },
-  })
+
+      console.log(67);
+
+      Logic.Common.showLoader({
+        show: true,
+        loading: true,
+      });
+
+      await Logic.Auth.SignIn(true);
+      Logic.Common.hideLoader();
+      Logic.Common.GoToRoute("/");
+    };
+
+    onMounted(() => {
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+    });
+
+    return {
+      Logic,
+      formData,
+      AuthUser,
+    };
+  },
+});
 </script>

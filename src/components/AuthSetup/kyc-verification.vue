@@ -39,74 +39,76 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, onMounted, ref } from "vue"
-  import {
+import { defineComponent, reactive, onMounted, ref } from "vue";
+import {
+  AppFormWrapper,
+  AppTextField,
+  AppInfoBox,
+  AppNormalText,
+  AppSelect,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+import { supportedCountries } from "../../composable";
+
+export default defineComponent({
+  components: {
     AppFormWrapper,
     AppTextField,
     AppInfoBox,
     AppNormalText,
     AppSelect,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  import { supportedCountries } from "../../composable"
+  },
+  props: {},
+  name: "AuthSetupKycVerification",
+  setup() {
+    const FormValidations = Logic.Form;
+    const formComponent = ref();
+    const formData = reactive({ idType: "", idNumber: "" });
 
-  export default defineComponent({
-    components: {
-      AppFormWrapper,
-      AppTextField,
-      AppInfoBox,
-      AppNormalText,
-      AppSelect,
-    },
-    props: {},
-    name: "AuthSetupKycVerification",
-    setup() {
-      const FormValidations = Logic.Form
-      const formComponent = ref()
-      const formData = reactive({ idType: "", idNumber: "" })
+    const selectedSupportedCountry = ref(supportedCountries[0]);
 
-      const selectedSupportedCountry = ref(supportedCountries[0])
-
-      const getIdMethodsForCountry = () => {
-        const defaultCurrency = Logic.Auth.SignUpPayload?.default_currency
-        if (defaultCurrency) {
-          selectedSupportedCountry.value = supportedCountries.find(
-            (c) => c.currency === defaultCurrency
-          )
-        }
+    const getIdMethodsForCountry = () => {
+      const defaultCurrency = Logic.Auth.SignUpPayload?.default_currency;
+      if (defaultCurrency) {
+        const currentCountry = supportedCountries.find(
+          (c) => c.currency === defaultCurrency
+        );
+        selectedSupportedCountry.value =
+          currentCountry || supportedCountries[0];
       }
+    };
 
-      const continueWithForm = () => {
-        const state = formComponent.value?.validate()
-        if (state) {
-          if (formData.idType)
-            return {
-              ...formData,
-              countryIsoCode: selectedSupportedCountry.value?.isoCode || "",
-            }
-          else return
-        }
+    const continueWithForm = () => {
+      const state = formComponent.value?.validate();
+      if (state) {
+        if (formData.idType)
+          return {
+            ...formData,
+            countryIsoCode: selectedSupportedCountry.value?.isoCode || "",
+          };
+        else return;
       }
+    };
 
-      onMounted(() => getIdMethodsForCountry())
+    onMounted(() => getIdMethodsForCountry());
 
-      return {
-        FormValidations,
-        Logic,
-        formData,
-        selectedSupportedCountry,
-        formComponent,
-        continueWithForm,
-      }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    return {
+      FormValidations,
+      Logic,
+      formData,
+      selectedSupportedCountry,
+      formComponent,
+      continueWithForm,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

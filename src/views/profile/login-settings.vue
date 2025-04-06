@@ -80,54 +80,52 @@
 </template>
 
 <script lang="ts">
-  import { reactive } from "vue"
-  import { defineComponent } from "vue"
-  import { 
+import { reactive } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppNormalText,
+  AppButton,
+  AppTextField,
+  AppInfoBox,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "ProfileLoginSettings",
+  components: {
     AppNormalText,
-    AppHeaderText,
     AppButton,
     AppTextField,
     AppInfoBox,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const FormValidations = Logic.Form;
+    const formData = reactive({
+      old_passcode: "",
+      new_passcode: "",
+      confirm_passcode: "",
+    });
 
-  export default defineComponent({
-    name: "ProfileLoginSettings",
-    components: { 
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppTextField,
-      AppInfoBox,
-    },
-    setup() {
-      const FormValidations = Logic.Form
-      const formData = reactive({
-        old_passcode: "",
-        new_passcode: "",
-        confirm_passcode: "",
-      })
+    const handleConfirm = () => {
+      console.log("Form Data:", formData);
+    };
 
-      const handleConfirm = () => {
-        console.log("Form Data:", formData)
-      }
+    return {
+      Logic,
+      FormValidations,
+      formData,
+      handleConfirm,
+    };
+  },
 
-      return {
-        Logic,
-        FormValidations,
-        formData,
-        handleConfirm,
-      }
-    },
-
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

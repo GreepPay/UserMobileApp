@@ -110,8 +110,6 @@
     AppInfoBox,
     AppNormalText,
     AppSelect,
-    AppAvatar,
-    AppIcon,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
   import { Country, State } from "country-state-city"
@@ -124,8 +122,6 @@
       AppInfoBox,
       AppNormalText,
       AppSelect,
-      AppAvatar,
-      AppIcon,
     },
     props: {},
     name: "AuthSetupAccountInfo",

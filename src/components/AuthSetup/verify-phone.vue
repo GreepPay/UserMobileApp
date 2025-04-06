@@ -37,60 +37,61 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
-  import {
+import { defineComponent, reactive } from "vue";
+import {
+  AppFormWrapper,
+  AppNormalText,
+  AppOtpInput,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+const auth = Logic.Auth;
+
+export default defineComponent({
+  components: {
     AppFormWrapper,
     AppNormalText,
     AppOtpInput,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  const auth = Logic.Auth
+  },
+  props: {
+    numberOfInputs: {
+      type: Number,
+      default: 4,
+    },
+  },
+  name: "AuthSetupVerifyEmail",
+  emits: ["verified"],
+  setup(_, { emit }) {
+    const formData = reactive({ otp: "" });
 
-  export default defineComponent({
-    components: {
-      AppFormWrapper,
-      AppNormalText,
-      AppOtpInput,
-    },
-    props: {
-      numberOfInputs: {
-        type: Number,
-        default: 4,
-      },
-    },
-    name: "AuthSetupVerifyEmail",
-    emits: ["verified"],
-    setup(_, { emit }) {
-      const formData = reactive({ otp: "" })
+    const handleOTPChange = (updatedValue: number) => {
+      if (updatedValue.toString().length === _.numberOfInputs) {
+        // @ts-expect-error expected number data
+        auth.VerifyUserOTPayload = {
+          ...auth.VerifyUserOTPayload,
+          otp: updatedValue.toString(),
+        };
+        handleVerifyPhone();
+      }
+    };
 
-      const handleOTPChange = (updatedValue: number) => {
-        if (updatedValue.toString().length === _.numberOfInputs) {
-          auth.VerifyUserOtpPayload = {
-            ...auth.VerifyUserOtpPayload,
-            otp: updatedValue.toString(),
-          }
-          handleVerifyPhone()
-        }
-      }
+    const handleVerifyPhone = async () => {
+      const response = await auth.VerifyUserOTP();
+      if (response) emit("verified", response);
+    };
 
-      const handleVerifyPhone = async () => {
-        const response = await auth.VerifyUserOTP(true)
-        if (response) emit("verified", response)
-      }
-
-      return {
-        formData,
-        handleOTPChange,
-      }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    return {
+      formData,
+      handleOTPChange,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

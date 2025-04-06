@@ -23,7 +23,7 @@
 
             <div class="h-fit space-y-2">
               <app-header-text class="!text-white">
-                {{ AuthUser.first_name }} {{ AuthUser.last_name }}
+                {{ AuthUser?.first_name }} {{ AuthUser?.last_name }}
               </app-header-text>
 
               <div
@@ -37,7 +37,7 @@
                 <app-header-text class="!text-white !text-lg px-2">
                   {{
                     Logic.Common.convertToMoney(
-                      AuthUser.wallet?.point_balance,
+                      AuthUser?.wallet?.point_balance,
                       true,
                       ""
                     )
@@ -76,7 +76,7 @@
         <app-button
           custom-class="!w-full !py-4  !border-red !text-red !border-[1.5px] hover:!bg-red/20"
           :outlined="true"
-          variant="danger"
+          variant="secondary"
         >
           Logout
         </app-button>
@@ -86,67 +86,66 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive, onMounted } from "vue"
-  import { defineComponent } from "vue"
-  import {
+import { ref, reactive, onMounted } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppTitleCardContainer,
+  AppNormalText,
+  AppHeaderText,
+  AppButton,
+  AppIcon,
+  AppAvatar,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "WalletProfilePage",
+  components: {
     AppTitleCardContainer,
     AppNormalText,
     AppHeaderText,
     AppButton,
     AppIcon,
     AppAvatar,
-  } from "@greep/ui-components"
-  import { User } from "@greep/logic/src/gql/graphql"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const amount = ref("1000");
+    const AuthUser = ref(Logic.Auth.AuthUser);
 
-  export default defineComponent({
-    name: "WalletProfilePage",
-    components: {
-      AppTitleCardContainer,
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppIcon,
-      AppAvatar,
-    },
-    setup() {
-      const amount = ref("1000")
-      const AuthUser = ref<User>(Logic.Auth.AuthUser)
+    const profileSettings = reactive<
+      {
+        title: string;
+        route: string;
+        icon: string;
+      }[]
+    >([
+      {
+        title: "Personal Info",
+        route: "info",
+        icon: "linear-user",
+      },
+      {
+        title: "Default Currency",
+        route: "default-currency",
+        icon: "linear-money",
+      },
+      {
+        title: "Login Settings",
+        route: "login-settings",
+        icon: "linear-security-shield",
+      },
+    ]);
 
-      const profileSettings = reactive<
-        {
-          title: string
-          route: string
-          icon: string
-        }[]
-      >([
-        {
-          title: "Personal Info",
-          route: "info",
-          icon: "linear-user",
-        },
-        {
-          title: "Default Currency",
-          route: "default-currency",
-          icon: "linear-money",
-        },
-        {
-          title: "Login Settings",
-          route: "login-settings",
-          icon: "linear-security-shield",
-        },
-      ])
+    onMounted(() => {
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+    });
 
-      onMounted(() => {
-        Logic.Auth.watchProperty("AuthUser", AuthUser)
-      })
-
-      return {
-        Logic,
-        profileSettings,
-        amount,
-        AuthUser,
-      }
-    },
-  })
+    return {
+      Logic,
+      profileSettings,
+      amount,
+      AuthUser,
+    };
+  },
+});
 </script>

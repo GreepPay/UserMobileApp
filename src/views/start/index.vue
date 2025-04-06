@@ -50,9 +50,9 @@
               />
 
               <div
-                class="flex flex-col space-y-2 items-center px-x justify-center"
+                class="flex flex-col space-y-2 items-center px-4 justify-center"
               >
-                <app-header-text class="text-center">
+                <app-header-text class="text-center px-4">
                   Borderless Transactions With Multiple Currencies
                 </app-header-text>
 
@@ -198,10 +198,10 @@
 
             <!-- Button -->
             <div
-              class="flex flex-col space-y-5 justify-center items-center absolute bottom-0 left-0 px-4 pt-4 w-full"
+              class="flex flex-col justify-center items-center absolute bottom-0 left-0 px-4 pt-4 w-full"
               style="padding-bottom: calc(env(safe-area-inset-bottom) + 16px)"
             >
-              <div class="bg-light-gray-one p-5 rounded-2xl">
+              <div class="bg-light-gray-one p-5 rounded-2xl mb-5">
                 <app-header-text
                   class="!text-center text-veryLightGray !font-normal !text-sm"
                 >
@@ -245,48 +245,48 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, watch, ref } from "vue"
-  import AppWrapper from "../../components/AppWrapper.vue"
-  import { Logic } from "@greep/logic"
-  import {
-    AppNormalText,
-    AppHeaderText,
-    AppButton,
+import { defineComponent, watch, ref } from "vue";
+import AppWrapper from "../../components/AppWrapper.vue";
+import { Logic } from "@greep/logic";
+import {
+  AppNormalText,
+  AppHeaderText,
+  AppButton,
+  AppSwiper,
+} from "@greep/ui-components";
+import { SwiperSlide } from "swiper/vue";
+
+export default defineComponent({
+  components: {
+    AppWrapper,
     AppSwiper,
-  } from "@greep/ui-components" 
-  import { SwiperSlide } from "swiper/vue"
+    SwiperSlide,
+    AppButton,
+    AppHeaderText,
+    AppNormalText,
+  },
+  name: "StartWelcomePage",
+  layout: "Onboarding",
+  middlewares: {},
+  setup() {
+    localStorage.setItem("user_onboarded", "true");
 
-  export default defineComponent({
-    components: {
-      AppWrapper,
-      AppSwiper,
-      SwiperSlide,
-      AppButton,
-      AppHeaderText,
-      AppNormalText,
-    },
-    name: "StartWelcomePage",
-    layout: "Onboarding",
-    middlewares: {},
-    setup() {
-      localStorage.setItem("user_onboarded", "true")
+    const slidePosition = ref(0);
 
-      const slidePosition = ref(0)
+    const currentSlidePosition = ref(0);
 
-      const currentSlidePosition = ref(0)
+    const totalSlides = ref(3);
 
-      const totalSlides = ref(3)
+    watch(slidePosition, () => {
+      currentSlidePosition.value = slidePosition.value;
+    });
 
-      watch(slidePosition, () => {
-        currentSlidePosition.value = slidePosition.value
-      })
-
-      return {
-        Logic,
-        slidePosition,
-        currentSlidePosition,
-        totalSlides,
-      }
-    },
-  })
+    return {
+      Logic,
+      slidePosition,
+      currentSlidePosition,
+      totalSlides,
+    };
+  },
+});
 </script>
