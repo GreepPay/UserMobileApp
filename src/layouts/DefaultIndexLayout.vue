@@ -14,6 +14,7 @@
           "
           :alt="`${AuthUser.first_name} ${AuthUser.last_name}`"
           :size="40"
+          @click="Logic.Common.GoToRoute(`/profile`)"
         />
 
         <app-header-text class="!text-left">

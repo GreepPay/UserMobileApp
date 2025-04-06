@@ -146,7 +146,6 @@
       const countryCode = ref("")
       const countries = reactive<SelectOption[]>([])
       const states = reactive<SelectOption[]>([])
- 
 
       const continueWithForm = () => {
         const state = formComponent.value?.validate()

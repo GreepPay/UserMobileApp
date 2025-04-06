@@ -52,6 +52,7 @@
           </app-title-card-container>
         </div>
 
+        <!--  -->
         <div class="w-full h-fit py-6">
           <div class="flex items-center justify-between px-4">
             <app-header-text class="font-semibold"> Quick Pay </app-header-text>
@@ -158,6 +159,28 @@
       HorizontalUserList,
       AppCurrencySwitch,
     },
+    // middlewares: {
+    //   fetchRules: [
+    //     {
+    //       domain: "Wallet",
+    //       property: "ManyTransactions",
+    //       method: "GetTransactions",
+    //       params: [1, 10],
+    //       requireAuth: true,
+    //       ignoreProperty: false,
+    //       silentUpdate: true,
+    //     },
+    //     {
+    //       domain: "Wallet",
+    //       property: "ManyPointTransactions",
+    //       method: "GetPointTransactions",
+    //       params: [1, 10],
+    //       requireAuth: true,
+    //       ignoreProperty: false,
+    //       silentUpdate: true,
+    //     },
+    //   ],
+    // },
     setup() {
       const amount = ref("1000")
       const modelCurrencyValue = ref("NGN")
@@ -179,6 +202,7 @@
           route: "scan",
         },
       ]
+
       const transactions = reactive<
         {
           id: string | number
@@ -197,52 +221,60 @@
           transactionType: "debit",
           date: "Today",
         },
-        {
-          id: 2,
-          title: "Freelance Payment",
-          amount: 50000,
-          type: "received",
-          transactionType: "credit",
-          date: "Yesterday",
-        },
-        {
-          id: 3,
-          title: "Wallet Top-Up",
-          amount: 100000,
-          type: "added",
-          transactionType: "credit",
-          date: "2 Days Ago",
-        },
-        {
-          id: 4,
-          title: "Gift Card Redemption",
-          amount: 25000,
-          type: "redeemed",
-          transactionType: "debit",
-          date: "Last Week",
-        },
-        {
-          id: 5,
-          title: "Online Shopping",
-          amount: 45000,
-          type: "sent",
-          transactionType: "debit",
-          date: "Last Month",
-        },
+        // {
+        //   id: 2,
+        //   title: "Freelance Payment",
+        //   amount: 50000,
+        //   type: "received",
+        //   transactionType: "credit",
+        //   date: "Yesterday",
+        // },
+        // {
+        //   id: 3,
+        //   title: "Wallet Top-Up",
+        //   amount: 100000,
+        //   type: "added",
+        //   transactionType: "credit",
+        //   date: "2 Days Ago",
+        // },
+        // {
+        //   id: 4,
+        //   title: "Gift Card Redemption",
+        //   amount: 25000,
+        //   type: "redeemed",
+        //   transactionType: "debit",
+        //   date: "Last Week",
+        // },
+        // {
+        //   id: 5,
+        //   title: "Online Shopping",
+        //   amount: 45000,
+        //   type: "sent",
+        //   transactionType: "debit",
+        //   date: "Last Month",
+        // },
       ])
 
       const users = ref<User[]>([
         { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
-        { id: 2, name: "Test", avatar: "/images/temps/profile-2.png" },
-        { id: 3, name: "Sukky", avatar: "/images/temps/profile-1.png" },
-        { id: 4, name: "Samuel", avatar: "/images/temps/profile-1.png" },
-        { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
-        { id: 5, name: "Samuel", avatar: "/images/temps/profile-1.png" },
-        { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
+        // { id: 2, name: "Test", avatar: "/images/temps/profile-2.png" },
+        // { id: 3, name: "Sukky", avatar: "/images/temps/profile-1.png" },
+        // { id: 4, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+        // { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
+        // { id: 5, name: "Samuel", avatar: "/images/temps/profile-1.png" },
+        // { id: 5, name: "Sukky", avatar: "/images/temps/profile-2.png" },
       ])
 
       const defaultCurrency = ref("NGN")
       const selectedCurrency = ref("NGN")
+      const currencySymbol = ref("₦")
+
+      const ManyTransactions = ref(Logic.Wallet.ManyTransactions)
+      const ManyPointTransactions = ref(Logic.Wallet.ManyPointTransactions)
+      const CurrentGlobalExchangeRate = ref(
+        Logic.Wallet.CurrentGlobalExchangeRate
+      )
+      const AuthUser = ref<User>(Logic.Auth.AuthUser)
 
       const currentPlatform = computed(() => {
         return getPlatforms()[0]
@@ -260,16 +292,16 @@
 
       onMounted(() => {
         // Register reactive data
-        // Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
-        // Logic.Wallet.watchProperty(
-        //   "ManyPointTransactions",
-        //   ManyPointTransactions
-        // )
-        // Logic.Wallet.watchProperty(
-        //   "CurrentGlobalExchangeRate",
-        //   CurrentGlobalExchangeRate
-        // )
-        // Logic.Auth.watchProperty("AuthUser", AuthUser)
+        Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
+        Logic.Wallet.watchProperty(
+          "ManyPointTransactions",
+          ManyPointTransactions
+        )
+        Logic.Wallet.watchProperty(
+          "CurrentGlobalExchangeRate",
+          CurrentGlobalExchangeRate
+        )
+        Logic.Auth.watchProperty("AuthUser", AuthUser)
         setPageDefaults()
       })
 
@@ -282,6 +314,11 @@
         amount,
         modelCurrencyValue,
         currentPlatform,
+        defaultCurrency,
+        selectedCurrency,
+        currencySymbol,
+        AuthUser,
+        CurrentGlobalExchangeRate,
       }
     },
   })
