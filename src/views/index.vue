@@ -67,7 +67,7 @@
             />
           </div>
 
-          <div class="pt-4">
+          <div class="pt-4 px-4">
             <horizontal-user-list :items="users" :imageSize="56" />
           </div>
         </div>

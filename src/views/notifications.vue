@@ -1,16 +1,27 @@
 <template>
   <app-wrapper>
-    <subpage-layout title="Notifications">
-      <div class="w-full flex flex-col items-center justify-start">
-        <div class="w-full p-6">
-          <app-button custom-class="w-full  !h-14" outlined>
+    <subpage-layout title="Notifications" :hasBottomButton="false">
+      <div
+        class="w-full flex flex-col space-y-5 justify-start px-4 h-full pt-1"
+      >
+        <!-- Mark as read button -->
+        <div class="w-full flex flex-col">
+          <app-button
+            class="w-full !py-4 !text-sm"
+            outlined
+            variant="secondary"
+          >
             Mark all as Read
           </app-button>
         </div>
 
         <!-- Notifications -->
-        <div class="w-full flex flex-col space-y-3">
-          <app-notifications :notifications="notifications" />
+        <div class="flex flex-col">
+          <app-notification
+            v-for="(notification, index) in notifications"
+            :key="index"
+            :notification="notification"
+          />
         </div>
       </div>
     </subpage-layout>
@@ -18,162 +29,57 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { AppButton, AppNotifications } from "@greep/ui-components";
-import { Logic } from "@greep/logic";
+  import { defineComponent } from "vue"
+  import { AppButton, AppNotification } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
+  import { reactive } from "vue"
 
-export default defineComponent({
-  name: "NotificationsPage",
-  components: {
-    AppButton,
-    AppNotifications,
-  },
-  setup() {
-    const notifications = [
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description: "₺200   .   Pay noew",
-        type: "failed",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "info",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "success",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "failed",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "failed",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "info",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "success",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "failed",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "failed",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "info",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "success",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "failed",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "failed",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "info",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "success",
-        date: "Today",
-      },
-      {
-        id: 1,
-        title: "Timms Milestone",
-        description:
-          "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
-        type: "failed",
-        date: "Today",
-      },
-    ];
+  export default defineComponent({
+    name: "NotificationsPage",
+    components: {
+      AppButton,
+      AppNotification,
+    },
+    setup() {
+      const notifications = reactive([
+        {
+          logo: "notify-info",
+          title: "Reward Milestone",
+          contents: [
+            "Congratulations! You have earned 1000 GRP Tokens. Redeem now!",
+          ],
+          date: "Today",
+        },
+        {
+          logo: "notify-success",
+          title: "Payment Successful",
+          contents: ["₦33,000", "Raymond Akintola"],
+          date: "Today",
+        },
+        {
+          logo: "notify-success",
+          title: "Conversion Successful",
+          contents: ["₺25", "GRP Token"],
+          date: "Today",
+        },
+        {
+          logo: "notify-error",
+          title: "Payment Failed",
+          contents: ["₺200", "Payment Request"],
+          date: "Today",
+        },
+        {
+          logo: "notify-success",
+          title: "Withdrawal Successful",
+          contents: ["₺966", "Timmy Salami"],
+          date: "Today",
+        },
+      ])
 
-    return {
-      notifications,
-      Logic,
-    };
-  },
-});
+      return {
+        Logic,
+        notifications,
+      }
+    },
+  })
 </script>
-
-<style scoped>
-/* Hide scrollbar but allow horizontal scrolling */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>
