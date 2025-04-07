@@ -131,8 +131,7 @@ export default defineComponent({
         formData.passcode = "";
         return;
       }
-
-      console.log(67);
+ 
 
       Logic.Common.showLoader({
         show: true,

@@ -119,8 +119,7 @@ export default defineComponent({
       preferred_currency: "TRY",
     });
 
-    const handleConfirm = () => { 
-      console.log("Form Data:", formData);
+    const handleConfirm = () => {  
     };
 
     return {

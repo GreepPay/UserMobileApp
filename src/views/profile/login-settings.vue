@@ -106,9 +106,9 @@ export default defineComponent({
       confirm_passcode: "",
     });
 
-    const handleConfirm = () => {
-      console.log("Form Data:", formData);
-    };
+    const handleConfirm = () => {  
+      
+      };
 
     return {
       Logic,

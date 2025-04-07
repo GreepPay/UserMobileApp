@@ -8,7 +8,8 @@
           >
             <app-currency-switch
               :model-value="modelCurrencyValue"
-              default-currency="USD"
+              default_currency="NGN"
+              :availableCurrencies="availableCurrencies"
             />
 
             <div class="w-full flex flex-col items-center justify-center">
@@ -78,6 +79,7 @@
     AppTitleCardContainer,
     AppCurrencySwitch,
   } from "@greep/ui-components"
+  import { availableCurrencies } from "../../composable"
   import { Logic } from "@greep/logic"
 
   export default defineComponent({
@@ -113,6 +115,7 @@
         continueToNext,
         amountIsValid,
         modelCurrencyValue,
+        availableCurrencies,
       }
     },
   })

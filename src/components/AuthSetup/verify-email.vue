@@ -80,8 +80,7 @@ export default defineComponent({
       });
     };
 
-    const continueWithForm = () => {
-      console.log("otpCode.value", otpCode.value);
+    const continueWithForm = () => { 
 
       if (otpCode.value.toString().length == 4) {
         return otpCode.value.toString();

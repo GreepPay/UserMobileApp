@@ -44,11 +44,7 @@ export default defineComponent({
     const loading = ref(false);
     const isEmailVerified = ref(false);
 
-    const handleVerifiedEmail = () => {
-      console.log(87667);
-      console.log(" auth.VerifyUserOtpPayload ", auth.VerifyUserOTPayload);
-    };
-
+    
     const handleNext = () => {
       Logic.Common.GoToRoute("/auth/welcome");
     };
@@ -57,9 +53,7 @@ export default defineComponent({
       loading,
       Logic,
       isEmailVerified,
-      handleNext,
-      handleVerifiedEmail,
-      // handleVerifyEmail,
+      handleNext,  
       emit,
     };
   },
