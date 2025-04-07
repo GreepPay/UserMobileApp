@@ -17,7 +17,7 @@
 
         <!-- Filtered List -->
         <div class="w-full px-1">
-          <beneficiary-list
+          <app-beneficiary-list
             v-model="selectedBeneficiary"
             :dataItems="filteredBeneficiaries"
           />
@@ -46,90 +46,90 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
-import {
-  AppButton,
-  BeneficiaryList,
-  AppSearch,
-  AppTabs,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "SelectBeneficiaryPage",
-  components: {
+  import { defineComponent, ref, computed } from "vue"
+  import {
     AppButton,
-    BeneficiaryList,
+    AppBeneficiaryList,
     AppSearch,
     AppTabs,
-  },
-  setup() {
-    const searchQuery = ref("");
-    const activeTab = ref("recents");
-    const selectedBeneficiary = ref(null);
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-    const beneficiaries = ref([
-      {
-        id: 1,
-        image: "images/temps/profile-1.png",
-        name: "Samwell Taiwo",
-        description: "Greep User",
-        isBeneficiary: false,
-      },
-      {
-        id: 2,
-        image: "images/temps/profile-2.png",
-        name: "Jane Smith",
-        description: "Greep Merchant",
-        isBeneficiary: true,
-      },
-      {
-        id: 3,
-        image: "images/temps/profile-1.png",
-        name: "John Doe",
-        description: "Greep User",
-        isBeneficiary: false,
-      },
-      {
-        id: 4,
-        image: "images/temps/profile-2.png",
-        name: "Sarah Johnson",
-        description: "Greep Merchant",
-        isBeneficiary: true,
-      },
-    ]);
+  export default defineComponent({
+    name: "SelectBeneficiaryPage",
+    components: {
+      AppButton,
+      AppBeneficiaryList,
+      AppSearch,
+      AppTabs,
+    },
+    setup() {
+      const searchQuery = ref("")
+      const activeTab = ref("recents")
+      const selectedBeneficiary = ref(null)
 
-    const tabs = [
-      { key: "recents", label: "Recents" },
-      { key: "beneficiaries", label: "Beneficiaries" },
-    ];
+      const beneficiaries = ref([
+        {
+          id: 1,
+          image: "images/temps/profile-1.png",
+          name: "Samwell Taiwo",
+          description: "Greep User",
+          isBeneficiary: false,
+        },
+        {
+          id: 2,
+          image: "images/temps/profile-2.png",
+          name: "Jane Smith",
+          description: "Greep Merchant",
+          isBeneficiary: true,
+        },
+        {
+          id: 3,
+          image: "images/temps/profile-1.png",
+          name: "John Doe",
+          description: "Greep User",
+          isBeneficiary: false,
+        },
+        {
+          id: 4,
+          image: "images/temps/profile-2.png",
+          name: "Sarah Johnson",
+          description: "Greep Merchant",
+          isBeneficiary: true,
+        },
+      ])
 
-    // Computed property to filter beneficiaries based on active tab and search query
-    const filteredBeneficiaries = computed(() => {
-      return beneficiaries.value.filter((user) => {
-        const matchesSearch = user.name
-          .toLowerCase()
-          .includes(searchQuery.value.toLowerCase());
-        const matchesTab =
-          activeTab.value === "recents" ||
-          (activeTab.value === "beneficiaries" && user.isBeneficiary);
-        return matchesSearch && matchesTab;
-      });
-    });
+      const tabs = [
+        { key: "recents", label: "Recents" },
+        { key: "beneficiaries", label: "Beneficiaries" },
+      ]
 
-    const continueToNext = () => {
-      Logic.Common.GoToRoute("/send/enter-amount");
-    };
+      // Computed property to filter beneficiaries based on active tab and search query
+      const filteredBeneficiaries = computed(() => {
+        return beneficiaries.value.filter((user) => {
+          const matchesSearch = user.name
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase())
+          const matchesTab =
+            activeTab.value === "recents" ||
+            (activeTab.value === "beneficiaries" && user.isBeneficiary)
+          return matchesSearch && matchesTab
+        })
+      })
 
-    return {
-      Logic,
-      continueToNext,
-      activeTab,
-      tabs,
-      filteredBeneficiaries,
-      selectedBeneficiary,
-      searchQuery,
-    };
-  },
-});
+      const continueToNext = () => {
+        Logic.Common.GoToRoute("/send/enter-amount")
+      }
+
+      return {
+        Logic,
+        continueToNext,
+        activeTab,
+        tabs,
+        filteredBeneficiaries,
+        selectedBeneficiary,
+        searchQuery,
+      }
+    },
+  })
 </script>

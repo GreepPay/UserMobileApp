@@ -12,7 +12,7 @@
 
         <!-- Filtered List -->
         <div class="w-full">
-          <beneficiary-list
+          <app-beneficiary-list
             v-model="selectedBeneficiary"
             :dataItems="beneficiaries"
             :imageSize="42"
@@ -26,12 +26,12 @@
 
 <script lang="ts">
   import { defineComponent, ref } from "vue"
-  import { BeneficiaryList, AppSearch } from "@greep/ui-components"
+  import { AppBeneficiaryList, AppSearch } from "@greep/ui-components"
 
   export default defineComponent({
     name: "WalletPaymentMethod",
     components: {
-      BeneficiaryList,
+      AppBeneficiaryList,
       AppSearch,
     },
     setup() {

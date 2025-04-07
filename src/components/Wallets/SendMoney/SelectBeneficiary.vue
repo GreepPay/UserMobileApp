@@ -10,7 +10,7 @@
     <app-tabs :tabs="tabs" v-model:activeTab="activeTab" />
 
     <!-- Filtered List -->
-    <beneficiary-list
+    <app-beneficiary-list
       v-model="selectedBeneficiary"
       :dataItems="filteredBeneficiaries"
     />
@@ -38,7 +38,7 @@
   import { defineComponent } from "vue"
   import {
     AppButton,
-    BeneficiaryList,
+    AppBeneficiaryList,
     AppSearch,
     AppTabs,
   } from "@greep/ui-components"
@@ -47,7 +47,7 @@
     name: "WalletPaymentMethod",
     components: {
       AppButton,
-      BeneficiaryList,
+      AppBeneficiaryList,
       AppSearch,
       AppTabs,
     },

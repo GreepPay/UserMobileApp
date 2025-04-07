@@ -18,7 +18,7 @@
         </div>
 
         <div class="flex justify-center flex-1">
-          <app-header-text class="!text-left">
+          <app-header-text>
             {{ title }}
           </app-header-text>
         </div>

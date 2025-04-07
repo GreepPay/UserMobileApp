@@ -68,7 +68,7 @@
           </div>
 
           <div class="pt-4 px-4">
-            <horizontal-user-list :items="users" :imageSize="56" />
+            <app-horizontal-user-list :items="users" :imageSize="56" />
           </div>
         </div>
 
@@ -159,7 +159,7 @@
     AppIcon,
     AppTitleCardContainer,
     AppModal,
-    HorizontalUserList,
+    AppHorizontalUserList,
     AppCurrencySwitch,
     AppEmptyState,
   } from "@greep/ui-components"
@@ -185,7 +185,7 @@
       AppIcon,
       AppModal,
       AppTitleCardContainer,
-      HorizontalUserList,
+      AppHorizontalUserList,
       AppCurrencySwitch,
       AppEmptyState,
     },

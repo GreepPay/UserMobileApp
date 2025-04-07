@@ -72,7 +72,7 @@
       const loadingState = ref(false)
 
       // Create an instance of Auth
-      const formData = reactive({ email: "", password: "" })
+      const formData = reactive({ email: "teescript@gmail.com", password: "TeeScript@10" })
 
       // Function to handle sign-in
       const handleSignIn = async () => {
@@ -102,7 +102,7 @@
                 "auth_pass",
                 Logic.Auth.SignInPayload?.password || ""
               )
-              Logic.Common.GoToRoute("/auth/setup")
+              Logic.Common.GoToRoute("/auth/set-passcode")
             }
           } catch (err) {
             loadingState.value = false
