@@ -88,13 +88,11 @@
           try {
             await Logic.Auth.SignIn(true)
             await Logic.Auth.GetAuthUser()
-            loadingState.value = false
 
             // Check if passcode has been set
             if (localStorage.getItem("auth_passcode")) {
               Logic.Common.GoToRoute("/")
             } else {
-              console.log(789021789)
               // Save auth email and pass
               localStorage.setItem(
                 "auth_email",
@@ -104,9 +102,11 @@
                 "auth_pass",
                 Logic.Auth.SignInPayload?.password || ""
               )
-              Logic.Common.GoToRoute("/auth/set-passcode")
+              Logic.Common.GoToRoute("/auth/setup")
             }
-          } catch {
+          } catch (err) {
+            loadingState.value = false
+          } finally {
             loadingState.value = false
           }
         }
