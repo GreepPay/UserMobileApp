@@ -1,14 +1,12 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Sign In">
-      <div
-        class="w-full flex flex-col items-center justify-start h-full space-y-6 px-4"
-      >
+      <div class="w-full flex flex-col items-center justify-start h-full px-4">
         <!-- Form -->
         <app-form-wrapper
           ref="formComponent"
           :parent-refs="parentRefs"
-          class="w-full flex flex-col space-y-3 pt-2"
+          class="w-full flex flex-col pt-2"
         >
           <app-text-field
             :has-title="false"
@@ -22,16 +20,18 @@
           >
           </app-text-field>
 
-          <app-text-field
-            :has-title="false"
-            type="password"
-            placeholder="Password"
-            ref="password"
-            name="password"
-            use-floating-label
-            v-model="formData.password"
-            :rules="[FormValidations.RequiredRule]"
-          />
+          <div class="w-full flex flex-col pt-3">
+            <app-text-field
+              :has-title="false"
+              type="password"
+              placeholder="Password"
+              ref="password"
+              name="password"
+              use-floating-label
+              v-model="formData.password"
+              :rules="[FormValidations.RequiredRule]"
+            />
+          </div>
         </app-form-wrapper>
       </div>
 
@@ -54,82 +54,82 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref } from "vue"
-  import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+import { defineComponent, reactive, ref } from "vue";
+import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components";
+import { Logic } from "@greep/logic";
 
-  export default defineComponent({
-    name: "LoginPage",
-    components: {
-      AppFormWrapper,
-      AppTextField,
-      AppButton,
-    },
-    setup() {
-      const FormValidations = Logic.Form
-      const formComponent = ref()
-      const loading = ref(false)
-      const loadingState = ref(false)
+export default defineComponent({
+  name: "LoginPage",
+  components: {
+    AppFormWrapper,
+    AppTextField,
+    AppButton,
+  },
+  setup() {
+    const FormValidations = Logic.Form;
+    const formComponent = ref();
+    const loading = ref(false);
+    const loadingState = ref(false);
 
-      // Create an instance of Auth
-      const formData = reactive({ email: "", password: "" })
+    // Create an instance of Auth
+    const formData = reactive({ email: "", password: "" });
 
-      // Function to handle sign-in
-      const handleSignIn = async () => {
-        const state = formComponent.value?.validate()
+    // Function to handle sign-in
+    const handleSignIn = async () => {
+      const state = formComponent.value?.validate();
 
-        if (state) {
-          loadingState.value = true
-          Logic.Auth.SignInPayload = {
-            email: formData.email,
-            password: formData.password,
+      if (state) {
+        loadingState.value = true;
+        Logic.Auth.SignInPayload = {
+          email: formData.email,
+          password: formData.password,
+        };
+
+        try {
+          await Logic.Auth.SignIn(true);
+          await Logic.Auth.GetAuthUser();
+
+          // Check if passcode has been set
+          if (localStorage.getItem("auth_passcode")) {
+            Logic.Common.GoToRoute("/");
+          } else {
+            // Save auth email and pass
+            localStorage.setItem(
+              "auth_email",
+              Logic.Auth.SignInPayload?.email || ""
+            );
+            localStorage.setItem(
+              "auth_pass",
+              Logic.Auth.SignInPayload?.password || ""
+            );
+            Logic.Common.GoToRoute("/auth/set-passcode");
           }
-
-          try {
-            await Logic.Auth.SignIn(true)
-            await Logic.Auth.GetAuthUser()
-
-            // Check if passcode has been set
-            if (localStorage.getItem("auth_passcode")) {
-              Logic.Common.GoToRoute("/")
-            } else {
-              // Save auth email and pass
-              localStorage.setItem(
-                "auth_email",
-                Logic.Auth.SignInPayload?.email || ""
-              )
-              localStorage.setItem(
-                "auth_pass",
-                Logic.Auth.SignInPayload?.password || ""
-              )
-              Logic.Common.GoToRoute("/auth/setup")
-            }
-          } catch (err) {
-            loadingState.value = false
-          } finally {
-            loadingState.value = false
-          }
+        } catch (err) {
+          loadingState.value = false;
+        } finally {
+          loadingState.value = false;
         }
       }
+    };
 
-      return {
-        FormValidations,
-        Logic,
-        formData,
-        formComponent,
-        loading,
-        loadingState,
-        handleSignIn,
-      }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    return {
+      FormValidations,
+      Logic,
+      formData,
+      formComponent,
+      loading,
+      loadingState,
+      handleSignIn,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

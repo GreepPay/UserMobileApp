@@ -115,7 +115,7 @@
       v-if="showWelcomeModal"
       :close="
         () => {
-          showWelcomeModal = false
+          showWelcomeModal = false;
         }
       "
     >
@@ -150,194 +150,194 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive, ref, onMounted, computed } from "vue"
-  import {
+import { defineComponent, reactive, ref, onMounted, computed } from "vue";
+import {
+  AppNormalText,
+  AppHeaderText,
+  AppButton,
+  AppTransaction,
+  AppIcon,
+  AppTitleCardContainer,
+  AppModal,
+  HorizontalUserList,
+  AppCurrencySwitch,
+  AppEmptyState,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+import { getPlatforms, onIonViewDidEnter } from "@ionic/vue";
+import { availableCurrencies } from "../composable";
+import { User } from "@greep/logic/src/gql/graphql";
+
+enum TransactionType {
+  Sent = "sent",
+  Received = "received",
+  Added = "added",
+  Redeemed = "redeemed",
+}
+
+export default defineComponent({
+  name: "IndexPage",
+  components: {
     AppNormalText,
     AppHeaderText,
     AppButton,
     AppTransaction,
     AppIcon,
-    AppTitleCardContainer,
     AppModal,
+    AppTitleCardContainer,
     HorizontalUserList,
     AppCurrencySwitch,
     AppEmptyState,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  import { getPlatforms, onIonViewDidEnter } from "@ionic/vue"
-  import { availableCurrencies } from "../composable"
-  import { User } from "@greep/logic/src/gql/graphql"
+  },
+  // middlewares: {
+  //   fetchRules: [
+  //     {
+  //       domain: "Wallet",
+  //       property: "ManyTransactions",
+  //       method: "GetTransactions",
+  //       params: [1, 10],
+  //       requireAuth: true,
+  //       ignoreProperty: false,
+  //       silentUpdate: true,
+  //     },
+  //     {
+  //       domain: "Wallet",
+  //       property: "ManyPointTransactions",
+  //       method: "GetPointTransactions",
+  //       params: [1, 10],
+  //       requireAuth: true,
+  //       ignoreProperty: false,
+  //       silentUpdate: true,
+  //     },
+  //   ],
+  // },
+  setup() {
+    const amount = ref("1000");
+    const modelCurrencyValue = ref("NGN");
+    const showWelcomeModal = ref(false);
+    const actionBtns = [
+      {
+        text: "Add",
+        icon: "plus",
+        route: "add",
+      },
+      {
+        text: "Send",
+        icon: "arrow-up",
+        route: "send",
+      },
+      {
+        text: "Scan",
+        icon: "scan",
+        route: "scan",
+      },
+    ];
 
-  enum TransactionType {
-    Sent = "sent",
-    Received = "received",
-    Added = "added",
-    Redeemed = "redeemed",
-  }
+    const users = ref<User[]>([]);
+    // { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
 
-  export default defineComponent({
-    name: "IndexPage",
-    components: {
-      AppNormalText,
-      AppHeaderText,
-      AppButton,
-      AppTransaction,
-      AppIcon,
-      AppModal,
-      AppTitleCardContainer,
-      HorizontalUserList,
-      AppCurrencySwitch,
-      AppEmptyState,
-    },
-    // middlewares: {
-    //   fetchRules: [
-    //     {
-    //       domain: "Wallet",
-    //       property: "ManyTransactions",
-    //       method: "GetTransactions",
-    //       params: [1, 10],
-    //       requireAuth: true,
-    //       ignoreProperty: false,
-    //       silentUpdate: true,
-    //     },
-    //     {
-    //       domain: "Wallet",
-    //       property: "ManyPointTransactions",
-    //       method: "GetPointTransactions",
-    //       params: [1, 10],
-    //       requireAuth: true,
-    //       ignoreProperty: false,
-    //       silentUpdate: true,
-    //     },
-    //   ],
-    // },
-    setup() {
-      const amount = ref("1000")
-      const modelCurrencyValue = ref("NGN")
-      const showWelcomeModal = ref(false)
-      const actionBtns = [
-        {
-          text: "Add",
-          icon: "plus",
-          route: "add",
-        },
-        {
-          text: "Send",
-          icon: "arrow-up",
-          route: "send",
-        },
-        {
-          text: "Scan",
-          icon: "scan",
-          route: "scan",
-        },
-      ]
+    const defaultCurrency = ref("NGN");
+    const selectedCurrency = ref("NGN");
+    const currencySymbol = ref("₦");
 
-      const users = ref<User[]>([])
-      // { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
+    // const ManyTransactions = ref(Logic.Wallet.ManyTransactions)
+    // const ManyPointTransactions = ref(Logic.Wallet.ManyPointTransactions)
+    // const CurrentGlobalExchangeRate = ref(
+    //   Logic.Wallet.CurrentGlobalExchangeRate
+    // )
 
-      const defaultCurrency = ref("NGN")
-      const selectedCurrency = ref("NGN")
-      const currencySymbol = ref("₦")
+    const AuthUser = ref<User>(Logic.Auth.AuthUser);
 
-      // const ManyTransactions = ref(Logic.Wallet.ManyTransactions)
-      // const ManyPointTransactions = ref(Logic.Wallet.ManyPointTransactions)
-      // const CurrentGlobalExchangeRate = ref(
-      //   Logic.Wallet.CurrentGlobalExchangeRate
+    const currentPlatform = computed(() => {
+      return getPlatforms()[0];
+    });
+
+    const setPageDefaults = () => {
+      defaultCurrency.value =
+        Logic.Auth.AuthUser?.profile?.default_currency || "NGN";
+      selectedCurrency.value = defaultCurrency.value;
+    };
+
+    onIonViewDidEnter(() => {
+      setPageDefaults();
+    });
+
+    onMounted(() => {
+      // Register reactive data
+      // Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
+      // Logic.Wallet.watchProperty(
+      //   "ManyPointTransactions",
+      //   ManyPointTransactions
+      // )
+      // Logic.Wallet.watchProperty(
+      //   "CurrentGlobalExchangeRate",
+      //   CurrentGlobalExchangeRate
       // )
 
-      const AuthUser = ref<User>(Logic.Auth.AuthUser)
+      const hasSeenModal = localStorage.getItem("has_seen_welcome_modal");
 
-      const currentPlatform = computed(() => {
-        return getPlatforms()[0]
-      })
-
-      const setPageDefaults = () => {
-        defaultCurrency.value =
-          Logic.Auth.AuthUser?.profile?.default_currency || "NGN"
-        selectedCurrency.value = defaultCurrency.value
+      if (!hasSeenModal) {
+        showWelcomeModal.value = true;
+        localStorage.setItem("has_seen_welcome_modal", "true");
       }
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+      setPageDefaults();
+    });
 
-      onIonViewDidEnter(() => {
-        setPageDefaults()
-      })
+    const recentTransactions = reactive<
+      {
+        id: string | number;
+        title: string;
+        amount: number;
+        type: TransactionType;
+        transactionType: "credit" | "debit";
+        date: string;
+      }[]
+    >([
+      {
+        id: 1,
+        title: "Payment to John Doe",
+        amount: 50.0,
+        type: TransactionType.Sent,
+        transactionType: "debit",
+        date: "2024-01-26",
+      },
+      {
+        id: 2,
+        title: "Received from Jane Smith",
+        amount: 100.0,
+        type: TransactionType.Received,
+        transactionType: "credit",
+        date: "2024-01-25",
+      },
+    ]);
 
-      onMounted(() => {
-        // Register reactive data
-        // Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
-        // Logic.Wallet.watchProperty(
-        //   "ManyPointTransactions",
-        //   ManyPointTransactions
-        // )
-        // Logic.Wallet.watchProperty(
-        //   "CurrentGlobalExchangeRate",
-        //   CurrentGlobalExchangeRate
-        // )
-
-        const hasSeenModal = localStorage.getItem("has_seen_welcome_modal")
-
-        if (!hasSeenModal) {
-          showWelcomeModal.value = true
-          localStorage.setItem("has_seen_welcome_modal", "true")
-        }
-        Logic.Auth.watchProperty("AuthUser", AuthUser)
-        setPageDefaults()
-      })
-
-      const recentTransactions = reactive<
-        {
-          id: string | number
-          title: string
-          amount: number
-          type: TransactionType
-          transactionType: "credit" | "debit"
-          date: string
-        }[]
-      >([
-        {
-          id: 1,
-          title: "Payment to John Doe",
-          amount: 50.0,
-          type: TransactionType.Sent,
-          transactionType: "debit",
-          date: "2024-01-26",
-        },
-        {
-          id: 2,
-          title: "Received from Jane Smith",
-          amount: 100.0,
-          type: TransactionType.Received,
-          transactionType: "credit",
-          date: "2024-01-25",
-        },
-      ])
-
-      return {
-        showWelcomeModal,
-        users,
-        Logic,
-        actionBtns,
-        amount,
-        modelCurrencyValue,
-        currentPlatform,
-        defaultCurrency,
-        selectedCurrency,
-        currencySymbol,
-        AuthUser,
-        availableCurrencies,
-        recentTransactions,
-      }
-    },
-  })
+    return {
+      showWelcomeModal,
+      users,
+      Logic,
+      actionBtns,
+      amount,
+      modelCurrencyValue,
+      currentPlatform,
+      defaultCurrency,
+      selectedCurrency,
+      currencySymbol,
+      AuthUser,
+      availableCurrencies,
+      recentTransactions,
+    };
+  },
+});
 </script>
 
 <style scoped>
-  /* Hide scrollbar but allow horizontal scrolling */
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+/* Hide scrollbar but allow horizontal scrolling */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 </style>

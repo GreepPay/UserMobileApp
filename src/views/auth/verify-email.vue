@@ -27,34 +27,33 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from "vue"
-  import { AppButton } from "@greep/ui-components"
-  import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue"
-  import { Logic } from "@greep/logic"
-  const auth = Logic.Auth
+import { defineComponent, ref } from "vue";
+import { AppButton } from "@greep/ui-components";
+import AuthSetupVerifyEmail from "../../components/AuthSetup/verify-email.vue";
+import { Logic } from "@greep/logic";
 
-  export default defineComponent({
-    name: "VerifyEmailPage",
-    components: {
-      AuthSetupVerifyEmail,
-      AppButton,
-    },
-    emits: ["next"],
-    setup(_, { emit }) {
-      const loading = ref(false)
-      const isEmailVerified = ref(false)
+export default defineComponent({
+  name: "VerifyEmailPage",
+  components: {
+    AuthSetupVerifyEmail,
+    AppButton,
+  },
+  emits: ["next"],
+  setup(_, { emit }) {
+    const loading = ref(false);
+    const isEmailVerified = ref(false);
 
-      const handleNext = () => {
-        Logic.Common.GoToRoute("/")
-      }
+    const handleNext = () => {
+      Logic.Common.GoToRoute("/");
+    };
 
-      return {
-        loading,
-        Logic,
-        isEmailVerified,
-        handleNext,
-        emit,
-      }
-    },
-  })
+    return {
+      loading,
+      Logic,
+      isEmailVerified,
+      handleNext,
+      emit,
+    };
+  },
+});
 </script>
