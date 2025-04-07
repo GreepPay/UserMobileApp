@@ -21,11 +21,14 @@
                 </app-normal-text>
 
                 <app-header-text custom-class="!text-3xl !leading-6 text-white">
-                  ₺
+                  {{ currencySymbol }}
                   {{
-                    !Number.isNaN(parseFloat(amount))
-                      ? Logic.Common.convertToMoney(1000, false, "", false)
-                      : "0"
+                    Logic.Common.convertToMoney(
+                      AuthUser.wallet?.total_balance,
+                      true,
+                      "",
+                      false
+                    )
                   }}
                 </app-header-text>
               </div>
@@ -54,10 +57,12 @@
         <!--  -->
         <div class="w-full h-fit py-6">
           <div class="flex items-center justify-between px-4">
-            <app-header-text class="font-semibold"> Quick Pay </app-header-text>
+            <app-normal-text class="font-semibold !text-gray-800 !text-sm">
+              Quick Pay
+            </app-normal-text>
             <app-icon
               name="add-circle"
-              custom-class="size-6"
+              custom-class="h-5"
               @click="Logic.Common.GoToRoute(`/beneficiaries`)"
             />
           </div>
@@ -70,17 +75,36 @@
         <!-- Recent transactions -->
         <div class="w-full flex flex-col px-4">
           <div class="w-full flex justify-between items-center">
-            <app-header-text class="!text-left"> Transactions </app-header-text>
+            <app-normal-text class="font-semibold !text-gray-800 !text-sm">
+              Transactions
+            </app-normal-text>
+
             <app-normal-text
-              class="text-primary !text-lg text-right"
-              @click="Logic.Common.GoToRoute(`/transactions`)"
+              class="text-primary"
+              @click="Logic.Common.GoToRoute('/transactions')"
             >
               See all
             </app-normal-text>
           </div>
 
           <div class="py-2">
-            <app-transactions :transactions="transactions" />
+            <div v-if="true" class="py-4 !pt-2">
+              <app-empty-state
+                title="No transactions"
+                description="Collect Payments, Make Withdrawals, and Redeem the GRP Tokens you’ve earned."
+              />
+            </div>
+            <template v-else>
+              <app-transaction
+                class="z-[10]"
+                v-for="transaction in recentTransactions"
+                :key="transaction.id"
+                :data="transaction"
+                @click="
+                  Logic.Common.GoToRoute('/transaction/' + transaction.id)
+                "
+              />
+            </template>
           </div>
         </div>
       </div>
@@ -131,17 +155,25 @@
     AppNormalText,
     AppHeaderText,
     AppButton,
-    AppTransactions,
+    AppTransaction,
     AppIcon,
     AppTitleCardContainer,
     AppModal,
     HorizontalUserList,
     AppCurrencySwitch,
+    AppEmptyState,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
   import { getPlatforms, onIonViewDidEnter } from "@ionic/vue"
   import { availableCurrencies } from "../composable"
   import { User } from "@greep/logic/src/gql/graphql"
+
+  enum TransactionType {
+    Sent = "sent",
+    Received = "received",
+    Added = "added",
+    Redeemed = "redeemed",
+  }
 
   export default defineComponent({
     name: "IndexPage",
@@ -149,12 +181,13 @@
       AppNormalText,
       AppHeaderText,
       AppButton,
-      AppTransactions,
+      AppTransaction,
       AppIcon,
       AppModal,
       AppTitleCardContainer,
       HorizontalUserList,
       AppCurrencySwitch,
+      AppEmptyState,
     },
     // middlewares: {
     //   fetchRules: [
@@ -181,7 +214,7 @@
     setup() {
       const amount = ref("1000")
       const modelCurrencyValue = ref("NGN")
-      const showWelcomeModal = ref(true)
+      const showWelcomeModal = ref(false)
       const actionBtns = [
         {
           text: "Add",
@@ -200,29 +233,8 @@
         },
       ]
 
-      const transactions = reactive<
-        {
-          id: string | number
-          title: string
-          amount: number
-          type: "sent" | "received" | "added" | "redeemed"
-          transactionType: "credit" | "debit"
-          date: string
-        }[]
-      >([
-        {
-          id: 1,
-          title: "Timms Closet Ventures",
-          amount: 33000,
-          type: "sent",
-          transactionType: "debit",
-          date: "Today",
-        },
-      ])
-
-      const users = ref<User[]>([
-        // { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
-      ])
+      const users = ref<User[]>([])
+      // { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
 
       const defaultCurrency = ref("NGN")
       const selectedCurrency = ref("NGN")
@@ -233,6 +245,7 @@
       // const CurrentGlobalExchangeRate = ref(
       //   Logic.Wallet.CurrentGlobalExchangeRate
       // )
+
       const AuthUser = ref<User>(Logic.Auth.AuthUser)
 
       const currentPlatform = computed(() => {
@@ -260,13 +273,47 @@
         //   "CurrentGlobalExchangeRate",
         //   CurrentGlobalExchangeRate
         // )
+
+        const hasSeenModal = localStorage.getItem("has_seen_welcome_modal")
+
+        if (!hasSeenModal) {
+          showWelcomeModal.value = true
+          localStorage.setItem("has_seen_welcome_modal", "true")
+        }
         Logic.Auth.watchProperty("AuthUser", AuthUser)
         setPageDefaults()
       })
 
+      const recentTransactions = reactive<
+        {
+          id: string | number
+          title: string
+          amount: number
+          type: TransactionType
+          transactionType: "credit" | "debit"
+          date: string
+        }[]
+      >([
+        {
+          id: 1,
+          title: "Payment to John Doe",
+          amount: 50.0,
+          type: TransactionType.Sent,
+          transactionType: "debit",
+          date: "2024-01-26",
+        },
+        {
+          id: 2,
+          title: "Received from Jane Smith",
+          amount: 100.0,
+          type: TransactionType.Received,
+          transactionType: "credit",
+          date: "2024-01-25",
+        },
+      ])
+
       return {
         showWelcomeModal,
-        transactions,
         users,
         Logic,
         actionBtns,
@@ -277,8 +324,8 @@
         selectedCurrency,
         currencySymbol,
         AuthUser,
-        // CurrentGlobalExchangeRate,
         availableCurrencies,
+        recentTransactions,
       }
     },
   })

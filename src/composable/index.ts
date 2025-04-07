@@ -1,6 +1,6 @@
-import { getPlatforms } from "@ionic/vue";
-import { computed, reactive } from "vue";
-import { Currency } from "@greep/ui-components/src/types";
+import { getPlatforms } from "@ionic/vue"
+import { computed, reactive } from "vue"
+import { Currency } from "@greep/ui-components/src/types"
 
 export const availableCurrencies = reactive<Currency[]>([
   {
@@ -43,11 +43,11 @@ export const availableCurrencies = reactive<Currency[]>([
     name: "Zimbabwean Dollar",
     symbol: "Z$",
   },
-]);
+])
 
 export const safeAreaInsetTop = computed(() => {
   // Replace this with your actual platform detection logic
-  const isAndroid = getPlatforms()[0] === "android";
+  const isAndroid = getPlatforms()[0] === "android"
 
   const topInset = Number(
     String(
@@ -55,14 +55,14 @@ export const safeAreaInsetTop = computed(() => {
         "--safe-area-inset-top"
       )
     ).replace("px", "")
-  );
+  )
 
-  return isAndroid && topInset === 0 ? 20 : topInset;
-});
+  return isAndroid && topInset === 0 ? 20 : topInset
+})
 
 export const safeAreaInsetBottom = computed(() => {
   // Replace this with your actual platform detection logic
-  const isAndroid = getPlatforms()[0] === "android";
+  const isAndroid = getPlatforms()[0] === "android"
 
   const bottomInset = Number(
     String(
@@ -70,10 +70,10 @@ export const safeAreaInsetBottom = computed(() => {
         "--safe-area-inset-bottom"
       )
     ).replace("px", "")
-  );
+  )
 
-  return isAndroid && bottomInset === 0 ? 20 : bottomInset;
-});
+  return isAndroid && bottomInset === 0 ? 20 : bottomInset
+})
 
 export const supportedCountries = reactive([
   {
@@ -153,4 +153,4 @@ export const supportedCountries = reactive([
       { key: "credit_check", value: "Credit Check" },
     ],
   },
-]);
+])

@@ -155,7 +155,7 @@
       }
 
       const handleNext = () => {
-        Logic.Common.GoToRoute("/auth/welcome")
+        Logic.Common.GoToRoute("/")
       }
 
       return {

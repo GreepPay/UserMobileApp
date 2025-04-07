@@ -54,81 +54,82 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
-import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components";
-import { Logic } from "@greep/logic";
+  import { defineComponent, reactive, ref } from "vue"
+  import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-export default defineComponent({
-  name: "LoginPage",
-  components: {
-    AppFormWrapper,
-    AppTextField,
-    AppButton,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
-    const formComponent = ref();
-    const loading = ref(false);
-    const loadingState = ref(false);
+  export default defineComponent({
+    name: "LoginPage",
+    components: {
+      AppFormWrapper,
+      AppTextField,
+      AppButton,
+    },
+    setup() {
+      const FormValidations = Logic.Form
+      const formComponent = ref()
+      const loading = ref(false)
+      const loadingState = ref(false)
 
-    // Create an instance of Auth
-    const formData = reactive({ email: "", password: "" });
+      // Create an instance of Auth
+      const formData = reactive({ email: "", password: "" })
 
-    // Function to handle sign-in
-    const handleSignIn = async () => {
-      const state = formComponent.value?.validate();
+      // Function to handle sign-in
+      const handleSignIn = async () => {
+        const state = formComponent.value?.validate()
 
-      if (state) {
-        loadingState.value = true;
-        Logic.Auth.SignInPayload = {
-          email: formData.email,
-          password: formData.password,
-        };
-
-        try {
-          await Logic.Auth.SignIn(true);
-          await Logic.Auth.GetAuthUser();
-          loadingState.value = false;
-
-          // Check if passcode has been set
-          if (localStorage.getItem("auth_passcode")) {
-            Logic.Common.GoToRoute("/");
-          } else {
-            // Save auth email and pass
-            localStorage.setItem(
-              "auth_email",
-              Logic.Auth.SignInPayload?.email || ""
-            );
-            localStorage.setItem(
-              "auth_pass",
-              Logic.Auth.SignInPayload?.password || ""
-            );
-            Logic.Common.GoToRoute("/auth/set-passcode");
+        if (state) {
+          loadingState.value = true
+          Logic.Auth.SignInPayload = {
+            email: formData.email,
+            password: formData.password,
           }
-        } catch {
-          loadingState.value = false;
+
+          try {
+            await Logic.Auth.SignIn(true)
+            await Logic.Auth.GetAuthUser()
+            loadingState.value = false
+
+            // Check if passcode has been set
+            if (localStorage.getItem("auth_passcode")) {
+              Logic.Common.GoToRoute("/")
+            } else {
+              console.log(789021789)
+              // Save auth email and pass
+              localStorage.setItem(
+                "auth_email",
+                Logic.Auth.SignInPayload?.email || ""
+              )
+              localStorage.setItem(
+                "auth_pass",
+                Logic.Auth.SignInPayload?.password || ""
+              )
+              Logic.Common.GoToRoute("/auth/set-passcode")
+            }
+          } catch {
+            loadingState.value = false
+          }
         }
       }
-    };
 
-    return {
-      FormValidations,
-      Logic,
-      formData,
-      formComponent,
-      loading,
-      loadingState,
-      handleSignIn,
-    };
-  },
-  data() {
-    return {
-      parentRefs: [],
-    };
-  },
-  mounted() {
-    const parentRefs: any = this.$refs;
-    this.parentRefs = parentRefs;
-  },
-});
+      return {
+        FormValidations,
+        Logic,
+        formData,
+        formComponent,
+        loading,
+        loadingState,
+        handleSignIn,
+      }
+    },
+    data() {
+      return {
+        parentRefs: [],
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>
