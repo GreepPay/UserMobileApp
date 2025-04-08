@@ -46,58 +46,58 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
-import {
-  AppFormWrapper,
-  AppTextField,
-  AppInfoBox,
-  AppNormalText,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  components: {
+  import { defineComponent, reactive, ref } from "vue"
+  import {
     AppFormWrapper,
     AppTextField,
     AppInfoBox,
     AppNormalText,
-  },
-  props: {},
-  name: "AuthSetupPassword",
-  setup() {
-    const FormValidations = Logic.Form;
-    const formComponent = ref<any>(null);
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-    const formData = reactive({
-      password: "",
-      confirm_password: "",
-    });
+  export default defineComponent({
+    components: {
+      AppFormWrapper,
+      AppTextField,
+      AppInfoBox,
+      AppNormalText,
+    },
+    props: {},
+    name: "AuthSetupPassword",
+    setup() {
+      const FormValidations = Logic.Form
+      const formComponent = ref<any>(null)
 
-    const continueWithForm = () => {
-      const state = formComponent.value?.validate();
-      if (state) {
-        return formData;
-      } else {
-        return;
+      const formData = reactive({
+        password: "",
+        confirm_password: "",
+      })
+
+      const continueWithForm = () => {
+        const state = formComponent.value?.validate()
+        if (state) {
+          return formData
+        } else {
+          return
+        }
       }
-    };
 
-    return {
-      FormValidations,
-      Logic,
-      formData,
-      formComponent,
-      continueWithForm,
-    };
-  },
-  data() {
-    return {
-      parentRefs: [],
-    };
-  },
-  mounted() {
-    const parentRefs: any = this.$refs;
-    this.parentRefs = parentRefs;
-  },
-});
+      return {
+        FormValidations,
+        Logic,
+        formData,
+        formComponent,
+        continueWithForm,
+      }
+    },
+    data() {
+      return {
+        parentRefs: [],
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

@@ -68,11 +68,10 @@
     setup() {
       const FormValidations = Logic.Form
       const formComponent = ref()
-      const loading = ref(false)
       const loadingState = ref(false)
 
       // Create an instance of Auth
-      const formData = reactive({ email: "teescript@gmail.com", password: "TeeScript@10" })
+      const formData = reactive({ email: "", password: "" })
 
       // Function to handle sign-in
       const handleSignIn = async () => {
@@ -117,7 +116,6 @@
         Logic,
         formData,
         formComponent,
-        loading,
         loadingState,
         handleSignIn,
       }

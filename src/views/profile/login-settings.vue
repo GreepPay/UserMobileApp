@@ -20,45 +20,57 @@
           <app-text-field
             :has-title="false"
             type="password"
-            placeholder="Old Passcode"
-            ref="old_passcode"
-            name="Old Passcode"
+            placeholder="Current Password"
+            ref="currennt_password"
+            name="Current Password"
             use-floating-label
-            v-model="formData.old_passcode"
-            :rules="[FormValidations.RequiredRule]"
+            v-model="formData.currennt_password"
+            :rules="[
+              FormValidations.RequiredRule,
+              FormValidations.PasswordRule,
+            ]"
           >
           </app-text-field>
 
           <app-text-field
             :has-title="false"
             type="password"
-            placeholder="New Passcode"
-            ref="new_passcode"
-            name="New Passcode"
+            placeholder="New Password"
+            ref="new_password"
+            name="New Password"
             use-floating-label
-            v-model="formData.new_passcode"
-            :rules="[FormValidations.RequiredRule]"
+            v-model="formData.new_password"
+            :rules="[
+              FormValidations.RequiredRule,
+              FormValidations.PasswordRule,
+            ]"
           >
           </app-text-field>
 
           <app-text-field
             :has-title="false"
             type="password"
-            placeholder="Confirm Passcode"
-            ref="confirm_passcode"
-            name="Confirm Passcode"
+            placeholder="Confirm Password"
+            ref="confirm_password"
+            name="Confirm New Password"
             use-floating-label
-            v-model="formData.confirm_passcode"
-            :rules="[FormValidations.RequiredRule]"
+            v-model="formData.confirm_password"
+            :rules="[
+              FormValidations.RequiredRule,
+              FormValidations.handleConfirmPassword(
+                formData.new_password,
+                formData.confirm_password
+              ),
+            ]"
           >
           </app-text-field>
 
-          <!-- Forgot Passcode -->
+          <!-- Forgot Password -->
           <app-normal-text
             custom-class="!text-green px-2"
             @click="Logic.Common.GoToRoute('/auth/reset-passcode')"
           >
-            Forgot Passcode?
+            Forgot Password?
           </app-normal-text>
         </app-form-wrapper>
 
@@ -71,6 +83,7 @@
             variant="secondary"
             class="!py-4 col-span-4"
             @click="handleConfirm"
+            :loading="loadingState"
           >
             Confirm
           </app-button>
@@ -81,13 +94,13 @@
 </template>
 
 <script lang="ts">
-  import { reactive } from "vue"
-  import { defineComponent } from "vue"
+  import { reactive, ref, defineComponent } from "vue"
   import {
     AppNormalText,
     AppButton,
     AppTextField,
     AppInfoBox,
+    AppFormWrapper,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
 
@@ -98,22 +111,60 @@
       AppButton,
       AppTextField,
       AppInfoBox,
+      AppFormWrapper,
     },
     setup() {
       const FormValidations = Logic.Form
+      const formComponent = ref()
+      const loadingState = ref(false)
       const formData = reactive({
-        old_passcode: "",
-        new_passcode: "",
-        confirm_passcode: "",
+        currennt_password: "",
+        new_password: "",
+        confirm_password: "",
       })
 
-      const handleConfirm = () => {}
+      const handleConfirm = async () => {
+        const state = formComponent.value?.validate()
+
+        if (state) {
+          if (formData.currennt_password === formData.new_password) {
+            Logic.Common.showAlert({
+              show: true,
+              message: "Set a different new password",
+              type: "error",
+            })
+
+            return
+          }
+
+          loadingState.value = true
+          Logic.Auth.UpdatePasswordPayload = {
+            current_password: formData.currennt_password,
+            new_password: formData.new_password,
+          }
+
+          try {
+            await Logic.Auth.UpdatePassword(true)
+            await Logic.Auth.GetAuthUser()
+
+            localStorage.removeItem("auth_passcode")
+
+            Logic.Common.GoToRoute("/auth/login")
+          } catch (err) {
+            loadingState.value = false
+          } finally {
+            loadingState.value = false
+          }
+        }
+      }
 
       return {
         Logic,
+        loadingState,
         FormValidations,
         formData,
         handleConfirm,
+        formComponent,
       }
     },
 
