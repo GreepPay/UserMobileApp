@@ -13,7 +13,7 @@
             <app-normal-text custom-class="!leading-5">
               Enter new
               <span class="font-semibold">6-digit </span>
-              passcode to ensure that only you can open this app.
+              password to ensure that only you can open this app.
             </app-normal-text>
           </app-info-box>
 
@@ -55,7 +55,8 @@
 
           <!-- Forgot Passcode -->
           <app-normal-text
-            custom-class="!text-green !font-medium !text-base px-2"
+            custom-class="!text-green px-2"
+            @click="Logic.Common.GoToRoute('/auth/reset-passcode')"
           >
             Forgot Passcode?
           </app-normal-text>
@@ -80,52 +81,50 @@
 </template>
 
 <script lang="ts">
-import { reactive } from "vue";
-import { defineComponent } from "vue";
-import {
-  AppNormalText,
-  AppButton,
-  AppTextField,
-  AppInfoBox,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "ProfileLoginSettings",
-  components: {
+  import { reactive } from "vue"
+  import { defineComponent } from "vue"
+  import {
     AppNormalText,
     AppButton,
     AppTextField,
     AppInfoBox,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
-    const formData = reactive({
-      old_passcode: "",
-      new_passcode: "",
-      confirm_passcode: "",
-    });
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-    const handleConfirm = () => {  
-      
-      };
+  export default defineComponent({
+    name: "ProfileLoginSettings",
+    components: {
+      AppNormalText,
+      AppButton,
+      AppTextField,
+      AppInfoBox,
+    },
+    setup() {
+      const FormValidations = Logic.Form
+      const formData = reactive({
+        old_passcode: "",
+        new_passcode: "",
+        confirm_passcode: "",
+      })
 
-    return {
-      Logic,
-      FormValidations,
-      formData,
-      handleConfirm,
-    };
-  },
+      const handleConfirm = () => {}
 
-  data() {
-    return {
-      parentRefs: [],
-    };
-  },
-  mounted() {
-    const parentRefs: any = this.$refs;
-    this.parentRefs = parentRefs;
-  },
-});
+      return {
+        Logic,
+        FormValidations,
+        formData,
+        handleConfirm,
+      }
+    },
+
+    data() {
+      return {
+        parentRefs: [],
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

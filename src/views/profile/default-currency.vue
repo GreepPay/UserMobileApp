@@ -11,7 +11,7 @@
             class="w-full flex flex-row justify-between items-center py-2"
             v-for="(currency, index) in availableCurrencies"
             :key="index"
-            @click="formData.preferred_currency = currency.code"
+            @click="defaultCurrency = currency.code"
           >
             <div class="flex flex-row space-x-3 items-center">
               <app-image-loader
@@ -27,9 +27,7 @@
             <div class="flex flex-row justify-end">
               <app-icon
                 :name="`${
-                  formData.preferred_currency == currency.code
-                    ? 'selected'
-                    : 'not-selected'
+                  defaultCurrency == currency.code ? 'selected' : 'not-selected'
                 }`"
                 class="h-[24px]"
               />
@@ -56,89 +54,47 @@
 </template>
 
 <script lang="ts">
-import {  reactive } from "vue";
-import { defineComponent } from "vue";
-import {
-  AppNormalText,
-  AppButton,
-  AppFormWrapper,
-  AppImageLoader,
-  AppIcon,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "ProfileDefualtCurrency",
-  components: {
+  import { ref } from "vue"
+  import { defineComponent } from "vue"
+  import {
     AppNormalText,
     AppButton,
     AppFormWrapper,
     AppImageLoader,
     AppIcon,
-  },
-  setup() {
-    const FormValidations = Logic.Form;
-    const availableCurrencies = reactive([
-      {
-        code: "TRY",
-        name: "Turkish Lira",
-      },
-      {
-        code: "USD",
-        name: "United States Dollar",
-      },
-      {
-        code: "USDC",
-        name: "USDC",
-      },
-      {
-        code: "NGN",
-        name: "Nigerian Naira",
-      },
-      {
-        code: "GHS",
-        name: "Ghanaian Cedis",
-      },
-      {
-        code: "XLM",
-        name: "XLM",
-      },
-      {
-        code: "ZAR",
-        name: "South African Rand",
-      },
-      {
-        code: "EUR",
-        name: "Euro",
-      },
-    ]);
+  } from "@greep/ui-components"
+  import { availableCurrencies } from "../../composable"
+  import { Logic } from "@greep/logic"
 
-    const formData = reactive<{
-      preferred_currency: string;
-    }>({
-      preferred_currency: "TRY",
-    });
+  export default defineComponent({
+    name: "ProfileDefualtCurrency",
+    components: {
+      AppNormalText,
+      AppButton,
+      AppFormWrapper,
+      AppImageLoader,
+      AppIcon,
+    },
+    setup() {
+      const defaultCurrency = ref("NGN")
+      const handleConfirm = () => Logic.Common.GoToRoute("/profile")
 
-    const handleConfirm = () => {  
-    };
+      return {
+        Logic,
+        availableCurrencies,
+        defaultCurrency,
+        handleConfirm,
+      }
+    },
 
-    return {
-      Logic,
-      formData,
-      FormValidations,
-      availableCurrencies,
-      handleConfirm,
-    };
-  },
-
-  data() {
-    return {
-      parentRefs: [],
-    };
-  },
-  mounted() {
-    const parentRefs: any = this.$refs;
-    this.parentRefs = parentRefs;
-  },
-});
+    data() {
+      return {
+        parentRefs: [],
+      }
+    },
+    mounted() {
+      const parentRefs: any = this.$refs
+      this.parentRefs = parentRefs
+    },
+  })
 </script>

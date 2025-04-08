@@ -1,11 +1,11 @@
 <template>
   <app-wrapper>
-    <subpage-layout title="Reset Passcode">
+    <subpage-layout title="Reset Passcode" :hideBackBtn="true">
       <div class="w-full flex flex-col items-center justify-start h-full px-4">
         <div class="w-full flex flex-col justify-center items-center">
           <div
             :class="`w-full flex flex-col space-y-2 items-center pt-4 ${
-              pinStage == 'confirm' ? 'opacity-40' : ''
+              pinStage !== 'old-pin' ? 'opacity-40' : ''
             }`"
           >
             <app-normal-text custom-class="!text-center">
@@ -27,7 +27,7 @@
 
           <div
             :class="`w-full flex flex-col space-y-2 items-center pt-6 ${
-              pinStage == 'pin' ? 'opacity-40' : ''
+              pinStage !== 'new-pin' ? 'opacity-40' : ''
             }`"
           >
             <app-normal-text custom-class="!text-center">
@@ -49,7 +49,7 @@
 
           <div
             :class="`w-full flex flex-col space-y-2 items-center pt-6 ${
-              pinStage == 'pin' ? 'opacity-40' : ''
+              pinStage !== 'confirm-new-pin' ? 'opacity-40' : ''
             }`"
           >
             <app-normal-text custom-class="!text-center">
