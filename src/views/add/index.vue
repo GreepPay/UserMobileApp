@@ -59,6 +59,7 @@
             <app-button
               :class="`!py-4 ${amountIsValid() ? 'opacity-100' : 'opacity-50'}`"
               @click="amountIsValid() ? continueToNext() : null"
+              :variant="'secondary'"
             >
               Next
             </app-button>
