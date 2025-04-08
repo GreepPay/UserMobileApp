@@ -36,37 +36,37 @@
 </template>
 
 <script lang="ts">
-import { onMounted, defineComponent, ref } from "vue";
-import { AppHeaderText, AppIcon, AppAvatar } from "@greep/ui-components";
-import { User } from "@greep/logic/src/gql/graphql";
-import { Logic } from "@greep/logic";
+  import { onMounted, defineComponent, ref } from "vue"
+  import { AppHeaderText, AppIcon, AppAvatar } from "@greep/ui-components"
+  import { User } from "@greep/logic/src/gql/graphql"
+  import { Logic } from "@greep/logic"
 
-export default defineComponent({
-  components: {
-    AppHeaderText,
-    AppIcon,
-    AppAvatar,
-  },
-  props: {
-    title: {
-      type: String,
-      default: "",
+  export default defineComponent({
+    components: {
+      AppHeaderText,
+      AppIcon,
+      AppAvatar,
     },
-    useTopPadding: {
-      type: Boolean,
-      default: false,
+    props: {
+      title: {
+        type: String,
+        default: "",
+      },
+      useTopPadding: {
+        type: Boolean,
+        default: false,
+      },
     },
-  },
-  name: "DefaultIndexLayout",
+    name: "DefaultIndexLayout",
 
-  setup() {
-    const AuthUser = ref<User>(Logic.Auth.AuthUser);
+    setup() {
+      const AuthUser = ref<User>(Logic.Auth.AuthUser)
 
-    onMounted(() => {
-      Logic.Auth.watchProperty("AuthUser", AuthUser);
-    });
+      onMounted(() => {
+        Logic.Auth.watchProperty("AuthUser", AuthUser)
+      })
 
-    return { Logic, AuthUser };
-  },
-});
+      return { Logic, AuthUser }
+    },
+  })
 </script>

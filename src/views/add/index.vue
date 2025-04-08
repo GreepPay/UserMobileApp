@@ -93,7 +93,7 @@
       AppCurrencySwitch,
     },
     setup() {
-      const modelCurrencyValue = ref("USD")
+      const modelCurrencyValue = ref("NGN")
       const amount = ref("0")
       const maximumAmount = 10000
 

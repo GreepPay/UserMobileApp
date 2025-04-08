@@ -154,9 +154,7 @@
         }
       }
 
-      const handleNext = () => {
-        Logic.Common.GoToRoute("/")
-      }
+      const handleNext = () => Logic.Common.GoToRoute("/")
 
       return {
         FormValidations,

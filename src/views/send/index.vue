@@ -35,7 +35,8 @@
           <app-button
             @click="continueToNext"
             :disabled="!selectedBeneficiary"
-            class="!bg-secondary !py-4"
+            class="!py-4"
+            variant="secondary"
           >
             Next
           </app-button>

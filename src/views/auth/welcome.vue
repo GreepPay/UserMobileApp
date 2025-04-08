@@ -26,7 +26,8 @@
         <app-normal-text
           class="text-center w-full !text-[#0A141E] sm:!text-sm xs:!text-xs"
         >
-          Raymond Akinola
+          {{ AuthUser.first_name }}
+          {{ AuthUser.last_name }}
         </app-normal-text>
       </div>
 
@@ -67,91 +68,90 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, reactive, ref, onMounted } from "vue";
-import {
-  AppHeaderText,
-  AppNormalText,
-  AppKeyboard,
-  AppImageLoader,
-} from "@greep/ui-components";
-import { Logic } from "@greep/logic";
-
-export default defineComponent({
-  name: "WelcomePage",
-  components: {
+  import { defineComponent, watch, reactive, ref, onMounted } from "vue"
+  import {
     AppHeaderText,
     AppNormalText,
     AppKeyboard,
     AppImageLoader,
-  },
-  setup() {
-    const AuthUser = ref(Logic.Auth.AuthUser);
+  } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
-    const formData = reactive({
-      passcode: "",
-    });
+  export default defineComponent({
+    name: "WelcomePage",
+    components: {
+      AppHeaderText,
+      AppNormalText,
+      AppKeyboard,
+      AppImageLoader,
+    },
+    setup() {
+      const AuthUser = ref(Logic.Auth.AuthUser)
 
-    watch(formData, async () => {
-      if (formData.passcode.length === 6) {
-        await isFilled();
-      }
-    });
+      const formData = reactive({
+        passcode: "",
+      })
 
-    const isFilled = async () => {
-      const authPasscode = localStorage.getItem("auth_passcode");
+      watch(formData, async () => {
+        if (formData.passcode.length === 6) {
+          await isFilled()
+        }
+      })
 
-      if (formData.passcode != authPasscode) {
-        Logic.Common.showAlert({
+      const isFilled = async () => {
+        const authPasscode = localStorage.getItem("auth_passcode")
+
+        if (formData.passcode != authPasscode) {
+          Logic.Common.showAlert({
+            show: true,
+            type: "error",
+            message: "Invalid passcode. Please try again.",
+          })
+          formData.passcode = ""
+          return
+        }
+
+        const encryptedAuthData = localStorage.getItem("auth_encrypted_data")
+
+        try {
+          const authData: any = Logic.Common.decryptData(
+            encryptedAuthData || "",
+            authPasscode
+          )
+
+          Logic.Auth.SignInPayload = {
+            email: authData.email,
+            password: authData.password,
+          }
+        } catch (error) {
+          Logic.Common.showAlert({
+            show: true,
+            type: "error",
+            message: "Invalid passcode. Please try again.",
+          })
+          formData.passcode = ""
+          return
+        }
+
+        Logic.Common.showLoader({
           show: true,
-          type: "error",
-          message: "Invalid passcode. Please try again.",
-        });
-        formData.passcode = "";
-        return;
+          loading: true,
+        })
+
+        await Logic.Auth.SignIn(true)
+        Logic.Common.hideLoader()
+        Logic.Common.GoToRoute("/")
       }
 
-      const encryptedAuthData = localStorage.getItem("auth_encrypted_data");
+      onMounted(() => {
+        Logic.Auth.watchProperty("AuthUser", AuthUser)
+      })
 
-      try {
-        const authData: any = Logic.Common.decryptData(
-          encryptedAuthData || "",
-          authPasscode
-        );
-
-        Logic.Auth.SignInPayload = {
-          email: authData.email,
-          password: authData.password,
-        };
-      } catch (error) {
-        Logic.Common.showAlert({
-          show: true,
-          type: "error",
-          message: "Invalid passcode. Please try again.",
-        });
-        formData.passcode = "";
-        return;
+      return {
+        Logic,
+        formData,
+        AuthUser,
       }
- 
-
-      Logic.Common.showLoader({
-        show: true,
-        loading: true,
-      });
-
-      await Logic.Auth.SignIn(true);
-      Logic.Common.hideLoader();
-      Logic.Common.GoToRoute("/");
-    };
-
-    onMounted(() => {
-      Logic.Auth.watchProperty("AuthUser", AuthUser);
-    });
-
-    return {
-      Logic,
-      formData,
-      AuthUser,
-    };
-  },
-});
+    },
+  })
 </script>
