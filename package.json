@@ -13,6 +13,7 @@
     "resources": "capacitor-resources -p android,ios"
   },
   "dependencies": {
+    "@capacitor-community/camera-preview": "^7.0.1",
     "@capacitor/android": "7.0.1",
     "@capacitor/app": "7.0.0",
     "@capacitor/core": "7.0.1",
@@ -26,6 +27,8 @@
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.0.0",
     "country-state-city": "^3.2.1",
+    "fix-orientation": "^1.1.0",
+    "html5-qrcode": "^2.3.8",
     "ionicons": "^7.0.0",
     "swiper": "^11.2.5",
     "tailwindcss": "^4.0.0",

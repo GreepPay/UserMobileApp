@@ -1,9 +1,7 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Login Settings">
-      <div
-        class="w-full flex flex-col items-center justify-start h-full space-y-6 p-4"
-      >
+      <div class="w-full flex flex-col items-center justify-start h-full px-4">
         <app-form-wrapper
           ref="formComponent"
           :parent-refs="parentRefs"
@@ -54,9 +52,7 @@
           </app-text-field>
 
           <!-- Forgot Passcode -->
-          <app-normal-text
-            custom-class="!text-green !font-medium !text-base px-2"
-          >
+          <app-normal-text custom-class="!text-green !font-medium">
             Forgot Passcode?
           </app-normal-text>
         </app-form-wrapper>
@@ -87,6 +83,7 @@ import {
   AppButton,
   AppTextField,
   AppInfoBox,
+  AppFormWrapper,
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
 
@@ -97,6 +94,7 @@ export default defineComponent({
     AppButton,
     AppTextField,
     AppInfoBox,
+    AppFormWrapper,
   },
   setup() {
     const FormValidations = Logic.Form;
@@ -106,9 +104,7 @@ export default defineComponent({
       confirm_passcode: "",
     });
 
-    const handleConfirm = () => {  
-      
-      };
+    const handleConfirm = () => {};
 
     return {
       Logic,

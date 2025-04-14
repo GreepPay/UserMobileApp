@@ -2,17 +2,18 @@
   <app-wrapper>
     <default-index-layout title="Home">
       <div class="w-full flex flex-col items-center justify-start">
-        <div class="px-4 w-full">
+        <div class="px-4 w-full pt-1">
           <app-title-card-container>
             <div class="flex flex-col justify-center items-center w-full">
               <app-currency-switch
-                :model-value="modelCurrencyValue"
-                default_currency="NGN"
-                :availableCurrencies="availableCurrencies"
+                v-model="modelCurrencyValue"
+                :default_currency="defaultCountryCode.code"
+                :availableCurrencies="allowedAvailableCurrencies"
+                v-model:model-symbol="currencySymbol"
               />
 
               <div
-                class="w-full py-3 flex flex-col items-center justify-center !pt-6"
+                class="w-full py-3 flex flex-col items-center space-y-[2px] justify-center !pt-6"
               >
                 <app-normal-text
                   custom-class="!text-white !font-normal !font-sm pb-1  text-center"
@@ -20,11 +21,14 @@
                   Total Balance
                 </app-normal-text>
 
-                <app-header-text custom-class="!text-3xl !leading-6 text-white">
+                <app-header-text
+                  custom-class="!text-3xl !leading-6 text-white !font-normal"
+                >
                   {{ currencySymbol }}
                   {{
                     Logic.Common.convertToMoney(
-                      AuthUser.wallet?.total_balance,
+                      (AuthUser?.wallet?.total_balance || 0) *
+                        (CurrentGlobalExchangeRate?.mid || 0),
                       true,
                       "",
                       false
@@ -33,7 +37,9 @@
                 </app-header-text>
               </div>
 
-              <div class="flex w-full justify-between items-center px-6 !pt-4">
+              <div
+                class="flex w-full justify-between items-center px-6 !pt-4 pb-4"
+              >
                 <div
                   class="flex flex-col items-center px-3"
                   v-for="action in actionBtns"
@@ -60,15 +66,15 @@
             <app-normal-text class="font-semibold !text-gray-800 !text-sm">
               Quick Pay
             </app-normal-text>
-            <app-icon
+            <!-- <app-icon
               name="add-circle"
               custom-class="h-5"
               @click="Logic.Common.GoToRoute(`/beneficiaries`)"
-            />
+            /> -->
           </div>
 
           <div class="pt-4 px-4">
-            <horizontal-user-list :items="users" :imageSize="56" />
+            <app-horizontal-user-list :items="users" :imageSize="56" />
           </div>
         </div>
 
@@ -88,10 +94,10 @@
           </div>
 
           <div class="py-2">
-            <div v-if="true" class="py-4 !pt-2">
+            <div v-if="recentTransactions.length == 0" class="py-4 !pt-2">
               <app-empty-state
                 title="No transactions"
-                description="Collect Payments, Make Withdrawals, and Redeem the GRP Tokens you’ve earned."
+                description="Make Payments and Redeem the GRP Tokens you’ve earned."
               />
             </div>
             <template v-else>
@@ -101,7 +107,7 @@
                 :key="transaction.id"
                 :data="transaction"
                 @click="
-                  Logic.Common.GoToRoute('/transaction/' + transaction.id)
+                  Logic.Common.GoToRoute('/transactions/' + transaction.id)
                 "
               />
             </template>
@@ -159,7 +165,7 @@ import {
   AppIcon,
   AppTitleCardContainer,
   AppModal,
-  HorizontalUserList,
+  AppHorizontalUserList,
   AppCurrencySwitch,
   AppEmptyState,
 } from "@greep/ui-components";
@@ -167,6 +173,7 @@ import { Logic } from "@greep/logic";
 import { getPlatforms, onIonViewDidEnter } from "@ionic/vue";
 import { availableCurrencies } from "../composable";
 import { User } from "@greep/logic/src/gql/graphql";
+import { watch } from "vue";
 
 enum TransactionType {
   Sent = "sent",
@@ -185,41 +192,56 @@ export default defineComponent({
     AppIcon,
     AppModal,
     AppTitleCardContainer,
-    HorizontalUserList,
+    AppHorizontalUserList,
     AppCurrencySwitch,
     AppEmptyState,
   },
-  // middlewares: {
-  //   fetchRules: [
-  //     {
-  //       domain: "Wallet",
-  //       property: "ManyTransactions",
-  //       method: "GetTransactions",
-  //       params: [1, 10],
-  //       requireAuth: true,
-  //       ignoreProperty: false,
-  //       silentUpdate: true,
-  //     },
-  //     {
-  //       domain: "Wallet",
-  //       property: "ManyPointTransactions",
-  //       method: "GetPointTransactions",
-  //       params: [1, 10],
-  //       requireAuth: true,
-  //       ignoreProperty: false,
-  //       silentUpdate: true,
-  //     },
-  //   ],
-  // },
+  middlewares: {
+    fetchRules: [
+      {
+        domain: "Wallet",
+        property: "ManyTransactions",
+        method: "GetTransactions",
+        params: [1, 10],
+        requireAuth: true,
+        ignoreProperty: false,
+        silentUpdate: true,
+      },
+      {
+        domain: "Wallet",
+        property: "ManyPointTransactions",
+        method: "GetPointTransactions",
+        params: [1, 10],
+        requireAuth: true,
+        ignoreProperty: false,
+        silentUpdate: true,
+      },
+      {
+        domain: "Wallet",
+        property: "CurrentGlobalExchangeRate",
+        method: "GetGlobalExchangeRate",
+        params: [],
+        requireAuth: true,
+        ignoreProperty: false,
+        silentUpdate: true,
+      },
+    ],
+  },
   setup() {
+    const defaultCountryCode = computed(() => {
+      return availableCurrencies.filter(
+        (item) => item.code == Logic.Auth.AuthUser?.profile?.default_currency
+      )[0];
+    });
+
     const amount = ref("1000");
-    const modelCurrencyValue = ref("NGN");
+    const modelCurrencyValue = ref(defaultCountryCode.value?.code);
     const showWelcomeModal = ref(false);
     const actionBtns = [
       {
         text: "Add",
         icon: "plus",
-        route: "add",
+        route: "add/method",
       },
       {
         text: "Send",
@@ -233,55 +255,33 @@ export default defineComponent({
       },
     ];
 
-    const users = ref<User[]>([]);
-    // { id: 1, name: "James", avatar: "/images/temps/profile-1.png" },
+    const allowedAvailableCurrencies = computed(() => {
+      const newAvailableCurrencies = availableCurrencies.filter((item) => {
+        return (
+          item.code == defaultCountryCode.value?.code ||
+          item.code == "USDC" ||
+          item.code == "XLM"
+        );
+      });
 
-    const defaultCurrency = ref("NGN");
-    const selectedCurrency = ref("NGN");
-    const currencySymbol = ref("₦");
+      newAvailableCurrencies.push(
+        {
+          code: "XLM",
+          name: "Stellar Lumen",
+          symbol: "XLM",
+          country_code: "XLM",
+          loading: false,
+        },
+        {
+          code: "USDC",
+          name: "USD Coin",
+          symbol: "$",
+          country_code: "US",
+          loading: false,
+        }
+      );
 
-    // const ManyTransactions = ref(Logic.Wallet.ManyTransactions)
-    // const ManyPointTransactions = ref(Logic.Wallet.ManyPointTransactions)
-    // const CurrentGlobalExchangeRate = ref(
-    //   Logic.Wallet.CurrentGlobalExchangeRate
-    // )
-
-    const AuthUser = ref<User>(Logic.Auth.AuthUser);
-
-    const currentPlatform = computed(() => {
-      return getPlatforms()[0];
-    });
-
-    const setPageDefaults = () => {
-      defaultCurrency.value =
-        Logic.Auth.AuthUser?.profile?.default_currency || "NGN";
-      selectedCurrency.value = defaultCurrency.value;
-    };
-
-    onIonViewDidEnter(() => {
-      setPageDefaults();
-    });
-
-    onMounted(() => {
-      // Register reactive data
-      // Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions)
-      // Logic.Wallet.watchProperty(
-      //   "ManyPointTransactions",
-      //   ManyPointTransactions
-      // )
-      // Logic.Wallet.watchProperty(
-      //   "CurrentGlobalExchangeRate",
-      //   CurrentGlobalExchangeRate
-      // )
-
-      const hasSeenModal = localStorage.getItem("has_seen_welcome_modal");
-
-      if (!hasSeenModal) {
-        showWelcomeModal.value = true;
-        localStorage.setItem("has_seen_welcome_modal", "true");
-      }
-      Logic.Auth.watchProperty("AuthUser", AuthUser);
-      setPageDefaults();
+      return reactive(newAvailableCurrencies);
     });
 
     const recentTransactions = reactive<
@@ -292,25 +292,142 @@ export default defineComponent({
         type: TransactionType;
         transactionType: "credit" | "debit";
         date: string;
+        currencySymbol: string;
+        subAmount: string;
       }[]
-    >([
-      {
-        id: 1,
-        title: "Payment to John Doe",
-        amount: 50.0,
-        type: TransactionType.Sent,
-        transactionType: "debit",
-        date: "2024-01-26",
-      },
-      {
-        id: 2,
-        title: "Received from Jane Smith",
-        amount: 100.0,
-        type: TransactionType.Received,
-        transactionType: "credit",
-        date: "2024-01-25",
-      },
-    ]);
+    >([]);
+
+    const users = ref<User[]>([]);
+
+    const defaultCurrency = ref(defaultCountryCode.value.code);
+    const selectedCurrency = ref(defaultCountryCode.value.code);
+    const currencySymbol = ref(defaultCountryCode.value.symbol);
+
+    const ManyTransactions = ref(Logic.Wallet.ManyTransactions);
+    const ManyPointTransactions = ref(Logic.Wallet.ManyPointTransactions);
+    const CurrentGlobalExchangeRate = ref(
+      Logic.Wallet.CurrentGlobalExchangeRate
+    );
+
+    const AuthUser = ref<User | undefined>(Logic.Auth.AuthUser);
+
+    const currentPlatform = computed(() => {
+      return getPlatforms()[0];
+    });
+
+    const setTransactionData = () => {
+      recentTransactions.length = 0;
+
+      // Normal transactions
+      ManyTransactions.value?.data?.forEach((data) => {
+        let typeName: TransactionType = TransactionType.Added;
+
+        if (data.dr_or_cr == "credit" && data.description == "Wallet Topup") {
+          typeName = TransactionType.Added;
+        } else if (data.dr_or_cr == "debit") {
+          typeName = TransactionType.Sent;
+        }
+
+        recentTransactions.push({
+          id: data.uuid,
+          amount:
+            data.amount *
+            (modelCurrencyValue.value == "USDC"
+              ? 1
+              : CurrentGlobalExchangeRate.value?.mid || 1),
+          title: data.description,
+          transactionType: data.dr_or_cr as "credit" | "debit",
+          date: Logic.Common.momentInstance(data.created_at).format(
+            "YYYY-MM-DD"
+          ),
+          type: typeName,
+          currencySymbol: currencySymbol.value || "",
+          subAmount: `USDC ${Logic.Common.convertToMoney(
+            data.amount,
+            true,
+            ""
+          )}`,
+        });
+      });
+
+      // Point transactions
+      ManyPointTransactions.value?.data?.forEach((data) => {
+        let typeName: TransactionType = TransactionType.Added;
+
+        if (data.dr_or_cr == "credit") {
+          typeName = TransactionType.Redeemed;
+        } else if (data.dr_or_cr == "debit") {
+          typeName = TransactionType.Redeemed;
+        }
+
+        recentTransactions.push({
+          id: data.uuid,
+          amount: data.amount,
+          title: data.description,
+          transactionType: data.dr_or_cr as "credit" | "debit",
+          date: Logic.Common.momentInstance(data.created_at).format(
+            "YYYY-MM-DD"
+          ),
+          type: typeName,
+          currencySymbol: currencySymbol.value || "",
+          subAmount: `GRP Coin`,
+        });
+      });
+
+      // Sort transactions desc by date
+      recentTransactions.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+    };
+
+    const setPageDefaults = () => {
+      defaultCurrency.value =
+        Logic.Auth.AuthUser?.profile?.default_currency ||
+        defaultCountryCode.value.code;
+      selectedCurrency.value = defaultCurrency.value;
+    };
+
+    onIonViewDidEnter(() => {
+      setPageDefaults();
+      setTransactionData();
+    });
+
+    watch(
+      [
+        ManyPointTransactions,
+        ManyTransactions,
+        currencySymbol,
+        CurrentGlobalExchangeRate,
+      ],
+      () => {
+        setTransactionData();
+      }
+    );
+
+    onMounted(() => {
+      // Register reactive data
+      Logic.Wallet.watchProperty("ManyTransactions", ManyTransactions);
+      Logic.Wallet.watchProperty(
+        "ManyPointTransactions",
+        ManyPointTransactions
+      );
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+      Logic.Wallet.watchProperty(
+        "CurrentGlobalExchangeRate",
+        CurrentGlobalExchangeRate
+      );
+
+      const hasSeenModal = localStorage.getItem("has_seen_welcome_modal");
+
+      if (!hasSeenModal) {
+        showWelcomeModal.value = true;
+        localStorage.setItem("has_seen_welcome_modal", "true");
+      }
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+
+      setPageDefaults();
+      setTransactionData();
+    });
 
     return {
       showWelcomeModal,
@@ -326,6 +443,9 @@ export default defineComponent({
       AuthUser,
       availableCurrencies,
       recentTransactions,
+      CurrentGlobalExchangeRate,
+      allowedAvailableCurrencies,
+      defaultCountryCode,
     };
   },
 });

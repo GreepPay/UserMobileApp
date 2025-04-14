@@ -1,12 +1,12 @@
 <template>
-  <app-wrapper
-    ref="formComponent"
-    :parent-refs="parentRefs"
-    class="w-full flex flex-col h-full"
-  >
+  <app-wrapper>
     <subpage-layout title="Mobile Money Details">
-      <div class="w-full flex flex-col items-center justify-start h-full p-4">
-        <div class="pb-4 w-full">
+      <app-form-wrapper
+        ref="formComponent"
+        :parent-refs="parentRefs"
+        class="w-full flex flex-col items-center justify-start h-full px-4 pt-2"
+      >
+        <!-- <div class="pb-4 w-full">
           <app-text-field
             :has-title="false"
             type="text"
@@ -32,21 +32,7 @@
             :rules="[FormValidations.RequiredRule]"
           >
           </app-text-field>
-        </div>
-
-        <div class="pb-4 w-full">
-          <app-text-field
-            :has-title="false"
-            type="tel"
-            placeholder="Mobile Number"
-            ref="mobileNumber"
-            name="Mobile Number"
-            use-floating-label
-            v-model="formData.mobileNumber"
-            :rules="[FormValidations.RequiredRule]"
-          >
-          </app-text-field>
-        </div>
+        </div> -->
 
         <div class="pb-4 w-full">
           <app-select
@@ -63,6 +49,20 @@
         </div>
 
         <div class="pb-4 w-full">
+          <app-text-field
+            :has-title="false"
+            type="tel"
+            placeholder="Mobile Number"
+            ref="mobileNumber"
+            name="Mobile Number"
+            use-floating-label
+            v-model="formData.mobileNumber"
+            :rules="[FormValidations.RequiredRule]"
+          >
+          </app-text-field>
+        </div>
+
+        <!-- <div class="pb-4 w-full">
           <app-select
             :placeholder="'Reason For Sending'"
             :hasTitle="false"
@@ -74,8 +74,8 @@
             auto-complete
           >
           </app-select>
-        </div>
-      </div>
+        </div> -->
+      </app-form-wrapper>
 
       <!-- Bottom button -->
       <div
@@ -99,74 +99,153 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
-  import {
+import { defineComponent, reactive } from "vue";
+import {
+  AppFormWrapper,
+  AppTextField,
+  AppSelect,
+  AppButton,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+import { availableCurrencies } from "../../composable";
+import { ref } from "vue";
+import { onMounted } from "vue";
+import { onIonViewWillEnter } from "@ionic/vue";
+
+const defaultCountryCode = availableCurrencies.filter(
+  (item) => item.code == Logic.Auth.AuthUser?.profile?.default_currency
+)[0];
+
+export default defineComponent({
+  components: {
     AppFormWrapper,
     AppTextField,
-    AppInfoBox,
-    AppNormalText,
     AppSelect,
     AppButton,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  props: {},
+  name: "MobileMoneyBankDetailsPage",
+  middlewares: {
+    fetchRules: [
+      {
+        domain: "Wallet",
+        property: "OnRampNetwork",
+        method: "GetOnRampNetwork",
+        params: ["GH"],
+        requireAuth: true,
+        ignoreProperty: false,
+      },
+      {
+        domain: "Wallet",
+        property: "OnRampChannels",
+        method: "GetOnRampChannels",
+        params: [defaultCountryCode?.country_code],
+        requireAuth: true,
+        ignoreProperty: false,
+      },
+    ],
+  },
+  setup() {
+    const FormValidations = Logic.Form;
 
-  export default defineComponent({
-    components: {
-      AppFormWrapper,
-      AppTextField,
-      AppInfoBox,
-      AppNormalText,
-      AppSelect,
-      AppButton,
-    },
-    props: {},
-    name: "MobileMoneyBankDetailsPage",
-    setup() {
-      const FormValidations = Logic.Form
+    const OnRampChannels = ref(Logic.Wallet.OnRampChannels);
+    const OnRampNetwork = ref(Logic.Wallet.OnRampNetwork);
 
-      const formData = reactive({
-        firstName: "",
-        lastName: "",
-        mobileNumber: "",
-        provider: "",
-        reason: "",
-      })
+    const formComponent = ref();
 
-      const providers = [
-        { key: "mtn", value: "MTN" },
-        { key: "airtel", value: "Airtel" },
-        { key: "glo", value: "Glo" },
-        { key: "9mobile", value: "9Mobile" },
-      ]
+    const selectedMethod = ref("");
+    const selectedCurrency = ref(defaultCountryCode.code);
 
-      const reasonsForSending = [
-        { key: "bills", value: "Paying Bills" },
-        { key: "gift", value: "Sending as a Gift" },
-        { key: "business", value: "Business Transaction" },
-        { key: "personal", value: "Personal Use" },
-      ]
+    const formData = reactive({
+      provider: "",
+      mobileNumber: "",
+    });
 
-      const continueToNext = () => {
-        Logic.Common.GoToRoute("/add/confirm")
+    const providers = reactive([
+      { key: "mtn", value: "MTN" },
+      { key: "airtel", value: "Airtel" },
+      { key: "glo", value: "Glo" },
+      { key: "9mobile", value: "9Mobile" },
+    ]);
+
+    const reasonsForSending = [
+      { key: "bills", value: "Paying Bills" },
+      { key: "gift", value: "Sending as a Gift" },
+      { key: "business", value: "Business Transaction" },
+      { key: "personal", value: "Personal Use" },
+    ];
+
+    const continueToNext = () => {
+      const state = formComponent.value.validate();
+
+      if (state) {
+        // Save purchase data to localstorage
+        let purchaseData: any = localStorage.getItem("purchaseData");
+
+        if (purchaseData) {
+          purchaseData = JSON.parse(purchaseData);
+          purchaseData.momoDetails = {
+            networkId: formData.provider,
+            mobileNumber: formData.mobileNumber,
+          };
+          localStorage.setItem("purchaseData", JSON.stringify(purchaseData));
+
+          Logic.Common.GoToRoute("/add/confirm");
+        }
       }
+    };
 
-      return {
-        FormValidations,
-        Logic,
-        formData,
-        reasonsForSending,
-        providers,
-        continueToNext,
+    const setPageDefaults = () => {
+      selectedCurrency.value =
+        Logic.Auth.AuthUser?.profile?.default_currency ||
+        defaultCountryCode.code;
+
+      selectedMethod.value =
+        Logic.Common.route?.query?.channelId?.toString() || "";
+
+      providers.length = 0;
+      OnRampNetwork.value?.forEach((item) => {
+        if (item.status == "active" && item.accountNumberType == "phone") {
+          providers.push({
+            key: item.id,
+            value: item.name,
+          });
+        }
+      });
+
+      if (providers.length > 0) {
+        formData.provider = providers[0].key;
       }
-    },
-    data() {
-      return {
-        parentRefs: [],
-      }
-    },
-    mounted() {
-      const parentRefs: any = this.$refs
-      this.parentRefs = parentRefs
-    },
-  })
+    };
+
+    onIonViewWillEnter(() => {
+      setPageDefaults();
+    });
+
+    onMounted(() => {
+      Logic.Wallet.watchProperty("OnRampChannels", OnRampChannels);
+      Logic.Wallet.watchProperty("OnRampNetwork", OnRampNetwork);
+      setPageDefaults();
+    });
+
+    return {
+      FormValidations,
+      Logic,
+      formData,
+      reasonsForSending,
+      providers,
+      continueToNext,
+      formComponent,
+    };
+  },
+  data() {
+    return {
+      parentRefs: [],
+    };
+  },
+  mounted() {
+    const parentRefs: any = this.$refs;
+    this.parentRefs = parentRefs;
+  },
+});
 </script>

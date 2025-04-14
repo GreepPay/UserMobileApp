@@ -12,7 +12,7 @@
           :src="
             AuthUser?.profile?.profile_picture || '/images/profile-image.svg'
           "
-          :alt="`${AuthUser.first_name} ${AuthUser.last_name}`"
+          :alt="`${AuthUser?.first_name} ${AuthUser?.last_name}`"
           :size="40"
           @click="Logic.Common.GoToRoute(`/profile`)"
         />
@@ -22,7 +22,7 @@
         </app-header-text>
 
         <div
-          class="border h-9 w-9 rounded-full flex justify-center items-center border-black"
+          class="border h-9 w-9 rounded-full flex justify-center items-center !border-gray-700"
           @click="Logic.Common.GoToRoute(`/notifications`)"
         >
           <app-icon name="bell" custom-class="h-6" />
@@ -60,7 +60,7 @@ export default defineComponent({
   name: "DefaultIndexLayout",
 
   setup() {
-    const AuthUser = ref<User>(Logic.Auth.AuthUser);
+    const AuthUser = ref<User | undefined>(Logic.Auth.AuthUser);
 
     onMounted(() => {
       Logic.Auth.watchProperty("AuthUser", AuthUser);

@@ -36,6 +36,9 @@
             </div>
           </div>
         </div>
+
+        <!-- Spacer -->
+        <div class="h-[80px]"></div>
       </app-form-wrapper>
 
       <!-- Bottom section -->
@@ -56,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import {  reactive } from "vue";
+import { reactive } from "vue";
 import { defineComponent } from "vue";
 import {
   AppNormalText,
@@ -66,6 +69,7 @@ import {
   AppIcon,
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
+import { availableCurrencies } from "../../composable";
 
 export default defineComponent({
   name: "ProfileDefualtCurrency",
@@ -78,49 +82,14 @@ export default defineComponent({
   },
   setup() {
     const FormValidations = Logic.Form;
-    const availableCurrencies = reactive([
-      {
-        code: "TRY",
-        name: "Turkish Lira",
-      },
-      {
-        code: "USD",
-        name: "United States Dollar",
-      },
-      {
-        code: "USDC",
-        name: "USDC",
-      },
-      {
-        code: "NGN",
-        name: "Nigerian Naira",
-      },
-      {
-        code: "GHS",
-        name: "Ghanaian Cedis",
-      },
-      {
-        code: "XLM",
-        name: "XLM",
-      },
-      {
-        code: "ZAR",
-        name: "South African Rand",
-      },
-      {
-        code: "EUR",
-        name: "Euro",
-      },
-    ]);
 
     const formData = reactive<{
       preferred_currency: string;
     }>({
-      preferred_currency: "TRY",
+      preferred_currency: "NGN",
     });
 
-    const handleConfirm = () => {  
-    };
+    const handleConfirm = () => {};
 
     return {
       Logic,

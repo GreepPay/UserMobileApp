@@ -1,26 +1,26 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Add Money">
-      <div class="w-full flex flex-col items-center p-4 pt-3 space-y-8 h-full">
+      <div class="w-full flex flex-col items-center p-4 pt-3 h-full">
         <app-title-card-container>
-          <div
-            class="flex flex-col space-y-4 justify-center items-center w-full"
-          >
+          <div class="flex flex-col justify-center items-center w-full">
             <app-currency-switch
-              :model-value="modelCurrencyValue"
-              default_currency="NGN"
+              :model-value="defaultCurrency"
+              :default_currency="defaultCountryCode.code"
               :availableCurrencies="availableCurrencies"
+              v-model:model-symbol="currencySymbol"
+              :isSwitchable="false"
             />
 
-            <div class="w-full flex flex-col items-center justify-center">
+            <div class="w-full flex flex-col items-center justify-center pt-4">
               <app-normal-text
                 custom-class="!text-white !font-normal !font-sm pb-2  text-center"
               >
                 Amount
               </app-normal-text>
 
-              <app-header-text class="!text-3xl text-white">
-                ₺
+              <app-header-text class="!text-3xl text-white !font-normal">
+                {{ currencySymbol }}
                 {{
                   !Number.isNaN(parseFloat(amount))
                     ? Logic.Common.convertToMoney(amount, false, "", false)
@@ -31,21 +31,47 @@
           </div>
         </app-title-card-container>
 
-        <!-- keyboard -->
-        <app-keyboard v-model="amount" />
-
         <div
-          :class="`w-full flex flex-col items-center justify-center ${
-            parseFloat(amount) > maximumAmount ? 'visible' : 'invisible'
-          }`"
+          class="w-full flex flex-col flex-grow justify-start space-y-2 items-center pt-6"
         >
-          <app-normal-text class="!text-red-500">
-            Maximum withdrawal amount is
-            <span class="!font-semibold pl-1">
-              ₺
-              {{ Logic.Common.convertToMoney(maximumAmount, false, "", false) }}
-            </span>
-          </app-normal-text>
+          <app-keyboard v-model="amount" class="" />
+
+          <div :class="`w-full flex flex-col items-center justify-center`">
+            <template
+              v-if="parseFloat(amount) > (selectedChannel?.max || 100000)"
+            >
+              <app-normal-text class="!text-red-500">
+                Maximum amount is
+                <span class="!font-semibold pl-1"
+                  >{{ currencySymbol }}
+                  {{
+                    Logic.Common.convertToMoney(
+                      selectedChannel?.max || 100000,
+                      true,
+                      "",
+                      false
+                    )
+                  }}</span
+                >
+              </app-normal-text>
+            </template>
+            <template v-if="parseFloat(amount) < (selectedChannel?.min || 0)">
+              <app-normal-text class="!text-gray-700">
+                Minimum amount is
+                <span class="!font-semibold pl-1"
+                  >{{ currencySymbol }}
+                  {{
+                    Logic.Common.convertToMoney(
+                      selectedChannel?.min,
+                      true,
+                      "",
+                      false
+                    )
+                  }}</span
+                >
+              </app-normal-text>
+            </template>
+          </div>
         </div>
 
         <!-- Bottom button -->
@@ -59,6 +85,7 @@
             <app-button
               :class="`!py-4 ${amountIsValid() ? 'opacity-100' : 'opacity-50'}`"
               @click="amountIsValid() ? continueToNext() : null"
+              variant="secondary"
             >
               Next
             </app-button>
@@ -70,53 +97,146 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from "vue"
-  import {
+import { defineComponent, ref } from "vue";
+import {
+  AppHeaderText,
+  AppButton,
+  AppKeyboard,
+  AppNormalText,
+  AppTitleCardContainer,
+  AppCurrencySwitch,
+} from "@greep/ui-components";
+import { availableCurrencies } from "../../composable";
+import { Logic } from "@greep/logic";
+import { onMounted } from "vue";
+import { User } from "@greep/logic/src/gql/graphql";
+import { computed } from "vue";
+import { onIonViewWillEnter } from "@ionic/vue";
+
+const defaultCountryCode = availableCurrencies.filter(
+  (item) => item.code == Logic.Auth.AuthUser?.profile?.default_currency
+)[0];
+
+export default defineComponent({
+  name: "WalletAddMoneyPage",
+  components: {
     AppHeaderText,
     AppButton,
     AppKeyboard,
     AppNormalText,
     AppTitleCardContainer,
     AppCurrencySwitch,
-  } from "@greep/ui-components"
-  import { availableCurrencies } from "../../composable"
-  import { Logic } from "@greep/logic"
+  },
+  middlewares: {
+    fetchRules: [
+      {
+        domain: "Wallet",
+        property: "OnRampChannels",
+        method: "GetOnRampChannels",
+        params: [defaultCountryCode?.country_code],
+        requireAuth: true,
+        ignoreProperty: false,
+      },
+      {
+        domain: "Wallet",
+        property: "OnRampNetwork",
+        method: "GetOnRampNetwork",
+        params: [defaultCountryCode?.country_code],
+        requireAuth: true,
+        ignoreProperty: false,
+      },
+    ],
+  },
+  setup() {
+    const amount = ref("0");
 
-  export default defineComponent({
-    name: "WalletAddMoneyPage",
-    components: {
-      AppHeaderText,
-      AppButton,
-      AppKeyboard,
-      AppNormalText,
-      AppTitleCardContainer,
-      AppCurrencySwitch,
-    },
-    setup() {
-      const modelCurrencyValue = ref("USD")
-      const amount = ref("0")
-      const maximumAmount = 10000
+    const OnRampChannels = ref(Logic.Wallet.OnRampChannels);
+    const OnRampNetwork = ref(Logic.Wallet.OnRampNetwork);
 
-      const amountIsValid = () => {
-        return (
-          parseFloat(amount.value) > 0 &&
-          parseFloat(amount.value) <= maximumAmount
-        )
+    const defaultCurrency = ref(defaultCountryCode.code);
+
+    const selectedMethod = ref("");
+
+    const selectedCurrency = ref(defaultCountryCode.code);
+
+    const AuthUser = ref<User | undefined>(Logic.Auth.AuthUser);
+
+    const currencySymbol = ref(defaultCountryCode.symbol);
+
+    const selectedChannel = computed(() => {
+      return OnRampChannels.value?.find(
+        (method) => method.id === selectedMethod.value
+      );
+    });
+
+    const setPageDefaults = () => {
+      defaultCurrency.value =
+        Logic.Auth.AuthUser?.profile?.default_currency ||
+        defaultCountryCode.code;
+      selectedCurrency.value = defaultCurrency.value;
+
+      selectedMethod.value =
+        Logic.Common.route?.query?.channelId?.toString() || "";
+    };
+
+    const amountIsValid = () => {
+      return (
+        parseFloat(amount.value) >= (selectedChannel.value?.min || 0) &&
+        parseFloat(amount.value) <= (selectedChannel.value?.max || 0)
+      );
+    };
+
+    const continueToNext = () => {
+      if (amountIsValid()) {
+        if (selectedChannel.value?.channelType == "momo") {
+          const purchaseData = {
+            type: "momo",
+            amount: parseFloat(amount.value),
+            currency: selectedCurrency.value,
+            channelId: selectedChannel.value?.id || "",
+          };
+          localStorage.setItem("purchaseData", JSON.stringify(purchaseData));
+
+          Logic.Common.GoToRoute(
+            "/add/bank-details?channelId=" + selectedMethod.value
+          );
+        } else {
+          // Save purchase data to localstorage
+          const purchaseData = {
+            type: "bank",
+            amount: parseFloat(amount.value),
+            currency: selectedCurrency.value,
+            channelId: selectedChannel.value?.id || "",
+          };
+          localStorage.setItem("purchaseData", JSON.stringify(purchaseData));
+
+          Logic.Common.GoToRoute("/add/confirm");
+        }
       }
+    };
 
-      const continueToNext = () => {
-        Logic.Common.GoToRoute("/add/method")
-      }
+    onIonViewWillEnter(() => {
+      setPageDefaults();
+    });
 
-      return {
-        amount,
-        Logic,
-        maximumAmount,
-        continueToNext,
-        amountIsValid,
-        modelCurrencyValue,
-        availableCurrencies,
-      }
-    },
-  })
+    onMounted(() => {
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+      Logic.Wallet.watchProperty("OnRampChannels", OnRampChannels);
+      Logic.Wallet.watchProperty("OnRampNetwork", OnRampNetwork);
+      setPageDefaults();
+    });
+
+    return {
+      amount,
+      Logic,
+      selectedChannel,
+      continueToNext,
+      amountIsValid,
+      currencySymbol,
+      availableCurrencies,
+      defaultCurrency,
+      defaultCountryCode,
+    };
+  },
+});
 </script>

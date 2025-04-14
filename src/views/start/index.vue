@@ -206,8 +206,8 @@
                   class="!text-center text-veryLightGray !font-normal !text-sm"
                 >
                   By clicking the
-                  <span class="font-semibold"> “Sign Up” </span> button below,
-                  you agree to our
+                  <span class="font-semibold"> “Create Account” </span> button
+                  below, you agree to our
                   <span class="font-semibold text-green">
                     Terms of Service, Terms & Conditions,
                   </span>

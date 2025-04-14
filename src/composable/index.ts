@@ -1,53 +1,65 @@
-import { getPlatforms } from "@ionic/vue"
-import { computed, reactive } from "vue"
-import { Currency } from "@greep/ui-components/src/types"
+import { getPlatforms } from "@ionic/vue";
+import { computed, reactive } from "vue";
+import { Currency } from "@greep/ui-components/src/types";
 
 export const availableCurrencies = reactive<Currency[]>([
   {
     code: "NGN",
     name: "Nigerian Naira",
     symbol: "₦",
+    country_code: "NG",
+    loading: false,
   },
   {
     code: "KES",
     name: "Kenyan Shilling",
     symbol: "KSh",
+    country_code: "KE",
+    loading: false,
   },
   {
     code: "UGX",
     name: "Ugandan Shilling",
     symbol: "USh",
+    country_code: "UG",
+    loading: false,
   },
   {
     code: "GHS",
     name: "Ghanaian Cedi",
     symbol: "₵",
+    country_code: "GH",
+    loading: false,
   },
   {
     code: "ZAR",
     name: "South African Rand",
     symbol: "R",
+    country_code: "ZA",
+    loading: false,
   },
-  {
-    code: "AOA",
-    name: "Angolan Kwanza",
-    symbol: "Kz",
-  },
+  // {
+  //   code: "AOA",
+  //   name: "Angolan Kwanza",
+  //   symbol: "Kz",
+  // },
   {
     code: "ZMW",
     name: "Zambian Kwacha",
     symbol: "ZK",
+    country_code: "ZM",
+    loading: false,
   },
-  {
-    code: "ZWL",
-    name: "Zimbabwean Dollar",
-    symbol: "Z$",
-  },
-])
+  // {
+  //   code: "ZWL",
+  //   name: "Zimbabwean Dollar",
+  //   symbol: "Z$",
+  // },
+]);
 
 export const safeAreaInsetTop = computed(() => {
   // Replace this with your actual platform detection logic
-  const isAndroid = getPlatforms()[0] === "android"
+  const isAndroid = getPlatforms()[0] === "android";
 
   const topInset = Number(
     String(
@@ -55,14 +67,14 @@ export const safeAreaInsetTop = computed(() => {
         "--safe-area-inset-top"
       )
     ).replace("px", "")
-  )
+  );
 
-  return isAndroid && topInset === 0 ? 20 : topInset
-})
+  return isAndroid && topInset === 0 ? 20 : topInset;
+});
 
 export const safeAreaInsetBottom = computed(() => {
   // Replace this with your actual platform detection logic
-  const isAndroid = getPlatforms()[0] === "android"
+  const isAndroid = getPlatforms()[0] === "android";
 
   const bottomInset = Number(
     String(
@@ -70,10 +82,10 @@ export const safeAreaInsetBottom = computed(() => {
         "--safe-area-inset-bottom"
       )
     ).replace("px", "")
-  )
+  );
 
-  return isAndroid && bottomInset === 0 ? 20 : bottomInset
-})
+  return isAndroid && bottomInset === 0 ? 20 : bottomInset;
+});
 
 export const supportedCountries = reactive([
   {
@@ -85,7 +97,7 @@ export const supportedCountries = reactive([
       // { key: "phone", value: "Phone Number" },
       { key: "nin", value: "National Identification Number (NIN)" },
       { key: "dl", value: "Driver’s License" },
-      { key: "voter", value: "Voter’s Card" },
+      // { key: "vin", value: "Voter’s Card" },
       { key: "passport", value: "International Passport" },
     ],
   },
@@ -94,9 +106,9 @@ export const supportedCountries = reactive([
     isoCode: "KE",
     currency: "KES",
     idVerificationMethods: [
-      { key: "nid", value: "National ID" },
+      { key: "id", value: "National ID" },
       { key: "passport", value: "International Passport" },
-      { key: "kra_pin", value: "Kenya KRA PIN" },
+      { key: "kra", value: "Kenya KRA PIN" },
     ],
   },
   {
@@ -117,7 +129,7 @@ export const supportedCountries = reactive([
       { key: "voter", value: "Voter’s ID" },
       { key: "tin", value: "Taxpayer Identification Number (TIN)" },
       { key: "ssnit", value: "Social Security Number (SSNIT ID)" },
-      { key: "digital_address", value: "Ghana Digital Address" },
+      { key: "address", value: "Ghana Digital Address" },
     ],
   },
   {
@@ -125,7 +137,7 @@ export const supportedCountries = reactive([
     isoCode: "ZA",
     currency: "ZAR",
     idVerificationMethods: [
-      { key: "sa_id", value: "South African National ID" },
+      { key: "national_id", value: "South African National ID" },
     ],
   },
   {
@@ -150,7 +162,7 @@ export const supportedCountries = reactive([
     currency: "ZWL",
     idVerificationMethods: [
       { key: "national_id", value: "Zimbabwe National ID" },
-      { key: "credit_check", value: "Credit Check" },
+      // { key: "credit_check", value: "Credit Check" },
     ],
   },
-])
+]);

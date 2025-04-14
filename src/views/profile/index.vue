@@ -1,9 +1,9 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Profile">
-      <div class="p-4">
+      <div class="w-full flex flex-col px-4">
         <app-title-card-container>
-          <div class="flex items-center space-x-2 -mt-4">
+          <div class="flex items-center space-x-2">
             <app-image-loader
               :photo-url="
                 AuthUser?.profile?.profile_picture ||
@@ -16,8 +16,8 @@
               <app-normal-text
                 class="!text-white font-semibold !text-left !text-base"
               >
-                {{ AuthUser.first_name }}
-                {{ AuthUser.last_name }}
+                {{ AuthUser?.first_name }}
+                {{ AuthUser?.last_name }}
               </app-normal-text>
 
               <div
@@ -32,7 +32,7 @@
 
                   <app-normal-text class="!text-white font-[500] !text-sm">{{
                     Logic.Common.convertToMoney(
-                      AuthUser.wallet?.point_balance,
+                      AuthUser?.wallet?.point_balance,
                       true,
                       ""
                     )
@@ -47,7 +47,7 @@
       </div>
 
       <!--  -->
-      <div class="flex-col p-4">
+      <div class="flex-col p-4 pt-6">
         <div
           class="w-full px-3 flex flex-row space-x-4 mb-3 items-center py-2 pb-4 border-b-[1px] border-[#E0E2E4]"
           v-for="item in profileSettings"
@@ -82,64 +82,64 @@
 </template>
 
 <script lang="ts">
-  import { ref, reactive, onMounted } from "vue"
-  import { defineComponent } from "vue"
-  import {
+import { ref, reactive, onMounted } from "vue";
+import { defineComponent } from "vue";
+import {
+  AppTitleCardContainer,
+  AppNormalText,
+  AppButton,
+  AppIcon,
+  AppImageLoader,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+
+export default defineComponent({
+  name: "WalletProfilePage",
+  components: {
     AppTitleCardContainer,
     AppNormalText,
     AppButton,
     AppIcon,
     AppImageLoader,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
+  },
+  setup() {
+    const amount = ref("1000");
+    const AuthUser = ref(Logic.Auth.AuthUser);
 
-  export default defineComponent({
-    name: "WalletProfilePage",
-    components: {
-      AppTitleCardContainer,
-      AppNormalText,
-      AppButton,
-      AppIcon,
-      AppImageLoader,
-    },
-    setup() {
-      const amount = ref("1000")
-      const AuthUser = ref(Logic.Auth.AuthUser)
+    const profileSettings = reactive<
+      {
+        title: string;
+        route: string;
+        icon: string;
+      }[]
+    >([
+      {
+        title: "Personal Info",
+        route: "info",
+        icon: "linear-user",
+      },
+      {
+        title: "Default Currency",
+        route: "default-currency",
+        icon: "linear-money",
+      },
+      {
+        title: "Login Settings",
+        route: "login-settings",
+        icon: "linear-security-shield",
+      },
+    ]);
 
-      const profileSettings = reactive<
-        {
-          title: string
-          route: string
-          icon: string
-        }[]
-      >([
-        {
-          title: "Personal Info",
-          route: "info",
-          icon: "linear-user",
-        },
-        {
-          title: "Default Currency",
-          route: "default-currency",
-          icon: "linear-money",
-        },
-        {
-          title: "Login Settings",
-          route: "login-settings",
-          icon: "linear-security-shield",
-        },
-      ])
+    onMounted(() => {
+      Logic.Auth.watchProperty("AuthUser", AuthUser);
+    });
 
-      onMounted(() => {
-        Logic.Auth.watchProperty("AuthUser", AuthUser)
-      })
-
-      return {
-        Logic,
-        profileSettings,
-        amount,
-        AuthUser,
-      }
-    },
-  })
+    return {
+      Logic,
+      profileSettings,
+      amount,
+      AuthUser,
+    };
+  },
+});
 </script>

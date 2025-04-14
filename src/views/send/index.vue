@@ -1,23 +1,39 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Send Money">
-      <div class="w-full flex flex-col items-center pt-3 h-full">
+      <div class="w-full flex flex-col items-center h-full">
         <!-- Search -->
-        <div class="w-full px-6">
-          <app-search
-            placeholder="Search User/Merchant"
-            @update:search="searchQuery = $event"
-          />
+        <div class="w-full px-4">
+          <app-text-field
+            :has-title="false"
+            type="search"
+            placeholder="Search"
+            ref="search"
+            name="search"
+            v-model="searchQuery"
+            :custom-class="`!border-[1.5px] ${
+              searchQuery.length > 0 ? '!border-[#10BB76]' : '!border-[#E0E2E4]'
+            }  !rounded-[99px] px-4 !py-3 !bg-transparent`"
+            :input-style="`!text-sm`"
+          >
+            <template #inner-prefix>
+              <app-icon name="search-normal" custom-class="h-[22px]" />
+            </template>
+
+            <template #inner-suffix v-if="searchIsLoading">
+              <app-loading class="!text-primary" />
+            </template>
+          </app-text-field>
         </div>
 
         <!-- Tabs -->
-        <div class="w-full px-3 py-3">
+        <div class="w-full px-4 pt-3" v-if="searchQuery.length == 0">
           <app-tabs :tabs="tabs" v-model:activeTab="activeTab" />
         </div>
 
         <!-- Filtered List -->
-        <div class="w-full px-1">
-          <beneficiary-list
+        <div class="w-full px-4 pt-2">
+          <app-beneficiary-list
             v-model="selectedBeneficiary"
             :dataItems="filteredBeneficiaries"
           />
@@ -35,7 +51,8 @@
           <app-button
             @click="continueToNext"
             :disabled="!selectedBeneficiary"
-            class="!bg-secondary !py-4"
+            class="!py-4"
+            variant="secondary"
           >
             Next
           </app-button>
@@ -49,77 +66,145 @@
 import { defineComponent, ref, computed } from "vue";
 import {
   AppButton,
-  BeneficiaryList,
-  AppSearch,
+  AppBeneficiaryList,
   AppTabs,
+  AppTextField,
+  AppIcon,
+  AppLoading,
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
+import { reactive } from "vue";
+import { watch } from "vue";
+import { onMounted } from "vue";
+
+interface BeneficiaryType {
+  id: string | number;
+  name: string;
+  image: string;
+  description: string;
+}
 
 export default defineComponent({
   name: "SelectBeneficiaryPage",
   components: {
     AppButton,
-    BeneficiaryList,
-    AppSearch,
+    AppBeneficiaryList,
     AppTabs,
+    AppTextField,
+    AppIcon,
+    AppLoading,
+  },
+  middlewares: {
+    fetchRules: [
+      {
+        domain: "Beneficiary",
+        property: "ManyBeneficiaries",
+        method: "GetBeneficiaries",
+        params: [
+          {
+            first: 40,
+            page: 1,
+          },
+        ],
+        requireAuth: true,
+        ignoreProperty: false,
+        silentUpdate: true,
+      },
+    ],
   },
   setup() {
     const searchQuery = ref("");
     const activeTab = ref("recents");
-    const selectedBeneficiary = ref(null);
+    const selectedBeneficiary = ref<BeneficiaryType>();
+    const SearchedUsers = ref(Logic.User.SearchedUsers);
 
-    const beneficiaries = ref([
+    const searchIsLoading = ref(false);
+
+    const beneficiaries = reactive<
       {
-        id: 1,
-        image: "images/temps/profile-1.png",
-        name: "Samwell Taiwo",
-        description: "Greep User",
-        isBeneficiary: false,
-      },
-      {
-        id: 2,
-        image: "images/temps/profile-2.png",
-        name: "Jane Smith",
-        description: "Greep Merchant",
-        isBeneficiary: true,
-      },
-      {
-        id: 3,
-        image: "images/temps/profile-1.png",
-        name: "John Doe",
-        description: "Greep User",
-        isBeneficiary: false,
-      },
-      {
-        id: 4,
-        image: "images/temps/profile-2.png",
-        name: "Sarah Johnson",
-        description: "Greep Merchant",
-        isBeneficiary: true,
-      },
-    ]);
+        id: string;
+        image: string;
+        name: string;
+        description: string;
+        isBeneficiary: boolean;
+      }[]
+    >([]);
 
     const tabs = [
       { key: "recents", label: "Recents" },
       { key: "beneficiaries", label: "Beneficiaries" },
     ];
 
+    const searchUsers = async () => {
+      if (searchQuery.value.length > 0) {
+        // Perform search
+        searchIsLoading.value = true;
+        await Logic.User.SearchForUsers(searchQuery.value);
+        searchIsLoading.value = false;
+      }
+    };
+
     // Computed property to filter beneficiaries based on active tab and search query
     const filteredBeneficiaries = computed(() => {
-      return beneficiaries.value.filter((user) => {
-        const matchesSearch = user.name
-          .toLowerCase()
-          .includes(searchQuery.value.toLowerCase());
+      if (searchQuery.value.length > 0) {
+        return beneficiaries;
+      }
+      return beneficiaries.filter((user) => {
         const matchesTab =
           activeTab.value === "recents" ||
           (activeTab.value === "beneficiaries" && user.isBeneficiary);
-        return matchesSearch && matchesTab;
+        return matchesTab;
       });
     });
 
-    const continueToNext = () => {
-      Logic.Common.GoToRoute("/send/enter-amount");
+    const setBeneficiaries = () => {
+      beneficiaries.length = 0;
+
+      SearchedUsers.value?.forEach((user) => {
+        let greepUserType = "Greep";
+
+        if (user.profile?.user_type == "Customer") {
+          greepUserType = "Greep User";
+        } else if (user.profile?.user_type == "Business") {
+          greepUserType = "Greep Merchant";
+        } else if (user.profile?.user_type == "Rider") {
+          greepUserType = "Greep Rider";
+        }
+
+        beneficiaries.push({
+          name: `${user.first_name} ${user.last_name}`,
+          id: user.uuid || "",
+          image: user.profile?.profile_picture || "/images/profile-image.svg",
+          description: greepUserType,
+          isBeneficiary: false,
+        });
+      });
     };
+
+    watch(searchQuery, () => {
+      Logic.Common.debounce(() => {
+        searchUsers();
+      });
+    });
+
+    watch(SearchedUsers, () => {
+      setBeneficiaries();
+    });
+
+    const continueToNext = () => {
+      Logic.Common.GoToRoute(
+        `/send/enter-amount?beneficiary=${
+          selectedBeneficiary.value?.id
+        }&amount=${0}&currency=${
+          Logic.Auth.AuthUser?.profile?.default_currency || "USD"
+        }`
+      );
+    };
+
+    onMounted(() => {
+      Logic.User.watchProperty("SearchedUsers", SearchedUsers);
+      setBeneficiaries();
+    });
 
     return {
       Logic,
@@ -129,6 +214,7 @@ export default defineComponent({
       filteredBeneficiaries,
       selectedBeneficiary,
       searchQuery,
+      searchIsLoading,
     };
   },
 });

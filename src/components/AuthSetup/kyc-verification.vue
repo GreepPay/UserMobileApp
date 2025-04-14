@@ -26,7 +26,7 @@
 
       <app-text-field
         :has-title="false"
-        type="number"
+        type="text"
         placeholder="Enter ID number"
         ref="id_number"
         name="ID Number"
@@ -68,7 +68,10 @@ export default defineComponent({
     const selectedSupportedCountry = ref(supportedCountries[0]);
 
     const getIdMethodsForCountry = () => {
-      const defaultCurrency = Logic.Auth.SignUpPayload?.default_currency;
+      const defaultCurrency =
+        Logic.Auth.SignUpPayload?.default_currency ||
+        Logic.Auth.AuthUser?.profile?.default_currency;
+
       if (defaultCurrency) {
         const currentCountry = supportedCountries.find(
           (c) => c.currency === defaultCurrency

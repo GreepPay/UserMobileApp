@@ -59,46 +59,127 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, reactive } from "vue"
-  import { AppNormalText, AppButton, AppIcon } from "@greep/ui-components"
-  import { ref } from "vue"
-  import { Logic } from "@greep/logic"
+import { defineComponent, reactive } from "vue";
+import { AppNormalText, AppButton, AppIcon } from "@greep/ui-components";
+import { ref } from "vue";
+import { Logic } from "@greep/logic";
+import { onMounted } from "vue";
+import { availableCurrencies } from "../../composable";
+import { onIonViewWillEnter } from "@ionic/vue";
+import { watch } from "vue";
 
-  export default defineComponent({
-    name: "AddMoneyPaymentMethod",
-    components: {
-      AppNormalText,
-      AppButton,
-      AppIcon,
-    },
-    setup() {
-      const selectedMethod = ref<string>("bank_transfer")
+const defaultCountryCode = availableCurrencies.filter(
+  (item) => item.code == Logic.Auth.AuthUser?.profile?.default_currency
+)[0];
 
-      const paymentMethods = reactive([
-        {
-          title: "Bank Transfer",
-          key: "bank_transfer",
-          fee: `$1`,
-        },
-        {
-          title: "Mobile Money",
-          key: "mobile_money",
-          fee: `$1`,
-        },
-      ])
+export default defineComponent({
+  name: "AddMoneyPaymentMethod",
+  components: {
+    AppNormalText,
+    AppButton,
+    AppIcon,
+  },
+  middlewares: {
+    fetchRules: [
+      {
+        domain: "Wallet",
+        property: "OnRampChannels",
+        method: "GetOnRampChannels",
+        params: [defaultCountryCode?.country_code],
+        requireAuth: true,
+        ignoreProperty: false,
+      },
+      {
+        domain: "Wallet",
+        property: "OnRampNetwork",
+        method: "GetOnRampNetwork",
+        params: [defaultCountryCode?.country_code],
+        requireAuth: true,
+        ignoreProperty: false,
+      },
+    ],
+  },
+  setup() {
+    const selectedMethod = ref<string>("bank_transfer");
 
-      const continueToNext = () => {
-        if (selectedMethod.value === "bank_transfer")
-          return Logic.Common.GoToRoute("/add/bank-details")
-        else Logic.Common.GoToRoute("/add/confirm")
+    const OnRampChannels = ref(Logic.Wallet.OnRampChannels);
+    const OnRampNetwork = ref(Logic.Wallet.OnRampNetwork);
+
+    const paymentMethods = reactive([
+      {
+        title: "Bank Transfer",
+        key: "bank_transfer",
+        fee: `$1`,
+        active: true,
+        type: "bank",
+      },
+      {
+        title: "Mobile Money",
+        key: "mobile_money",
+        fee: `$1`,
+        active: true,
+        type: "mobile_money",
+      },
+    ]);
+
+    const continueToNext = () => {
+      Logic.Common.GoToRoute("/add?channelId=" + selectedMethod.value);
+    };
+
+    const getMethodName = (method: string) => {
+      if (method === "bank") {
+        return "Bank Transfer";
+      } else if (method === "momo") {
+        return "Mobile Money";
+      } else if (method === "p2p") {
+        return "P2P transfer";
       }
+    };
 
-      return {
-        paymentMethods,
-        Logic,
-        selectedMethod,
-        continueToNext,
+    const setAvailableOptions = () => {
+      if (OnRampChannels.value) {
+        paymentMethods.length = 0;
+
+        OnRampChannels.value.forEach((channel) => {
+          paymentMethods.push({
+            title: getMethodName(channel.channelType) || "Unknown",
+            key: channel.id,
+            fee: `${defaultCountryCode.symbol}${Logic.Common.convertToMoney(
+              channel.feeLocal,
+              false,
+              ""
+            )}`,
+            active: channel.status == "active",
+            type: channel.channelType,
+          });
+        });
+
+        if (paymentMethods.length > 0) {
+          selectedMethod.value = paymentMethods[0].key;
+        }
       }
-    },
-  })
+    };
+
+    onIonViewWillEnter(() => {
+      setAvailableOptions();
+    });
+
+    watch([OnRampChannels, OnRampNetwork], () => {
+      setAvailableOptions();
+    });
+
+    onMounted(() => {
+      Logic.Wallet.watchProperty("OnRampChannels", OnRampChannels);
+      Logic.Wallet.watchProperty("OnRampNetwork", OnRampNetwork);
+      setAvailableOptions();
+    });
+
+    return {
+      paymentMethods,
+      Logic,
+      selectedMethod,
+      continueToNext,
+    };
+  },
+});
 </script>

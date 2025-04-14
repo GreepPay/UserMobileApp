@@ -26,7 +26,7 @@
         <app-normal-text
           class="text-center w-full !text-[#0A141E] sm:!text-sm xs:!text-xs"
         >
-          Raymond Akinola
+          {{ AuthUser?.first_name }} {{ AuthUser?.last_name }}
         </app-normal-text>
       </div>
 
@@ -58,6 +58,7 @@
       <div class="w-full flex flex-row items-center justify-center">
         <app-normal-text
           class="text-center w-full text-red sm:!text-sm xs:!text-xs"
+          @click="Logic.Auth.SignOut()"
         >
           Log Out
         </app-normal-text>
@@ -131,7 +132,6 @@ export default defineComponent({
         formData.passcode = "";
         return;
       }
- 
 
       Logic.Common.showLoader({
         show: true,
@@ -139,6 +139,13 @@ export default defineComponent({
       });
 
       await Logic.Auth.SignIn(true);
+
+      Logic.Common.showLoader({
+        show: true,
+        loading: true,
+      });
+
+      await Logic.Auth.GetAuthUser();
       Logic.Common.hideLoader();
       Logic.Common.GoToRoute("/");
     };

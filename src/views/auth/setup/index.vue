@@ -45,7 +45,7 @@ import {
   AuthSetupVerifyEmail,
   AuthSetupKycVerification,
 } from "../../../components/AuthSetup";
-import { getPlatforms } from "@ionic/vue";
+import { getPlatforms, onIonViewWillEnter } from "@ionic/vue";
 import { Logic } from "@greep/logic";
 import { StatusBar, Style } from "@capacitor/status-bar";
 
@@ -174,24 +174,29 @@ export default defineComponent({
         pageSettings.pages[2].action_btn.loading = true;
 
         // Send signup request
-        Logic.Auth.SignUp(true, () => {})?.then((response) => {
-          if (response) {
-            // Save auth email and pass
-            localStorage.setItem(
-              "auth_email",
-              Logic.Auth.SignUpPayload?.email || ""
-            );
-            localStorage.setItem(
-              "auth_pass",
-              Logic.Auth.SignUpPayload?.password || ""
-            );
+        Logic.Auth.SignUp(true, () => {})
+          ?.then((response) => {
+            if (response) {
+              // Save auth email and pass
+              localStorage.setItem(
+                "auth_email",
+                Logic.Auth.SignUpPayload?.email || ""
+              );
+              localStorage.setItem(
+                "auth_pass",
+                Logic.Auth.SignUpPayload?.password || ""
+              );
 
-            currentPage.value = "verify_email";
-            pageSettings.pages[2].action_btn.loading = true;
-          } else {
-            pageSettings.pages[2].action_btn.loading = true;
-          }
-        });
+              currentPage.value = "verify_email";
+              pageSettings.pages[2].action_btn.loading = true;
+            } else {
+              pageSettings.pages[2].action_btn.loading = true;
+            }
+          })
+          .catch((error) => {
+            console.error("Error during signup:", error);
+            pageSettings.pages[2].action_btn.loading = false;
+          });
       }
     };
 
@@ -213,10 +218,10 @@ export default defineComponent({
               password: localStorage.getItem("auth_pass") || "",
             };
 
-            pageSettings.pages[3].action_btn.loading = false;
             await Logic.Auth.SignIn(true);
             await Logic.Auth.GetAuthUser();
 
+            pageSettings.pages[3].action_btn.loading = false;
             currentPage.value = "kyc_verification";
           } else {
             pageSettings.pages[3].action_btn.loading = false;
@@ -236,15 +241,39 @@ export default defineComponent({
         id_type: formData.idType,
       };
 
-      await Logic.Auth.VerifyUserIdentity();
+      try {
+        pageSettings.pages[4].action_btn.loading = true;
+        await Logic.Auth.VerifyUserIdentity();
+
+        await Logic.Auth.GetAuthUser();
+
+        Logic.Common.GoToRoute("/auth/set-passcode");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        pageSettings.pages[4].action_btn.loading = false;
+      }
 
       // Check if passcode has been set
-      Logic.Common.GoToRoute("/auth/set-passcode");
+
       // if (localStorage.getItem("auth_passcode")) {
       //   Logic.Common.GoToRoute("/")
       // } else {
       // }
     };
+
+    const setPageState = () => {
+      const pageStateFromRoute =
+        Logic.Common.route?.query?.state?.toString() || "";
+
+      if (pageStateFromRoute) {
+        currentPage.value = pageStateFromRoute;
+      }
+    };
+
+    onIonViewWillEnter(() => {
+      setPageState();
+    });
 
     onMounted(() => {
       initializeForm();
@@ -252,6 +281,7 @@ export default defineComponent({
         StatusBar.setBackgroundColor({ color: "#008651" }); // any hex color
         StatusBar.setStyle({ style: Style.Light }); // Light or Dark
       });
+      setPageState;
     });
     return {
       currentPage,

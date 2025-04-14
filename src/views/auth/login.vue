@@ -102,7 +102,14 @@ export default defineComponent({
               "auth_pass",
               Logic.Auth.SignInPayload?.password || ""
             );
-            Logic.Common.GoToRoute("/auth/set-passcode");
+
+            if (
+              Logic.Auth.AuthUser?.profile?.verification_status == "Pending"
+            ) {
+              Logic.Common.GoToRoute("/auth/setup?state=kyc_verification");
+            } else {
+              Logic.Common.GoToRoute("/auth/set-passcode");
+            }
           }
         } catch (err) {
           loadingState.value = false;

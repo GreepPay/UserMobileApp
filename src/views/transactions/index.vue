@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Transaction History">
-      <div class="w-full flex flex-col items-center p-5 space-y-3 h-full">
+      <div class="w-full flex flex-col items-center px-4 h-full">
         <!-- Date filter selector -->
         <div class="w-full flex flex-row items-center">
           <div class="w-1/2 flex flex-col">
@@ -40,7 +40,7 @@
         </div>
 
         <div
-          class="w-full flex flex-col space-y-1 border-[#E0E2E4] border-[1.5px] px-4 py-4 rounded-[16px]"
+          class="w-full flex flex-col space-y-1 border-[#E0E2E4] border-[1.5px] px-4 py-4 rounded-[16px] mt-4"
         >
           <app-select
             v-model="filterSetup.period"
@@ -78,9 +78,23 @@
           </div>
         </div>
 
-        <!-- History -->
-        <div class="w-full flex flex-col space-y-2 s">
-          <app-transactions :transactions="transactions" />
+        <!-- Transaction history -->
+        <div class="w-full flex flex-col space-y-3 pt-2">
+          <div v-if="true" class="py-4 !pt-2">
+            <app-empty-state
+              title="No transactions"
+              description="Make Payments and Redeem the GRP Tokens you’ve earned."
+            />
+          </div>
+          <template v-else>
+            <app-transaction
+              class="z-[10]"
+              v-for="transaction in transactions"
+              :key="transaction.id"
+              :data="transaction"
+              @click="Logic.Common.GoToRoute('/transaction/' + transaction.id)"
+            />
+          </template>
         </div>
       </div>
     </subpage-layout>
@@ -92,18 +106,27 @@ import { ref, reactive } from "vue";
 import { defineComponent } from "vue";
 import {
   AppNormalText,
-  AppTransactions,
   AppIcon,
   AppTextField,
   AppSelect,
+  AppEmptyState,
+  AppTransaction,
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
+
+enum TransactionType {
+  Sent = "sent",
+  Received = "received",
+  Added = "added",
+  Redeemed = "redeemed",
+}
 
 export default defineComponent({
   name: "TransactionsPage",
   components: {
     AppNormalText,
-    AppTransactions,
+    AppEmptyState,
+    AppTransaction,
     AppIcon,
     AppTextField,
     AppSelect,
@@ -114,9 +137,8 @@ export default defineComponent({
         id: string | number;
         title: string;
         amount: number;
+        type: TransactionType;
         transactionType: "credit" | "debit";
-        type: "redeemed" | "sent" | "received" | "added";
-        status: "processing" | "failed" | "success";
         date: string;
       }[]
     >([
@@ -125,8 +147,7 @@ export default defineComponent({
         title: "Sent Payment",
         amount: 100,
         transactionType: "debit",
-        type: "sent",
-        status: "success",
+        type: TransactionType.Sent,
         date: "2025-03-18",
       },
       {
@@ -134,8 +155,7 @@ export default defineComponent({
         title: "Added Funds",
         amount: 500,
         transactionType: "credit",
-        type: "added",
-        status: "processing",
+        type: TransactionType.Added,
         date: "2025-03-18",
       },
       {
@@ -143,8 +163,7 @@ export default defineComponent({
         title: "Received Payment",
         amount: 200,
         transactionType: "credit",
-        type: "received",
-        status: "success",
+        type: TransactionType.Received,
         date: "2025-03-18",
       },
       {
@@ -152,8 +171,7 @@ export default defineComponent({
         title: "Redeemed Points",
         amount: 50,
         transactionType: "debit",
-        type: "redeemed",
-        status: "success",
+        type: TransactionType.Redeemed,
         date: "2025-03-18",
       },
       {
@@ -161,8 +179,7 @@ export default defineComponent({
         title: "Added Funds",
         amount: 500,
         transactionType: "credit",
-        type: "added",
-        status: "processing",
+        type: TransactionType.Added,
         date: "2025-03-18",
       },
       {
@@ -170,8 +187,7 @@ export default defineComponent({
         title: "Redeemed Points",
         amount: 50,
         transactionType: "debit",
-        type: "redeemed",
-        status: "failed",
+        type: TransactionType.Redeemed,
         date: "2025-03-18",
       },
       {
@@ -179,8 +195,7 @@ export default defineComponent({
         title: "Sent Payment",
         amount: 100,
         transactionType: "debit",
-        type: "sent",
-        status: "failed",
+        type: TransactionType.Sent,
         date: "2025-03-18",
       },
       {
@@ -188,8 +203,7 @@ export default defineComponent({
         title: "Received Payment",
         amount: 200,
         transactionType: "credit",
-        type: "received",
-        status: "success",
+        type: TransactionType.Received,
         date: "2025-03-18",
       },
       {
@@ -197,8 +211,7 @@ export default defineComponent({
         title: "Received Payment",
         amount: 200,
         transactionType: "credit",
-        type: "received",
-        status: "success",
+        type: TransactionType.Received,
         date: "2025-03-18",
       },
       {
@@ -206,8 +219,7 @@ export default defineComponent({
         title: "Sent Payment",
         amount: 100,
         transactionType: "debit",
-        type: "sent",
-        status: "processing",
+        type: TransactionType.Sent,
         date: "2025-03-18",
       },
       {
@@ -215,8 +227,7 @@ export default defineComponent({
         title: "Added Funds",
         amount: 500,
         transactionType: "credit",
-        type: "added",
-        status: "failed",
+        type: TransactionType.Added,
         date: "2025-03-18",
       },
       {
@@ -224,8 +235,7 @@ export default defineComponent({
         title: "Redeemed Points",
         amount: 50,
         transactionType: "debit",
-        type: "redeemed",
-        status: "failed",
+        type: TransactionType.Redeemed,
         date: "2025-03-18",
       },
     ]);
@@ -294,6 +304,7 @@ export default defineComponent({
       currentOptionName,
       filterSetup,
       monthFilterOption,
+      TransactionType, // Expose TransactionType to the template if needed
     };
   },
 });
