@@ -145,6 +145,8 @@ export default defineComponent({
 
             await Logic.Auth.GetAuthUser();
 
+            Logic.Common.hideLoader();
+
             Logic.Common.GoToRoute("/");
           }
         } else {
