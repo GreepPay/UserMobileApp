@@ -8,12 +8,11 @@
       <div
         class="w-full flex flex-row items-center justify-between py-4 bg-white px-4 sticky top-0 z-999"
       >
-        <app-avatar
-          :src="
+        <app-image-loader
+          :photo-url="
             AuthUser?.profile?.profile_picture || '/images/profile-image.svg'
           "
-          :alt="`${AuthUser?.first_name} ${AuthUser?.last_name}`"
-          :size="40"
+          class="!h-[40px] !w-[40px] rounded-full"
           @click="Logic.Common.GoToRoute(`/profile`)"
         />
 
@@ -37,7 +36,7 @@
 
 <script lang="ts">
 import { onMounted, defineComponent, ref } from "vue";
-import { AppHeaderText, AppIcon, AppAvatar } from "@greep/ui-components";
+import { AppHeaderText, AppIcon, AppImageLoader } from "@greep/ui-components";
 import { User } from "@greep/logic/src/gql/graphql";
 import { Logic } from "@greep/logic";
 
@@ -45,7 +44,7 @@ export default defineComponent({
   components: {
     AppHeaderText,
     AppIcon,
-    AppAvatar,
+    AppImageLoader,
   },
   props: {
     title: {
