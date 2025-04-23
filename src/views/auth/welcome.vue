@@ -2,10 +2,10 @@
   <app-wrapper>
     <div
       :class="`w-full h-screen flex flex-col lg:text-sm mdlg:text-[12px] text-xs overflow-y-auto !font-inter bg-white space-y-5 sm:!space-y-5 xs:space-y-3 items-center justify-center`"
-      style="
-        padding-top: calc(env(safe-area-inset-top) + 16px);
-        padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
-      "
+      :style="`height: ${
+        mobileFullHeight ? mobileFullHeight.height : ''
+      }; padding-top: calc(env(safe-area-inset-top) + 16px);
+      padding-bottom: calc(env(safe-area-inset-bottom) + 16px);`"
     >
       <!-- Top section -->
       <div class="w-full flex flex-row items-center justify-center pt-4">
@@ -68,7 +68,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, reactive, ref, onMounted } from "vue";
+import {
+  defineComponent,
+  watch,
+  reactive,
+  ref,
+  onMounted,
+  onUnmounted,
+} from "vue";
 import {
   AppHeaderText,
   AppNormalText,
@@ -76,6 +83,7 @@ import {
   AppImageLoader,
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
+import { computed } from "vue";
 
 export default defineComponent({
   name: "WelcomePage",
@@ -154,10 +162,32 @@ export default defineComponent({
       Logic.Auth.watchProperty("AuthUser", AuthUser);
     });
 
+    const innerHeight = ref(window.innerHeight);
+
+    const updateHeight = () => {
+      innerHeight.value = window.innerHeight;
+    };
+
+    onMounted(() => {
+      updateHeight();
+      window.addEventListener("resize", updateHeight);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("resize", updateHeight);
+    });
+
+    const mobileFullHeight = computed(() => {
+      return {
+        height: `${innerHeight.value}px`,
+      };
+    });
+
     return {
       Logic,
       formData,
       AuthUser,
+      mobileFullHeight,
     };
   },
 });
