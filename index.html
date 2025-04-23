@@ -22,83 +22,82 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
     <style>
-
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-Regular.ttf');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-Regular.ttf");
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-Regular.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-SemiBold.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-SemiBold.ttf") format("truetype");
         font-weight: bold;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-SemiBold.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-SemiBold.ttf") format("truetype");
         font-weight: bolder;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-Regular.ttf") format("truetype");
         font-weight: lighter;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-Regular.ttf") format("truetype");
         font-weight: 600;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-Regular.ttf');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-Regular.ttf");
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-Regular.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-SemiBold.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-SemiBold.ttf") format("truetype");
         font-weight: bold;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-SemiBold.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-SemiBold.ttf") format("truetype");
         font-weight: bolder;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-Regular.ttf") format("truetype");
         font-weight: lighter;
         font-style: normal;
       }
 
       @font-face {
-        font-family: 'Poppins';
-        src: url('/fonts/Poppins-SemiBold.ttf') format('truetype');
+        font-family: "Poppins";
+        src: url("/fonts/Poppins-SemiBold.ttf") format("truetype");
         font-weight: 600;
         font-style: normal;
       }
@@ -109,14 +108,27 @@
         font-family: Poppins !important;
       }
 
-      
+      .full-mobile-screen {
+        height: calc(var(--vh, 1vh) * 100);
+      }
     </style>
   </head>
 
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      // This script sets the --vh variable to the real height
+      window.addEventListener("resize", () => {
+        document.documentElement.style.setProperty(
+          "--vh",
+          `${window.innerHeight * 0.01}px`
+        );
+      });
+      document.documentElement.style.setProperty(
+        "--vh",
+        `${window.innerHeight * 0.01}px`
+      );
+    </script>
   </body>
-
 </html>
-

@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <div
-      :class="`w-full h-screen flex flex-col lg:text-sm mdlg:text-[12px] text-xs   overflow-y-hidden !font-inter bg-white`"
+      :class="`w-full full-mobile-screen flex flex-col lg:text-sm mdlg:text-[12px] text-xs   overflow-y-hidden !font-inter bg-white`"
     >
       <!-- Slide indicator -->
       <div
@@ -33,7 +33,7 @@
       >
         <!-- Slide 1 -->
         <swiper-slide
-          class="!h-screen !flex !flex-col items-start relative justify-center bg-white"
+          class="full-mobile-screen !flex !flex-col items-start relative justify-center bg-white"
         >
           <div
             class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
@@ -83,7 +83,7 @@
 
         <!-- Slide 2 -->
         <swiper-slide
-          class="!h-screen !flex !flex-col items-start relative justify-center bg-white"
+          class="!full-mobile-screen !flex !flex-col items-start relative justify-center bg-white"
         >
           <div
             class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
@@ -133,7 +133,7 @@
 
         <!-- Slide 3 -->
         <swiper-slide
-          class="!h-screen !flex !flex-col items-start relative justify-center bg-white"
+          class="!full-mobile-screen !flex !flex-col items-start relative justify-center bg-white"
         >
           <div
             class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
@@ -183,7 +183,7 @@
 
         <!-- Slide 4 -->
         <swiper-slide
-          class="!h-screen !flex !flex-col items-start relative justify-center bg-white"
+          class="!full-mobile-screen !flex !flex-col items-start relative justify-center bg-white"
         >
           <div
             class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
