@@ -1,7 +1,7 @@
 <template>
   <app-wrapper>
     <div
-      :class="`w-full h-screen flex flex-col lg:text-sm mdlg:text-[12px] text-xs overflow-y-auto !font-inter bg-white space-y-5 sm:!space-y-5 xs:space-y-3 items-center justify-center`"
+      :class="`w-full flex flex-col lg:text-sm mdlg:text-[12px] text-xs overflow-y-auto !font-inter bg-white space-y-5 sm:!space-y-5 xs:space-y-3 items-center justify-center`"
       :style="`height: ${
         mobileFullHeight ? mobileFullHeight.height : ''
       }; padding-top: calc(env(safe-area-inset-top) + 16px);
