@@ -2,12 +2,12 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "io.greep.client.pay",
-  appName: "Greep",
+  appName: "Greep Pay",
   webDir: "dist",
   plugins: {
     SplashScreen: {
       launchShowDuration: 4000,
-      launchAutoHide: true,
+      launchAutoHide: false,
       backgroundColor: "#ffffffff",
       androidSplashResourceName: "splash",
       androidScaleType: "CENTER_CROP",

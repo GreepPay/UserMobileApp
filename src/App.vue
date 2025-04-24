@@ -14,6 +14,7 @@ import { getPlatforms } from "@ionic/vue";
 import { useRoute, useRouter } from "vue-router";
 import { Logic } from "@greep/logic";
 import { SetFrontendLogic, AppAlert, AppLoader } from "@greep/ui-components";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 export default defineComponent({
   name: "App",
@@ -65,6 +66,8 @@ export default defineComponent({
       if (currentAuthUser) {
         Logic.Auth.GetAuthUser();
 
+        console.log(currentAuthUser);
+
         if (localStorage.getItem("auth_passcode")) {
           if (Logic.Auth.AuthUser?.profile?.verification_status == "Pending") {
             Logic.Common.GoToRoute("/auth/setup?state=kyc_verification");
@@ -74,6 +77,8 @@ export default defineComponent({
         } else {
           if (Logic.Auth.AuthUser?.profile?.verification_status == "Pending") {
             Logic.Common.GoToRoute("/auth/setup?state=kyc_verification");
+          } else {
+            Logic.Common.GoToRoute("/auth/welcome");
           }
         }
       } else {
@@ -85,8 +90,9 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
+    onMounted(async () => {
       // deep link config
+
       CapacitorApp.addListener(
         "appUrlOpen",
         function (event: URLOpenListenerEvent) {
@@ -112,6 +118,11 @@ export default defineComponent({
       Logic.Common.watchProperty("loaderSetup", loaderSetup);
 
       handleMountActions();
+
+      await SplashScreen.show({
+        showDuration: 3000,
+        autoHide: true,
+      });
     });
 
     return {

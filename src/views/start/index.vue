@@ -297,6 +297,7 @@ export default defineComponent({
     onMounted(() => {
       updateHeight();
       window.addEventListener("resize", updateHeight);
+      localStorage.clear();
     });
 
     onUnmounted(() => {
