@@ -1,6 +1,6 @@
 <template>
-  <ion-app class="font-poppins" id="mainApp">
-    <ion-router-outlet />
+  <ion-app class="font-poppins !bg-transparent" id="mainApp">
+    <ion-router-outlet class="!bg-transparent" />
     <app-alert v-if="alertSetup.show" :setup="alertSetup" />
     <app-loader v-if="loaderSetup.show" :setup="loaderSetup" />
   </ion-app>
@@ -65,8 +65,6 @@ export default defineComponent({
       // If user is authenticated
       if (currentAuthUser) {
         Logic.Auth.GetAuthUser();
-
-        console.log(currentAuthUser);
 
         if (localStorage.getItem("auth_passcode")) {
           if (Logic.Auth.AuthUser?.profile?.verification_status == "Pending") {

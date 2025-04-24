@@ -25,47 +25,132 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, toRef } from "vue"
-  import { IonContent, IonPage } from "@ionic/vue"
-  import { getPlatforms } from "@ionic/vue"
-  import { computed } from "vue"
+import { defineComponent, ref, toRef } from "vue";
+import { IonContent, IonPage } from "@ionic/vue";
+import { getPlatforms } from "@ionic/vue";
+import { computed } from "vue";
+import { onMounted } from "vue";
+import { Logic } from "@greep/logic";
+import { watch } from "vue";
 
-  export default defineComponent({
-    props: {
-      class: {
-        type: String,
-        default: "",
-      },
-      registerIonPage: {
-        type: Function,
-        default: () => {
-          //
-        },
-      },
-      innerClass: {
-        type: String,
-        default: "bg-white dark:bg-black",
+export default defineComponent({
+  props: {
+    class: {
+      type: String,
+      default: "",
+    },
+    registerIonPage: {
+      type: Function,
+      default: () => {
+        //
       },
     },
-    components: {
-      IonContent,
-      IonPage,
+    innerClass: {
+      type: String,
+      default: "bg-white dark:bg-black",
     },
-    name: "AppWrapper",
-    setup(props) {
-      const innerClassRef = toRef(props, "innerClass")
+  },
+  components: {
+    IonContent,
+    IonPage,
+  },
+  name: "AppWrapper",
+  setup(props) {
+    const innerClassRef = toRef(props, "innerClass");
 
-      const buildType = "mobile"
+    const buildType = "mobile";
 
-      const currentPlatform = computed(() => {
-        return getPlatforms()[0]
-      })
+    const currentPlatform = computed(() => {
+      return getPlatforms()[0];
+    });
 
-      return {
-        innerClassRef,
-        buildType,
-        currentPlatform,
+    const forcePageTransparency = ref(false);
+
+    onMounted(() => {
+      document.body.classList.add("!bg-transparent");
+
+      Logic.Common.watchProperty(
+        "forcePageTransparency",
+        forcePageTransparency
+      );
+    });
+
+    const currentAppTheme = "light";
+
+    watch(forcePageTransparency, (value) => {
+      console.log("forcePageTransparency", value);
+      if (value) {
+        // Set background color of body to transparent
+        document.body.style.backgroundColor = "transparent !important";
+
+        // Set background color of mainApp to transparent
+        const mainApp = document.getElementById("mainApp");
+        if (mainApp) {
+          mainApp.style.backgroundColor = "transparent !important";
+        }
+
+        // Set background color of ionPageApp to transparent
+        const ionPageApp = document.getElementById("ionPageApp");
+        if (ionPageApp) {
+          ionPageApp.style.backgroundColor = "transparent !important";
+        }
+
+        // Set background color of mainContent to transparent
+        const mainContent = document.getElementById("mainContent");
+        if (mainContent) {
+          mainContent.style.backgroundColor = "transparent !important";
+        }
+
+        document.documentElement.style.setProperty(
+          "--ion-background-color",
+          "transparent"
+        );
+      } else {
+        // Return to default background color
+
+        // Set background color of body to transparent
+        document.body.style.backgroundColor =
+          currentAppTheme == "light" ? "white !important" : "black !important";
+
+        // Set background color of mainApp to transparent
+        const mainApp = document.getElementById("mainApp");
+        if (mainApp) {
+          mainApp.style.backgroundColor =
+            currentAppTheme == "light"
+              ? "white !important"
+              : "black !important";
+        }
+
+        // Set background color of ionPageApp to transparent
+        const ionPageApp = document.getElementById("ionPageApp");
+        if (ionPageApp) {
+          ionPageApp.style.backgroundColor =
+            currentAppTheme == "light"
+              ? "white !important"
+              : "black !important";
+        }
+
+        // Set background color of mainContent to transparent
+        const mainContent = document.getElementById("mainContent");
+        if (mainContent) {
+          mainContent.style.backgroundColor =
+            currentAppTheme == "light"
+              ? "white !important"
+              : "black !important";
+        }
+
+        document.documentElement.style.setProperty(
+          "--ion-background-color",
+          currentAppTheme == "light" ? "white" : "black"
+        );
       }
-    },
-  })
+    });
+
+    return {
+      innerClassRef,
+      buildType,
+      currentPlatform,
+    };
+  },
+});
 </script>

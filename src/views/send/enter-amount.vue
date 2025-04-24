@@ -43,6 +43,7 @@
                 :default_currency="modelCurrencyValue"
                 :availableCurrencies="allowedAvailableCurrencies"
                 v-model:model-symbol="currencySymbol"
+                :is-switchable="isSwitchable"
               />
 
               <div
@@ -203,6 +204,8 @@ export default defineComponent({
       Logic.Wallet.CurrentGlobalExchangeRate
     );
 
+    const isSwitchable = ref(true);
+
     const defaultCurrency = ref("USD");
 
     const amount = ref("0");
@@ -232,7 +235,7 @@ export default defineComponent({
     });
 
     const allowedAvailableCurrencies = computed(() => {
-      const newAvailableCurrencies = availableCurrencies.filter((_item) => {
+      const newAvailableCurrencies = availableCurrencies.filter(() => {
         return true;
       });
 
@@ -306,6 +309,10 @@ export default defineComponent({
         Logic.Common.route?.query?.currency?.toString() ||
         defaultCurrency.value;
 
+      if (currencyFromQuery) {
+        isSwitchable.value = false;
+      }
+
       defaultCurrency.value = currencyFromQuery;
       modelCurrencyValue.value = defaultCurrency.value;
 
@@ -315,7 +322,7 @@ export default defineComponent({
       amount.value = amountFromMainQuery;
       amountFromQuery.value = amountFromMainQuery;
 
-      const selectedCurrencyData = availableCurrencies.filter(
+      const selectedCurrencyData = allowedAvailableCurrencies.value.filter(
         (item) => item.code == currencyFromQuery
       )[0];
 
@@ -352,6 +359,7 @@ export default defineComponent({
       SingleUser,
       getUserType,
       amountFromQuery,
+      isSwitchable,
     };
   },
 });

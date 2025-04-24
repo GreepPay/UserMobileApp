@@ -1,8 +1,11 @@
 <template>
   <app-wrapper :innerClass="'!bg-transparent'">
-    <div class="!bg-transparent h-screen" :title="'clear'" id="videoContainer">
+    <div
+      class="!bg-transparent h-screen w-full fixed top-0 left-0 z-[9999999999999]"
+      id="videoContainer"
+    >
       <div
-        :class="`w-full flex flex-col items-center justify-start space-y-2 fixed !font-inter h-screen !pt-0 top-0 left-0 z-[9999999999999]  px-4`"
+        :class="`w-full flex flex-col items-center justify-start space-y-2 fixed !font-inter h-screen !pt-0 top-0 left-0 z-[9999999999999]  px-4 !bg-transparent`"
       >
         <div id="reader" width="0px" class="hidden"></div>
         <div
@@ -80,6 +83,7 @@ export default defineComponent({
   name: "ScanQrCode",
   middlewares: {
     fetchRules: [],
+    enforceTransparency: true,
   },
   layout: "Onboarding",
   setup() {
@@ -120,27 +124,6 @@ export default defineComponent({
         enableHighResolution: true,
       };
 
-      // Set background color of body to transparent
-      document.body.style.backgroundColor = "transparent";
-
-      // Set background color of mainApp to transparent
-      const mainApp = document.getElementById("mainApp");
-      if (mainApp) {
-        mainApp.style.backgroundColor = "transparent";
-      }
-
-      // Set background color of ionPageApp to transparent
-      const ionPageApp = document.getElementById("ionPageApp");
-      if (ionPageApp) {
-        ionPageApp.style.backgroundColor = "transparent";
-      }
-
-      // Set background color of mainContent to transparent
-      const mainContent = document.getElementById("mainContent");
-      if (mainContent) {
-        mainContent.style.backgroundColor = "transparent";
-      }
-
       CameraPreview.start(cameraPreviewOptions);
     };
 
@@ -158,13 +141,19 @@ export default defineComponent({
         { image: true },
         (fixed: string) => {
           Logic.Common.base64ToBlob(fixed).then((blobImage) => {
-            const imageFile = new File([blobImage], "scanned-image");
+            const imageFile = new File([blobImage], "scanned-image", {
+              type: blobImage.type,
+              lastModified: new Date().getTime(),
+            });
             const html5QrCode = new Html5Qrcode(/* element id */ "reader");
+
+            console.log(imageFile);
             html5QrCode
-              .scanFile(imageFile, true)
+              .scanFile(imageFile, false)
               .then((decodedText) => {
                 // success, use decodedText
                 // const fullData = JSON.parse(decodedText);
+                console.log(decodedText);
 
                 try {
                   const decodedTextJson: {
@@ -224,29 +213,6 @@ export default defineComponent({
       setTimeout(() => {
         CameraPreview.stop();
       }, 1000);
-
-      // Return to default background color
-
-      // Set background color of body to transparent
-      document.body.style.backgroundColor = "white";
-
-      // Set background color of mainApp to transparent
-      const mainApp = document.getElementById("mainApp");
-      if (mainApp) {
-        mainApp.style.backgroundColor = "white";
-      }
-
-      // Set background color of ionPageApp to transparent
-      const ionPageApp = document.getElementById("ionPageApp");
-      if (ionPageApp) {
-        ionPageApp.style.backgroundColor = "white";
-      }
-
-      // Set background color of mainContent to transparent
-      const mainContent = document.getElementById("mainContent");
-      if (mainContent) {
-        mainContent.style.backgroundColor = "white";
-      }
     });
 
     onUnmounted(() => {
@@ -274,29 +240,5 @@ export default defineComponent({
   -webkit-appearance: none;
   -webkit-box-shadow: 0 0 0 5000px rgba(10, 20, 30, 0.7) !important;
   appearance: none;
-}
-
-ion-content {
-  --background: transparent !important;
-}
-
-ion-page {
-  --background: transparent !important;
-}
-
-body {
-  background-color: transparent !important;
-}
-
-#mainApp {
-  background-color: transparent !important;
-}
-
-#ionPageApp {
-  background-color: transparent !important;
-}
-
-#mainContent {
-  --background: transparent;
 }
 </style>

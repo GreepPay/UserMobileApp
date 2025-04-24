@@ -34,6 +34,7 @@
     "gh-pages": "^6.3.0",
     "html5-qrcode": "^2.3.8",
     "ionicons": "^7.0.0",
+    "qr-scanner": "^1.4.2",
     "swiper": "^11.2.5",
     "tailwindcss": "^4.0.0",
     "vue": "^3.3.0",
