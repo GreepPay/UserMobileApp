@@ -138,3 +138,13 @@ body {
   animation-iteration-count: infinite;
   animation-timing-function: cubic-bezier(0.1, -0.1, 0.2, 0);
 }
+
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

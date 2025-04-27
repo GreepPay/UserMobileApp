@@ -30,7 +30,7 @@
       </section>
 
       <div class="w-full flex flex-col px-4 border-y overflow-y-auto">
-        <div class="py-2" v-if="searchQuery">
+        <div class="pt-2 pb-3" v-if="searchQuery">
           <app-normal-text class="!text-sm !font-semibold !text-black">
             {{ filteredMerchants.length }} results for
             <span class="!text-purple"> “{{ searchQuery }}” </span>
@@ -61,7 +61,7 @@
     >
       <div class="w-full flex flex-col items-center">
         <div
-          class="w-full px-4 pb-4 border-b-[4px] text-black flex flex-col items-center justify-center"
+          class="w-full px-4 pb-4 border-b-[4px] text-black flex flex-col items-center justify-center h-56 overflow-y-auto"
         >
           <app-multi-tabs-selector
             :tabs="tabs"
@@ -134,8 +134,8 @@
       ]
 
       const filteredMerchants = computed(() => {
-        if (!searchQuery.value.trim()) return merchants.value
-        return merchants.value.filter((merchant) =>
+        if (!searchQuery.value.trim()) return merchants
+        return merchants.filter((merchant) =>
           merchant.name.toLowerCase().includes(searchQuery.value.toLowerCase())
         )
       })

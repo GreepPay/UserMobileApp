@@ -5,10 +5,13 @@ import { createRouter, createWebHistory } from "@ionic/vue-router"
 import { Logic } from "@greep/logic"
 
 // Layouts
-import DashboardLayout from "./layouts/DashboardLayout.vue"
-import SubpageLayout from "./layouts/SubpageLayout.vue"
-import AuthLayout from "./layouts/AuthLayout.vue"
-import DefaultIndexLayout from "./layouts/DefaultIndexLayout.vue"
+import {
+  MerchantLayout,
+  DashboardLayout,
+  DefaultIndexLayout,
+  SubpageLayout,
+  AuthLayout,
+} from "./layouts"
 
 // Wrappers
 import AppWrapper from "./components/AppWrapper.vue"
@@ -46,6 +49,7 @@ routes.then((routes) => {
     .component("dashboard-layout", DashboardLayout)
     .component("subpage-layout", SubpageLayout)
     .component("default-index-layout", DefaultIndexLayout)
+    .component("merchant-layout", MerchantLayout)
     .component("app-wrapper", AppWrapper)
     .use(router)
 

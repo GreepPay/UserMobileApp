@@ -18,10 +18,12 @@
         </div>
 
         <div class="flex justify-center flex-1">
-          <app-header-text>
+          <app-header-text custom-class="">
             {{ title }}
           </app-header-text>
         </div>
+
+        <slot name="icon-action" />
       </div>
 
       <!-- Content -->

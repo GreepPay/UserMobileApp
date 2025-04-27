@@ -1,99 +1,109 @@
 <template>
   <app-wrapper>
-    <subpage-layout title="Profile">
-      <!-- Featured Merchant -->
-      <div class="w-full flex flex-col px-4 py-4 border-b-[4px] border-[4px]">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-gray-800 !text-sm">
-            Featured
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
+    <merchant-layout title="Merchants" class="bg-light-gray-one">
+      <template #title-content>
+        <div class="text-black py-4 px-3">
+          <app-search
+            placeholder="Search for anything"
+            @update:search="searchQuery = $event"
+          />
         </div>
+      </template>
 
-        <div class="py-2 border-y-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
+      <div class="w-full mt-2.5 overflow-y-auto">
+        <!-- Featured Merchant -->
+        <div class="w-full flex flex-col px-4 py-2.5 mb-2 bg-white">
+          <div class="w-full flex justify-between items-center">
+            <app-normal-text class="font-semibold !text-black !text-sm">
+              Featured
+            </app-normal-text>
+            <app-normal-text class="text-primary"> See all </app-normal-text>
+          </div>
+
+          <div class="py-2">
+            <template v-if="merchants">
+              <div
+                class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+              >
+                <app-merchant
+                  v-for="(merchant, index) in merchants"
+                  :key="index"
+                  :merchant="merchant"
+                />
+              </div>
+            </template>
+            <div v-else class="py-4 !pt-2">
+              <app-empty-state
+                title="No Featured Merchant available"
+                description="See all Featured Merchants"
               />
             </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Featured Merchant available"
-              description="See all Featured Merchants"
-            />
+          </div>
+        </div>
+
+        <!-- Boutiques Merchant -->
+        <div class="w-full flex flex-col px-4 py-2.5 mb-2 bg-white">
+          <div class="w-full flex justify-between items-center">
+            <app-normal-text class="font-semibold !text-black !text-sm">
+              Boutiques
+            </app-normal-text>
+
+            <app-normal-text class="text-primary"> See all </app-normal-text>
+          </div>
+
+          <div class="py-2">
+            <template v-if="merchants">
+              <div
+                class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+              >
+                <app-merchant
+                  v-for="(merchant, index) in merchants"
+                  :key="index"
+                  :merchant="merchant"
+                />
+              </div>
+            </template>
+            <div v-else class="py-4 !pt-2">
+              <app-empty-state
+                title="No Featured Merchant available"
+                description="See all Featured Merchants"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Supermarket Merchant -->
+        <div class="w-full flex flex-col px-4 py-2.5 mb-2 bg-white">
+          <div class="w-full flex justify-between items-center">
+            <app-normal-text class="font-semibold !text-black !text-sm">
+              Supermarket
+            </app-normal-text>
+
+            <app-normal-text class="text-primary"> See all </app-normal-text>
+          </div>
+
+          <div class="py-2">
+            <template v-if="merchants">
+              <div
+                class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+              >
+                <app-merchant
+                  v-for="(merchant, index) in merchants"
+                  :key="index"
+                  :merchant="merchant"
+                />
+              </div>
+            </template>
+            <div v-else class="py-4 !pt-2">
+              <app-empty-state
+                title="No Featured Merchant available"
+                description="See all Featured Merchants"
+              />
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Boutiques Merchant -->
-      <div class="w-full flex flex-col px-4 border-b-[4px] border-[4px]">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-gray-800 !text-sm">
-            Boutiques
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
-        </div>
-
-        <div class="py-2 border-y-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Featured Merchant available"
-              description="See all Featured Merchants"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Supermarket Merchant -->
-      <div class="w-full flex flex-col px-4 border-b-[4px] border-[4px]">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-gray-800 !text-sm">
-            Supermarket
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
-        </div>
-
-        <div class="py-2 border-y-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Featured Merchant available"
-              description="See all Featured Merchants"
-            />
-          </div>
-        </div>
-      </div>
-    </subpage-layout>
+    </merchant-layout>
   </app-wrapper>
 </template>
 
@@ -106,6 +116,7 @@
     AppButton,
     AppIcon,
     AppImageLoader,
+    AppSearch,
     AppMerchant,
   } from "@greep/ui-components"
   export default defineComponent({
@@ -117,8 +128,10 @@
       AppIcon,
       AppImageLoader,
       AppMerchant,
+      AppSearch,
     },
     setup() {
+      const searchQuery = ref("")
       const merchants = [
         {
           id: 1,
@@ -196,6 +209,7 @@
 
       return {
         merchants,
+        searchQuery,
       }
     },
   })
