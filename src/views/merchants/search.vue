@@ -22,6 +22,7 @@
 
           <span
             class="h-9 w-9 rounded-full border flex items-center justify-center"
+            @click="showFilterModal = true"
           >
             <app-icon name="filter" />
           </span>
@@ -45,6 +46,41 @@
         </div>
       </div>
     </subpage-layout>
+
+    <!-- Filter Modal -->
+    <app-modal
+      v-if="showFilterModal"
+      :close="
+        () => {
+          showFilterModal = false
+        }
+      "
+      :hasTitle="true"
+      title="Filters"
+      contentClass=" !px-0"
+    >
+      <div class="w-full flex flex-col items-center">
+        <div
+          class="w-full px-4 pb-4 border-b-[4px] text-black flex flex-col items-center justify-center"
+        >
+          <app-multi-tabs-selector
+            :tabs="tabs"
+            v-model:selectedKeys="selectedFlterOptions"
+            type="outlined"
+          />
+        </div>
+
+        <div class="px-4 pt-4 w-full">
+          <app-button
+            :custom-class="`!bg-secondary !w-full !py-4 !px-8 !text-sm`"
+            @click="showFilterModal = false"
+            variant="secondary"
+          >
+            Apply ({{ selectedFlterOptions.length }})
+          </app-button>
+        </div>
+      </div>
+    </app-modal>
   </app-wrapper>
 </template>
 
@@ -53,27 +89,33 @@
   import { defineComponent } from "vue"
   import {
     AppNormalText,
-    // AppButton,
+    AppButton,
     AppIcon,
     AppMerchant,
     AppTabs,
     AppSearch,
+    AppModal,
+    AppMultiTabsSelector,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
 
   export default defineComponent({
-    name: "MarketsPage",
+    name: "MerchantsSearchPage",
     components: {
       AppNormalText,
-      // AppButton,
+      AppButton,
       AppIcon,
       AppMerchant,
       AppTabs,
       AppSearch,
+      AppModal,
+      AppMultiTabsSelector,
     },
     setup() {
+      const showFilterModal = ref(false)
       const searchQuery = ref("")
       const activeTab = ref("recents")
+      const selectedFlterOptions = ref<string[]>([])
 
       const tabs = [
         { key: "all", label: "All" },
@@ -98,7 +140,7 @@
         )
       })
 
-      const merchants = ref([
+      const merchants = [
         {
           id: 1,
           name: "Test Name",
@@ -171,7 +213,7 @@
           category: "Fitness",
           imageUrl: "/images/merchant-logos/2.svg",
         },
-      ])
+      ]
 
       return {
         Logic,
@@ -179,6 +221,8 @@
         tabs,
         activeTab,
         searchQuery,
+        showFilterModal,
+        selectedFlterOptions,
       }
     },
   })

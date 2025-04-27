@@ -1,20 +1,6 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Profile">
-      <div class="p-4">
-        <app-title-card-container>
-          <div class="flex items-center space-x-2 -mt-4">
-            <app-image-loader
-              :photo-url="
-                AuthUser?.profile?.profile_picture ||
-                '/images/profile-image.svg'
-              "
-              custom-class="!h-[84px] !w-[84px]"
-            />
-          </div>
-        </app-title-card-container>
-      </div>
-
       <!-- Featured Merchant -->
       <div class="w-full flex flex-col px-4 border-y">
         <div class="w-full flex justify-between items-center">
@@ -22,22 +8,27 @@
             Featured
           </app-normal-text>
 
-          <app-normal-text
-            class="text-primary"
-            @click="Logic.Common.GoToRoute('/merchants/featured')"
-          >
-            See all
-          </app-normal-text>
+          <app-normal-text class="text-primary"> See all </app-normal-text>
         </div>
 
         <div class="py-2 border-y-2">
-          <div v-if="true" class="py-4 !pt-2">
+          <template v-if="merchants">
+            <div
+              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+            >
+              <app-merchant
+                v-for="(merchant, index) in merchants"
+                :key="index"
+                :merchant="merchant"
+              />
+            </div>
+          </template>
+          <div v-else class="py-4 !pt-2">
             <app-empty-state
               title="No Featured Merchant available"
               description="See all Featured Merchants"
             />
           </div>
-          <template v-else> gfhjjkl </template>
         </div>
       </div>
 
@@ -48,48 +39,58 @@
             Boutiques
           </app-normal-text>
 
-          <app-normal-text
-            class="text-primary"
-            @click="Logic.Common.GoToRoute('/merchants/boutiques')"
-          >
-            See all
-          </app-normal-text>
+          <app-normal-text class="text-primary"> See all </app-normal-text>
         </div>
 
         <div class="py-2 border-y-2">
-          <div v-if="true" class="py-4 !pt-2">
-            <app-empty-state
-              title="No Boutiques Merchant available"
-              description="See all Boutiques Merchants"
-            />
-          </div>
-          <template v-else> tes </template>
-        </div>
-      </div>
-
-      <!-- Featured Merchant -->
-      <div class="w-full flex flex-col px-4 border-y">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-gray-800 !text-sm">
-            Featured
-          </app-normal-text>
-
-          <app-normal-text
-            class="text-primary"
-            @click="Logic.Common.GoToRoute('/merchants/featured')"
-          >
-            See all
-          </app-normal-text>
-        </div>
-
-        <div class="py-2 border-y-2">
-          <div v-if="true" class="py-4 !pt-2">
+          <template v-if="merchants">
+            <div
+              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+            >
+              <app-merchant
+                v-for="(merchant, index) in merchants"
+                :key="index"
+                :merchant="merchant"
+              />
+            </div>
+          </template>
+          <div v-else class="py-4 !pt-2">
             <app-empty-state
               title="No Featured Merchant available"
               description="See all Featured Merchants"
             />
           </div>
-          <template v-else> gfhjjkl </template>
+        </div>
+      </div>
+
+      <!-- Supermarket Merchant -->
+      <div class="w-full flex flex-col px-4 border-y">
+        <div class="w-full flex justify-between items-center">
+          <app-normal-text class="font-semibold !text-gray-800 !text-sm">
+            Supermarket
+          </app-normal-text>
+
+          <app-normal-text class="text-primary"> See all </app-normal-text>
+        </div>
+
+        <div class="py-2 border-y-2">
+          <template v-if="merchants">
+            <div
+              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+            >
+              <app-merchant
+                v-for="(merchant, index) in merchants"
+                :key="index"
+                :merchant="merchant"
+              />
+            </div>
+          </template>
+          <div v-else class="py-4 !pt-2">
+            <app-empty-state
+              title="No Featured Merchant available"
+              description="See all Featured Merchants"
+            />
+          </div>
         </div>
       </div>
     </subpage-layout>
@@ -107,54 +108,94 @@
     AppImageLoader,
     AppMerchant,
   } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-
   export default defineComponent({
-    name: "MarketsPage",
+    name: "MerchantsPage",
     components: {
       AppTitleCardContainer,
       AppNormalText,
       AppButton,
       AppIcon,
       AppImageLoader,
+      AppMerchant,
     },
     setup() {
-      const amount = ref("1000")
-      const AuthUser = ref(Logic.Auth.AuthUser)
-
-      const profileSettings = reactive<
+      const merchants = [
         {
-          title: string
-          route: string
-          icon: string
-        }[]
-      >([
-        {
-          title: "Personal Info",
-          route: "info",
-          icon: "linear-user",
+          id: 1,
+          name: "Test Name",
+          category: "Bookstore",
+          imageUrl: "/images/merchant-logos/1.svg",
         },
         {
-          title: "Default Currency",
-          route: "default-currency",
-          icon: "linear-money",
+          id: 2,
+          name: "City Electronics",
+          category: "Electronics",
+          imageUrl: "/images/merchant-logos/3.svg",
         },
         {
-          title: "Login Settings",
-          route: "login-settings",
-          icon: "linear-security-shield",
+          id: 3,
+          name: "Green Groceries",
+          category: "Groceries",
+          imageUrl: "/images/merchant-logos/2.svg",
         },
-      ])
-
-      onMounted(() => {
-        Logic.Auth.watchProperty("AuthUser", AuthUser)
-      })
+        {
+          id: 4,
+          name: "Quick Fashion",
+          category: "Fashion",
+          imageUrl: "/images/merchant-logos/2.svg",
+        },
+        {
+          id: 5,
+          name: "Mega Pharmacy",
+          category: "Health",
+          imageUrl: "/images/merchant-logos/3.svg",
+        },
+        {
+          id: 6,
+          name: "Fresh Bites",
+          category: "Food",
+          imageUrl: "/images/merchant-logos/1.svg",
+        },
+        {
+          id: 7,
+          name: "Speedy Courier",
+          category: "Logistics",
+          imageUrl: "/images/merchant-logos/3.svg",
+        },
+        {
+          id: 8,
+          name: "The Coffee House",
+          category: "Cafe",
+          imageUrl: "/images/merchant-logos/1.svg",
+        },
+        {
+          id: 9,
+          name: "Daily Wear",
+          category: "Clothing",
+          imageUrl: "/images/merchant-logos/2.svg",
+        },
+        {
+          id: 10,
+          name: "Tech World",
+          category: "Gadgets",
+          imageUrl: "/images/merchant-logos/1.svg",
+        },
+        {
+          id: 11,
+          name: "Book Haven",
+          category: "Books",
+          imageUrl: "/images/merchant-logos/3.svg",
+        },
+        {
+          id: 12,
+          name: "Fitness First",
+          category: "Fitness",
+          imageUrl: "/images/merchant-logos/2.svg",
+        },
+      ]
 
       return {
-        Logic,
-        profileSettings,
-        amount,
-        AuthUser,
+        merchants,
       }
     },
   })
