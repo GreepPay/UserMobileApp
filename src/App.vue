@@ -94,7 +94,7 @@
         Logic.Common.watchProperty("loaderSetup", loaderSetup)
       })
 
-      handleMountActions()
+      // handleMountActions()
 
       return {
         alertSetup,
