@@ -2,7 +2,7 @@
   <app-wrapper>
     <subpage-layout title="Profile">
       <!-- Featured Merchant -->
-      <div class="w-full flex flex-col px-4 border-y">
+      <div class="w-full flex flex-col px-4 py-4 border-b-[4px] border-[4px]">
         <div class="w-full flex justify-between items-center">
           <app-normal-text class="font-semibold !text-gray-800 !text-sm">
             Featured
@@ -33,7 +33,7 @@
       </div>
 
       <!-- Boutiques Merchant -->
-      <div class="w-full flex flex-col px-4 border-y">
+      <div class="w-full flex flex-col px-4 border-b-[4px] border-[4px]">
         <div class="w-full flex justify-between items-center">
           <app-normal-text class="font-semibold !text-gray-800 !text-sm">
             Boutiques
@@ -64,7 +64,7 @@
       </div>
 
       <!-- Supermarket Merchant -->
-      <div class="w-full flex flex-col px-4 border-y">
+      <div class="w-full flex flex-col px-4 border-b-[4px] border-[4px]">
         <div class="w-full flex justify-between items-center">
           <app-normal-text class="font-semibold !text-gray-800 !text-sm">
             Supermarket
