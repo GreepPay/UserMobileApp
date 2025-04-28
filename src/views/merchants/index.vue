@@ -12,123 +12,78 @@
 
       <div class="w-full mt-2.5 overflow-y-auto">
         <!-- Featured Merchant -->
-        <div class="w-full flex flex-col px-4 py-2.5 mb-2 bg-white">
-          <div class="w-full flex justify-between items-center">
-            <app-normal-text class="font-semibold !text-black !text-sm">
-              Featured
-            </app-normal-text>
-            <app-normal-text class="text-primary"> See all </app-normal-text>
+        <app-list-wrapper
+          :items="merchants"
+          title=" Featured"
+          emptyTitle="No Featured available"
+          emptyDescription="See all Featured merchants"
+        >
+          <div
+            class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+          >
+            <app-merchant
+              v-for="(merchant, index) in merchants"
+              :key="index"
+              :merchant="merchant"
+              @click="Logic.Common.GoToRoute('/merchants/' + merchant.id)"
+            />
           </div>
-
-          <div class="py-2">
-            <template v-if="merchants">
-              <div
-                class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-              >
-                <app-merchant
-                  v-for="(merchant, index) in merchants"
-                  :key="index"
-                  :merchant="merchant"
-                />
-              </div>
-            </template>
-            <div v-else class="py-4 !pt-2">
-              <app-empty-state
-                title="No Featured Merchant available"
-                description="See all Featured Merchants"
-              />
-            </div>
-          </div>
-        </div>
+        </app-list-wrapper>
 
         <!-- Boutiques Merchant -->
-        <div class="w-full flex flex-col px-4 py-2.5 mb-2 bg-white">
-          <div class="w-full flex justify-between items-center">
-            <app-normal-text class="font-semibold !text-black !text-sm">
-              Boutiques
-            </app-normal-text>
-
-            <app-normal-text class="text-primary"> See all </app-normal-text>
+        <app-list-wrapper
+          :items="merchants"
+          title=" Boutiques"
+          emptyTitle="No Boutiques available"
+          emptyDescription="See all Boutiques merchants"
+        >
+          <div
+            class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+          >
+            <app-merchant
+              v-for="(merchant, index) in merchants"
+              :key="index"
+              :merchant="merchant"
+              @click="Logic.Common.GoToRoute('/merchants/' + merchant.id)"
+            />
           </div>
-
-          <div class="py-2">
-            <template v-if="merchants">
-              <div
-                class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-              >
-                <app-merchant
-                  v-for="(merchant, index) in merchants"
-                  :key="index"
-                  :merchant="merchant"
-                />
-              </div>
-            </template>
-            <div v-else class="py-4 !pt-2">
-              <app-empty-state
-                title="No Featured Merchant available"
-                description="See all Featured Merchants"
-              />
-            </div>
-          </div>
-        </div>
+        </app-list-wrapper>
 
         <!-- Supermarket Merchant -->
-        <div class="w-full flex flex-col px-4 py-2.5 mb-2 bg-white">
-          <div class="w-full flex justify-between items-center">
-            <app-normal-text class="font-semibold !text-black !text-sm">
-              Supermarket
-            </app-normal-text>
-
-            <app-normal-text class="text-primary"> See all </app-normal-text>
+        <app-list-wrapper
+          :items="merchants"
+          title=" Supermarket"
+          emptyTitle="No Supermarket available"
+          emptyDescription="See all Supermarket merchants"
+        >
+          <div
+            class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+          >
+            <app-merchant
+              v-for="(merchant, index) in merchants"
+              :key="index"
+              :merchant="merchant"
+              @click="Logic.Common.GoToRoute('/merchants/' + merchant.id)"
+            />
           </div>
-
-          <div class="py-2">
-            <template v-if="merchants">
-              <div
-                class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-              >
-                <app-merchant
-                  v-for="(merchant, index) in merchants"
-                  :key="index"
-                  :merchant="merchant"
-                />
-              </div>
-            </template>
-            <div v-else class="py-4 !pt-2">
-              <app-empty-state
-                title="No Featured Merchant available"
-                description="See all Featured Merchants"
-              />
-            </div>
-          </div>
-        </div>
+        </app-list-wrapper>
       </div>
     </merchant-layout>
   </app-wrapper>
 </template>
 
 <script lang="ts">
-  import { ref, reactive, onMounted } from "vue"
+  import { ref } from "vue"
   import { defineComponent } from "vue"
-  import {
-    AppTitleCardContainer,
-    AppNormalText,
-    AppButton,
-    AppIcon,
-    AppImageLoader,
-    AppSearch,
-    AppMerchant,
-  } from "@greep/ui-components"
+  import { AppSearch, AppMerchant, AppListWrapper } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
+
   export default defineComponent({
     name: "MerchantsPage",
     components: {
-      AppTitleCardContainer,
-      AppNormalText,
-      AppButton,
-      AppIcon,
-      AppImageLoader,
       AppMerchant,
       AppSearch,
+      AppListWrapper,
     },
     setup() {
       const searchQuery = ref("")
@@ -210,6 +165,7 @@
       return {
         merchants,
         searchQuery,
+        Logic,
       }
     },
   })

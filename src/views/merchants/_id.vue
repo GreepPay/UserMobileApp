@@ -1,10 +1,46 @@
 <template>
   <app-wrapper>
-    <subpage-layout title="Merchant" class="bg-light-gray-one">
+    <subpage-layout
+      title="Merchant"
+      class="bg-light-gray-one"
+      :showFooter="true"
+    >
       <template #icon-action>
         <app-icon name="add" />
       </template>
 
+      <div class="px-4 py-2 w-full">
+        <app-image-loader
+          class="w-full !bg-green justify-between py-3 px-4 rounded-[32px]"
+          photo-url="/images/greep-transparent-logo.svg"
+        >
+          <div class="flex items-center space-x-2">
+            <app-avatar
+              :src="'/images/merchant-logos/1.svg'"
+              class="!h-[84px] !w-[84px]"
+            />
+
+            <div class="h-fit flex flex-col">
+              <app-normal-text class="!text-white !text-left !text-xs">
+                Boutique
+              </app-normal-text>
+              <app-normal-text
+                class="!text-white font-semibold !text-left !text-base"
+              >
+                <div class="flex space-x-1 items-center">
+                  <span> Kvng Clothes </span>
+                  <app-icon name="verify-badge" />
+                </div>
+              </app-normal-text>
+              <app-normal-text class="!text-white !text-left !text-sm">
+                Nicosia, Cyprus
+              </app-normal-text>
+            </div>
+          </div>
+        </app-image-loader>
+      </div>
+
+      <!-- About section -->
       <div class="w-full flex my-2">
         <div
           class="w-full flex items-center justicy-between space-x-2 px-4 bg-white overflow-y-auto py-3"
@@ -18,200 +54,81 @@
       </div>
 
       <!-- Transactions between   -->
-      <div class="w-full flex flex-col px-4 py-3 mb-2 bg-white">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-black !text-sm">
-            Transactions between
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
+      <app-list-wrapper
+        :items="transactions"
+        title=" Transactions between"
+        emptyTitle="No transactions available"
+        emptyDescription="See all transactions"
+      >
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
+          <app-transaction
+            v-for="transaction in transactions"
+            :key="transaction.id"
+            :data="transaction"
+            @click="Logic.Common.GoToRoute('/transaction/' + transaction.id)"
+            custom-class="border rounded-2xl px-2 min-w-80"
+          />
         </div>
+      </app-list-wrapper>
 
-        <div class="py-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <!-- <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              /> -->
-
-              <app-transaction
-                v-for="transaction in transactions"
-                :key="transaction.id"
-                :data="transaction"
-                @click="
-                  Logic.Common.GoToRoute('/transaction/' + transaction.id)
-                "
-                custom-class="border rounded-2xl px-2 min-w-80"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Similar merchants available"
-              description="See all Similar merchants"
-            />
-          </div>
+      <!-- Merchant products -->
+      <app-list-wrapper
+        :items="products"
+        title="Merchant products"
+        emptyTitle="No products available"
+        emptyDescription="See all products"
+        actionText="Visit shop"
+      >
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
+          <app-merchant-product
+            v-for="(product, index) in products"
+            :key="index"
+            :product="product"
+          />
         </div>
-      </div>
+      </app-list-wrapper>
 
-      <!-- Similar merchants Merchant -->
-      <div class="w-full flex flex-col px-4 py-3 mb-2 bg-white">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-black !text-sm">
-            Similar merchants
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
+      <!-- Similar merchants  -->
+      <app-list-wrapper
+        :items="merchants"
+        title=" Similar merchants"
+        emptyTitle="No merchants available"
+        emptyDescription="See all merchants"
+        @view-more="Logic.Common.GoToRoute('/merchants/search')"
+      >
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
+          <app-merchant
+            v-for="(merchant, index) in merchants"
+            :key="index"
+            :merchant="merchant"
+            @click="Logic.Common.GoToRoute('/merchants/' + merchant.id)"
+          />
         </div>
+      </app-list-wrapper>
 
-        <div class="py-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Similar merchants available"
-              description="See all Similar merchants"
-            />
-          </div>
+      <!-- Similar products  -->
+      <app-list-wrapper
+        :items="products"
+        title=" Similar products"
+        emptyTitle="No products available"
+        emptyDescription="See all products"
+      >
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
+          <app-merchant-product
+            v-for="(product, index) in products"
+            :key="index"
+            :product="product"
+          />
         </div>
-      </div>
-
-      <!--   -->
-      <div class="w-full flex flex-col px-4 py-3 mb-2 bg-white">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-black !text-sm">
-            Similar merchants
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
-        </div>
-
-        <div class="py-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Similar merchants available"
-              description="See all Similar merchants"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!--   -->
-      <div class="w-full flex flex-col px-4 py-3 mb-2 bg-white">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-black !text-sm">
-            Similar merchants
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
-        </div>
-
-        <div class="py-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Similar merchants available"
-              description="See all Similar merchants"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!--   -->
-      <div class="w-full flex flex-col px-4 py-3 mb-2 bg-white">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-black !text-sm">
-            Similar merchants
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
-        </div>
-
-        <div class="py-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Similar merchants available"
-              description="See all Similar merchants"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!--   -->
-      <div class="w-full flex flex-col px-4 py-3 mb-2 bg-white">
-        <div class="w-full flex justify-between items-center">
-          <app-normal-text class="font-semibold !text-black !text-sm">
-            Similar merchants
-          </app-normal-text>
-
-          <app-normal-text class="text-primary"> See all </app-normal-text>
-        </div>
-
-        <div class="py-2">
-          <template v-if="merchants">
-            <div
-              class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
-            >
-              <app-merchant
-                v-for="(merchant, index) in merchants"
-                :key="index"
-                :merchant="merchant"
-              />
-            </div>
-          </template>
-          <div v-else class="py-4 !pt-2">
-            <app-empty-state
-              title="No Similar merchants available"
-              description="See all Similar merchants"
-            />
-          </div>
-        </div>
-      </div>
+      </app-list-wrapper>
     </subpage-layout>
 
     <!-- About Merchant Modal -->
@@ -255,17 +172,18 @@
 </template>
 
 <script lang="ts">
-  import { ref, computed, reactive } from "vue"
+  import { ref, reactive } from "vue"
   import { defineComponent } from "vue"
   import {
     AppNormalText,
-    AppButton,
     AppIcon,
     AppMerchant,
-    AppTabs,
-    AppSearch,
     AppModal,
     AppTransaction,
+    AppMerchantProduct,
+    AppListWrapper,
+    AppImageLoader,
+    AppAvatar,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
 
@@ -280,13 +198,14 @@
     name: "MerchantsDetailsPage",
     components: {
       AppNormalText,
-      AppButton,
       AppIcon,
       AppMerchant,
-      AppTabs,
-      AppSearch,
       AppModal,
       AppTransaction,
+      AppMerchantProduct,
+      AppListWrapper,
+      AppImageLoader,
+      AppAvatar,
     },
     setup() {
       const showAboutModal = ref(false)
@@ -356,6 +275,39 @@
         },
       ]
 
+      const products = [
+        {
+          id: 1,
+          name: "Test Name",
+          price: "₦66,000",
+          imageUrl: "/images/merchant-products/1.svg",
+        },
+        {
+          id: 4,
+          name: "Quick Fashion",
+          price: "₦66,000",
+          imageUrl: "/images/merchant-products/2.svg",
+        },
+        {
+          id: 5,
+          name: "Mega Pharmacy",
+          price: "₦66,000",
+          imageUrl: "/images/merchant-products/3.svg",
+        },
+        {
+          id: 6,
+          name: "Fresh Bites",
+          price: "₦66,000",
+          imageUrl: "/images/merchant-products/1.svg",
+        },
+        {
+          id: 7,
+          name: "Speedy Courier",
+          price: "₦66,000",
+          imageUrl: "/images/merchant-products/3.svg",
+        },
+      ]
+
       return {
         Logic,
         merchants,
@@ -364,6 +316,7 @@
         showAboutModal,
         selectedFlterOptions,
         transactions,
+        products,
       }
     },
   })

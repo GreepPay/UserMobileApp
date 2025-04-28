@@ -28,6 +28,29 @@
 
       <!-- Content -->
       <slot />
+
+      <!--  -->
+      <div
+        v-if="showFooter"
+        class="w-full flex flex-row items-center justify-between bg-white sticky bottom-0 p-4 z-999"
+      >
+        <div class="grid grid-cols-5 gap-4 items-center justify-center w-full">
+          <app-button
+            class="!col-span-3 !py-4 border-secondary"
+            variant="secondary"
+          >
+            Send Money
+          </app-button>
+
+          <app-button
+            class="!col-span-2 !py-4 font-semibold !text-center"
+            variant="secondary"
+            outlined
+          >
+            Message
+          </app-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -35,12 +58,14 @@
 <script lang="ts">
   import { defineComponent } from "vue"
   import { useRoute, useRouter } from "vue-router"
-  import { AppHeaderText, AppIcon } from "@greep/ui-components"
+  import { AppHeaderText, AppIcon, AppButton } from "@greep/ui-components"
+  import { Logic } from "@greep/logic"
 
   export default defineComponent({
     components: {
       AppHeaderText,
       AppIcon,
+      AppButton,
     },
     props: {
       title: {
@@ -61,6 +86,11 @@
       },
 
       hideBackBtn: {
+        type: Boolean,
+        default: false,
+      },
+
+      showFooter: {
         type: Boolean,
         default: false,
       },
@@ -99,6 +129,7 @@
       return {
         handleBack,
         goToRoute,
+        Logic,
       }
     },
   })

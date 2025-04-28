@@ -32,6 +32,7 @@
       <!-- Content -->
       <slot />
 
+      <!--  -->
       <div
         class="w-full flex flex-row items-center justify-between bg-white sticky bottom-0 z-999"
       >

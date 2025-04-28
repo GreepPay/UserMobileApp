@@ -1,15 +1,18 @@
 <template>
   <app-wrapper>
     <subpage-layout title="Profile">
-      <div class="p-4">
-        <app-title-card-container>
-          <div class="flex items-center space-x-2 -mt-4">
-            <app-image-loader
-              :photo-url="
+      <div class="px-4 pb-4">
+        <app-image-loader
+          class="w-full !bg-green justify-between py-3 px-4 rounded-[32px]"
+          photo-url="/images/greep-transparent-logo.svg"
+        >
+          <div class="flex items-center space-x-2">
+            <app-avatar
+              :src="
                 AuthUser?.profile?.profile_picture ||
                 '/images/profile-image.svg'
               "
-              custom-class="!h-[84px] !w-[84px]"
+              class="!h-[84px] !w-[84px]"
             />
 
             <div class="h-fit">
@@ -43,7 +46,7 @@
               </div>
             </div>
           </div>
-        </app-title-card-container>
+        </app-image-loader>
       </div>
 
       <!--  -->
@@ -89,6 +92,7 @@
     AppNormalText,
     AppButton,
     AppIcon,
+    AppAvatar,
     AppImageLoader,
   } from "@greep/ui-components"
   import { Logic } from "@greep/logic"
@@ -100,6 +104,7 @@
       AppNormalText,
       AppButton,
       AppIcon,
+      AppAvatar,
       AppImageLoader,
     },
     setup() {
