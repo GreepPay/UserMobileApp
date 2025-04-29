@@ -58,7 +58,7 @@
           custom-class="h-5"
         />
         <app-normal-text
-          :custom-class="`!pt-1 !font-semibold ${
+          :class="`!pt-1 !font-semibold ${
             getActiveTab(menuTab.route) ? `!text-green` : ` !text-veryLightGray`
           }`"
         >

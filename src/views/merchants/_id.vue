@@ -5,9 +5,9 @@
       class="bg-light-gray-one"
       :showFooter="true"
     >
-      <template #icon-action>
+      <!-- <template #icon-action>
         <app-icon name="add" />
-      </template>
+      </template> -->
 
       <div class="px-4 py-2 w-full">
         <app-image-loader

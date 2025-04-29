@@ -2,7 +2,7 @@
   <app-wrapper>
     <default-index-layout title="Merchants" class="bg-light-gray-one">
       <template #title-content>
-        <div class="text-black  pb-4 px-3">
+        <div class="text-black pb-4 px-3">
           <app-search
             placeholder="Search for anything"
             @update:search="searchQuery = $event"
@@ -17,6 +17,7 @@
           title=" Featured"
           emptyTitle="No Featured available"
           emptyDescription="See all Featured merchants"
+          @view-more="Logic.Common.GoToRoute('/merchants/search')"
         >
           <div
             class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
@@ -36,6 +37,7 @@
           title=" Boutiques"
           emptyTitle="No Boutiques available"
           emptyDescription="See all Boutiques merchants"
+          @view-more="Logic.Common.GoToRoute('/merchants/search')"
         >
           <div
             class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
@@ -55,6 +57,7 @@
           title=" Supermarket"
           emptyTitle="No Supermarket available"
           emptyDescription="See all Supermarket merchants"
+          @view-more="Logic.Common.GoToRoute('/merchants/search')"
         >
           <div
             class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
