@@ -60,13 +60,72 @@
         emptyTitle="No transactions available"
         emptyDescription="See all transactions"
       >
-        <div class="w-full">
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
           <app-transaction
             v-for="transaction in transactions"
             :key="transaction.id"
             :data="transaction"
             @click="Logic.Common.GoToRoute('/transaction/' + transaction.id)"
-            custom-class="border rounded-2xl px-2  mb-3 !w-full"
+            custom-class="border rounded-2xl px-2 min-w-80"
+          />
+        </div>
+      </app-list-wrapper>
+
+      <!-- Merchant products -->
+      <app-list-wrapper
+        :items="products"
+        title="Merchant products"
+        emptyTitle="No products available"
+        emptyDescription="See all products"
+        actionText="Visit shop"
+      >
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
+          <app-merchant-product
+            v-for="(product, index) in products"
+            :key="index"
+            :product="product"
+          />
+        </div>
+      </app-list-wrapper>
+
+      <!-- Similar merchants  -->
+      <app-list-wrapper
+        :items="merchants"
+        title=" Similar merchants"
+        emptyTitle="No merchants available"
+        emptyDescription="See all merchants"
+        @view-more="Logic.Common.GoToRoute('/merchants/search')"
+      >
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
+          <app-merchant
+            v-for="(merchant, index) in merchants"
+            :key="index"
+            :merchant="merchant"
+            @click="Logic.Common.GoToRoute('/merchants/' + merchant.id)"
+          />
+        </div>
+      </app-list-wrapper>
+
+      <!-- Similar products  -->
+      <app-list-wrapper
+        :items="products"
+        title=" Similar products"
+        emptyTitle="No products available"
+        emptyDescription="See all products"
+      >
+        <div
+          class="flex items-center gap-4 overflow-x-auto h-fit scrollbar-hide"
+        >
+          <app-merchant-product
+            v-for="(product, index) in products"
+            :key="index"
+            :product="product"
           />
         </div>
       </app-list-wrapper>

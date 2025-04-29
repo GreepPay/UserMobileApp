@@ -1,8 +1,8 @@
 <template>
   <app-wrapper>
-    <merchant-layout title="Merchants" class="bg-light-gray-one">
+    <default-index-layout title="Merchants" class="bg-light-gray-one">
       <template #title-content>
-        <div class="text-black py-4 px-3">
+        <div class="text-black  pb-4 px-3">
           <app-search
             placeholder="Search for anything"
             @update:search="searchQuery = $event"
@@ -68,7 +68,7 @@
           </div>
         </app-list-wrapper>
       </div>
-    </merchant-layout>
+    </default-index-layout>
   </app-wrapper>
 </template>
 

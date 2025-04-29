@@ -28,28 +28,28 @@
 
       <!-- Content -->
       <slot />
+    </div>
 
-      <!--  -->
-      <div
-        v-if="showFooter"
-        class="w-full flex flex-row items-center justify-between bg-white sticky bottom-0 p-4 z-999"
-      >
-        <div class="grid grid-cols-5 gap-4 items-center justify-center w-full">
-          <app-button
-            class="!col-span-3 !py-4 border-secondary"
-            variant="secondary"
-          >
-            Send Money
-          </app-button>
+    <!--  -->
+    <div
+      v-if="showFooter"
+      class="w-full flex flex-row items-center justify-between bg-white fixed bottom-0 p-4 z-999"
+    >
+      <div class="grid grid-cols-5 gap-4 items-center justify-center w-full">
+        <app-button
+          class="!col-span-3 !py-4 border-secondary"
+          variant="secondary"
+        >
+          Send Money
+        </app-button>
 
-          <app-button
-            class="!col-span-2 !py-4 font-semibold !text-center"
-            variant="secondary"
-            outlined
-          >
-            Message
-          </app-button>
-        </div>
+        <app-button
+          class="!col-span-2 !py-4 font-semibold !text-center"
+          variant="secondary"
+          outlined
+        >
+          Message
+        </app-button>
       </div>
     </div>
   </div>
