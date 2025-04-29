@@ -53,7 +53,7 @@
           :name="
             getActiveTab(menuTab.route)
               ? `${menuTab.icon}-active`
-              : `${menuTab.icon}`
+              : `${menuTab.icon}-inactive`
           "
           custom-class="h-5"
         />
