@@ -9,6 +9,27 @@ export const availableCurrencies = reactive<Currency[]>([
     symbol: "₦",
     country_code: "NG",
     loading: false,
+    card_payment: {
+      min: 1000,
+      max: 1000000,
+      fee: "1.5",
+    },
+    payin_fees: [
+      {
+        type: "percentage",
+        value: 0.5,
+        min: 55,
+        method: "bank_transfer",
+      },
+    ],
+    payout_fees: [
+      {
+        type: "fixed",
+        value: 100,
+        min: 100,
+        method: "bank_transfer",
+      },
+    ],
   },
   {
     code: "KES",
@@ -16,6 +37,33 @@ export const availableCurrencies = reactive<Currency[]>([
     symbol: "KSh",
     country_code: "KE",
     loading: false,
+    card_payment: {
+      min: 100,
+      max: 100000,
+      fee: "2",
+    },
+    payin_fees: [
+      {
+        type: "percentage",
+        value: 2,
+        min: 1,
+        method: "momo",
+      },
+    ],
+    payout_fees: [
+      {
+        type: "percentage",
+        value: 0.5,
+        min: 200,
+        method: "bank_transfer",
+      },
+      {
+        type: "percentage",
+        value: 2,
+        min: 1,
+        method: "momo",
+      },
+    ],
   },
   {
     code: "UGX",
@@ -23,6 +71,39 @@ export const availableCurrencies = reactive<Currency[]>([
     symbol: "USh",
     country_code: "UG",
     loading: false,
+    card_payment: {
+      min: 1000,
+      max: 1000000,
+      fee: "2",
+    },
+    payin_fees: [
+      {
+        type: "percentage",
+        value: 1,
+        min: 1,
+        method: "bank_transfer",
+      },
+      {
+        type: "percentage",
+        value: 1.5,
+        min: 1,
+        method: "momo",
+      },
+    ],
+    payout_fees: [
+      {
+        type: "percentage",
+        value: 0.5,
+        min: 5000,
+        method: "bank_transfer",
+      },
+      {
+        type: "percentage",
+        value: 1.5,
+        min: 1,
+        method: "momo",
+      },
+    ],
   },
   {
     code: "GHS",
@@ -30,6 +111,33 @@ export const availableCurrencies = reactive<Currency[]>([
     symbol: "₵",
     country_code: "GH",
     loading: false,
+    card_payment: {
+      min: 10,
+      max: 10000,
+      fee: "2",
+    },
+    payin_fees: [
+      {
+        type: "percentage",
+        value: 2,
+        min: 1,
+        method: "momo",
+      },
+      {
+        type: "percentage",
+        value: 0.5,
+        min: 1,
+        method: "bank_transfer",
+      },
+    ],
+    payout_fees: [
+      {
+        type: "percentage",
+        value: 1.5,
+        min: 1,
+        method: "momo",
+      },
+    ],
   },
   {
     code: "ZAR",
@@ -37,6 +145,27 @@ export const availableCurrencies = reactive<Currency[]>([
     symbol: "R",
     country_code: "ZA",
     loading: false,
+    card_payment: {
+      min: 10,
+      max: 10000,
+      fee: "2",
+    },
+    payin_fees: [
+      {
+        type: "percentage",
+        value: 2,
+        min: 1,
+        method: "bank_transfer",
+      },
+    ],
+    payout_fees: [
+      {
+        type: "percentage",
+        value: 0.5,
+        min: 20,
+        method: "momo",
+      },
+    ],
   },
   // {
   //   code: "AOA",
@@ -49,6 +178,67 @@ export const availableCurrencies = reactive<Currency[]>([
     symbol: "ZK",
     country_code: "ZM",
     loading: false,
+    card_payment: {
+      min: 10,
+      max: 10000,
+      fee: "2",
+    },
+    payin_fees: [
+      {
+        type: "percentage",
+        value: 1,
+        min: 1,
+        method: "bank_transfer",
+      },
+      {
+        type: "percentage",
+        value: 2,
+        min: 1,
+        method: "momo",
+      },
+    ],
+    payout_fees: [
+      {
+        type: "percentage",
+        value: 0.5,
+        min: 100,
+        method: "bank_transfer",
+      },
+      {
+        type: "percentage",
+        value: 1.5,
+        min: 1,
+        method: "momo",
+      },
+    ],
+  },
+  {
+    code: "TRY",
+    name: "Turkish Lira",
+    symbol: "₺",
+    country_code: "TR",
+    loading: false,
+    card_payment: {
+      min: 10,
+      max: 10000,
+      fee: "2",
+    },
+    payin_fees: [
+      {
+        type: "percentage",
+        value: 1.5,
+        min: 1,
+        method: "bank_transfer",
+      },
+    ],
+    payout_fees: [
+      {
+        type: "percentage",
+        value: 0.75,
+        min: 20,
+        method: "bank_transfer",
+      },
+    ],
   },
   // {
   //   code: "ZWL",
@@ -56,6 +246,44 @@ export const availableCurrencies = reactive<Currency[]>([
   //   symbol: "Z$",
   // },
 ]);
+
+export const getPayoutFee = (
+  currencyCode: string,
+  method: string,
+  amount: number
+) => {
+  const currency = availableCurrencies.find((c) => c.code === currencyCode);
+  if (!currency) return undefined;
+  const fee = currency.payout_fees?.find((fee) => fee.method === method);
+  if (!fee) return undefined;
+
+  if (fee.type === "percentage") {
+    const calculatedFee = (amount * fee.value) / 100;
+    return Math.max(calculatedFee, fee.min);
+  } else if (fee.type === "fixed") {
+    return Math.max(fee.value, fee.min);
+  }
+
+  return undefined;
+};
+
+export const getPayinFee = (
+  currencyCode: string,
+  method: string,
+  amount: number
+) => {
+  const currency = availableCurrencies.find((c) => c.code === currencyCode);
+  if (!currency) return undefined;
+  const fee = currency.payin_fees?.find((fee) => fee.method === method);
+  if (!fee) return undefined;
+
+  if (fee.type === "percentage") {
+    const calculatedFee = (amount * fee.value) / 100;
+    return Math.max(calculatedFee, fee.min);
+  }
+
+  return undefined;
+};
 
 export const safeAreaInsetTop = computed(() => {
   // Replace this with your actual platform detection logic
@@ -85,6 +313,15 @@ export const safeAreaInsetBottom = computed(() => {
   );
 
   return isAndroid && bottomInset === 0 ? 20 : bottomInset;
+});
+
+export const getBottomPadding = computed(() => {
+  // Replace this with your actual platform detection logic
+  const isAndroid = getPlatforms()[0] === "android";
+
+  return isAndroid
+    ? "padding-bottom: calc(env(safe-area-inset-bottom) + 45px) !important;"
+    : "padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;";
 });
 
 export const supportedCountries = reactive([

@@ -29,8 +29,8 @@
             </div>
 
             <div class="w-full flex flex-row">
-              <app-normal-text class="text-left">
-                Fee: {{ method.fee }}
+              <app-normal-text class="text-left !text-gray-500">
+                {{ method.description }}
               </app-normal-text>
             </div>
           </div>
@@ -40,9 +40,9 @@
       <!-- Bottom button -->
       <div
         class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
-        style="
-          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-        "
+        :style="`
+          ${getBottomPadding}
+        `"
       >
         <div class="">
           <app-button
@@ -64,12 +64,15 @@ import { AppNormalText, AppButton, AppIcon } from "@greep/ui-components";
 import { ref } from "vue";
 import { Logic } from "@greep/logic";
 import { onMounted } from "vue";
-import { availableCurrencies } from "../../composable";
+import { availableCurrencies, getBottomPadding } from "../../composable";
 import { onIonViewWillEnter } from "@ionic/vue";
 import { watch } from "vue";
 
 const defaultCountryCode = availableCurrencies.filter(
-  (item) => item.code == Logic.Auth.AuthUser?.profile?.default_currency
+  (item) =>
+    item.code ==
+    (Logic.Auth.AuthUser?.profile?.default_currency ||
+      localStorage.getItem("default_currency"))
 )[0];
 
 export default defineComponent({
@@ -85,7 +88,10 @@ export default defineComponent({
         domain: "Wallet",
         property: "OnRampChannels",
         method: "GetOnRampChannels",
-        params: [defaultCountryCode?.country_code],
+        params: [
+          defaultCountryCode?.country_code ||
+            localStorage.getItem("default_country_code"),
+        ],
         requireAuth: true,
         ignoreProperty: false,
       },
@@ -93,7 +99,10 @@ export default defineComponent({
         domain: "Wallet",
         property: "OnRampNetwork",
         method: "GetOnRampNetwork",
-        params: [defaultCountryCode?.country_code],
+        params: [
+          defaultCountryCode?.country_code ||
+            localStorage.getItem("default_country_code"),
+        ],
         requireAuth: true,
         ignoreProperty: false,
       },
@@ -112,6 +121,7 @@ export default defineComponent({
         fee: `$1`,
         active: true,
         type: "bank",
+        description: "Transfer funds directly from your bank account",
       },
       {
         title: "Mobile Money",
@@ -119,6 +129,7 @@ export default defineComponent({
         fee: `$1`,
         active: true,
         type: "mobile_money",
+        description: "Pay with your mobile money account",
       },
     ]);
 
@@ -126,13 +137,28 @@ export default defineComponent({
       Logic.Common.GoToRoute("/add?channelId=" + selectedMethod.value);
     };
 
-    const getMethodName = (method: string) => {
-      if (method === "bank") {
-        return "Bank Transfer";
-      } else if (method === "momo") {
-        return "Mobile Money";
-      } else if (method === "p2p") {
-        return "P2P transfer";
+    const getMethodDetails = (method: string) => {
+      switch (method) {
+        case "bank":
+          return {
+            name: "Bank Transfer",
+            description: "Transfer funds directly from your bank account",
+          };
+        case "momo":
+          return {
+            name: "Mobile Money",
+            description: "Pay with your mobile money account",
+          };
+        case "p2p":
+          return {
+            name: "P2P transfer",
+            description: "Transfer funds from another user",
+          };
+        default:
+          return {
+            name: "Unknown",
+            description: "",
+          };
       }
     };
 
@@ -141,17 +167,28 @@ export default defineComponent({
         paymentMethods.length = 0;
 
         OnRampChannels.value.forEach((channel) => {
+          const methodDetails = getMethodDetails(channel.channelType);
           paymentMethods.push({
-            title: getMethodName(channel.channelType) || "Unknown",
+            title: methodDetails.name || "Unknown",
             key: channel.id,
-            fee: `${defaultCountryCode.symbol}${Logic.Common.convertToMoney(
+            fee: `${defaultCountryCode?.symbol}${Logic.Common.convertToMoney(
               channel.feeLocal,
               false,
               ""
             )}`,
             active: channel.status == "active",
             type: channel.channelType,
+            description: methodDetails.description,
           });
+        });
+
+        paymentMethods.push({
+          title: "Card Payment",
+          key: "card",
+          fee: "1.5%",
+          active: true,
+          type: "card",
+          description: "Topup securely with your card",
         });
 
         if (paymentMethods.length > 0) {
@@ -179,6 +216,7 @@ export default defineComponent({
       Logic,
       selectedMethod,
       continueToNext,
+      getBottomPadding,
     };
   },
 });

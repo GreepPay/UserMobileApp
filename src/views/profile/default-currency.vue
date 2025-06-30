@@ -6,9 +6,9 @@
         :parent-refs="parentRefs"
         class="w-full p-4"
       >
-        <div class="w-full flex flex-col space-y-2">
+        <div class="w-full flex flex-col">
           <div
-            class="w-full flex flex-row justify-between items-center py-2"
+            class="w-full flex flex-row justify-between items-center py-2 mb-2"
             v-for="(currency, index) in availableCurrencies"
             :key="index"
             @click="formData.preferred_currency = currency.code"
@@ -50,6 +50,7 @@
           variant="secondary"
           class="!py-4 col-span-4"
           @click="handleConfirm"
+          :loading="loading"
         >
           Confirm
         </app-button>
@@ -70,6 +71,7 @@ import {
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
 import { availableCurrencies } from "../../composable";
+import { ref } from "vue";
 
 export default defineComponent({
   name: "ProfileDefualtCurrency",
@@ -83,13 +85,35 @@ export default defineComponent({
   setup() {
     const FormValidations = Logic.Form;
 
+    const loading = ref(false);
+
     const formData = reactive<{
       preferred_currency: string;
     }>({
       preferred_currency: "NGN",
     });
 
-    const handleConfirm = () => {};
+    const handleConfirm = () => {
+      if (loading.value) return;
+      loading.value = true;
+      Logic.User.UpdateProfile({
+        default_currency: formData.preferred_currency,
+      })
+        .then(async (status) => {
+          if (status) {
+            await Logic.Auth.GetAuthUser();
+            Logic.Common.showAlert({
+              show: true,
+              message: "Default Currency updated successfully",
+              type: "success",
+            });
+            Logic.Common.GoToRoute("/", true);
+          }
+        })
+        .finally(() => {
+          loading.value = false;
+        });
+    };
 
     return {
       Logic,
@@ -97,6 +121,7 @@ export default defineComponent({
       FormValidations,
       availableCurrencies,
       handleConfirm,
+      loading,
     };
   },
 

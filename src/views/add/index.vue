@@ -37,49 +37,50 @@
           <app-keyboard v-model="amount" class="" />
 
           <div :class="`w-full flex flex-col items-center justify-center`">
-            <template
-              v-if="parseFloat(amount) > (selectedChannel?.max || 100000)"
-            >
+            <template v-if="parseFloat(amount) > maxAmount">
               <app-normal-text class="!text-red-500">
                 Maximum amount is
                 <span class="!font-semibold pl-1"
                   >{{ currencySymbol }}
                   {{
-                    Logic.Common.convertToMoney(
-                      selectedChannel?.max || 100000,
-                      true,
-                      "",
-                      false
-                    )
+                    Logic.Common.convertToMoney(maxAmount, true, "", false)
                   }}</span
                 >
               </app-normal-text>
             </template>
-            <template v-if="parseFloat(amount) < (selectedChannel?.min || 0)">
-              <app-normal-text class="!text-gray-700">
+            <template v-if="parseFloat(amount) < minAmount">
+              <app-normal-text class="!text-red-500">
                 Minimum amount is
                 <span class="!font-semibold pl-1"
                   >{{ currencySymbol }}
                   {{
-                    Logic.Common.convertToMoney(
-                      selectedChannel?.min,
-                      true,
-                      "",
-                      false
-                    )
+                    Logic.Common.convertToMoney(minAmount, true, "", false)
                   }}</span
                 >
               </app-normal-text>
             </template>
+
+            <app-normal-text
+              class="!text-gray-800 pt-5"
+              v-if="parseFloat(amount) > 0 && selectedMethod == 'card'"
+            >
+              Amuount in USD is
+              <span class="!font-semibold pl-1"
+                >{{ "$" }}
+                {{
+                  Logic.Common.convertToMoney(amountInUSD, true, "", false)
+                }}</span
+              >
+            </app-normal-text>
           </div>
         </div>
 
         <!-- Bottom button -->
         <div
           class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
-          style="
-            padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-          "
+          :style="`
+            ${getBottomPadding}
+          `"
         >
           <div class="w-full flex flex-col">
             <app-button
@@ -92,6 +93,30 @@
           </div>
         </div>
       </div>
+
+      <!-- Welcome Modal -->
+      <app-modal
+        v-if="showPayWithCard"
+        :close="
+          () => {
+            showPayWithCard = false;
+          }
+        "
+        hasTitle
+        title="Topup Your Wallet"
+        :canClose="false"
+        contentClass="!px-0 !py-0 !h-full"
+        innerClass="!h-[85%] !max-h-[90%]"
+      >
+        <iframe
+          :src="`${paymentBaseUrl}?amount=${amountInUSD}&userUuid=${Logic.Auth.AuthUser?.wallet?.uuid}`"
+          width="100%"
+          height="100%"
+          class=""
+          style="border: none"
+          title="GreepPay"
+        ></iframe>
+      </app-modal>
     </subpage-layout>
   </app-wrapper>
 </template>
@@ -105,13 +130,15 @@ import {
   AppNormalText,
   AppTitleCardContainer,
   AppCurrencySwitch,
+  AppModal,
 } from "@greep/ui-components";
-import { availableCurrencies } from "../../composable";
+import { availableCurrencies, getBottomPadding } from "../../composable";
 import { Logic } from "@greep/logic";
 import { onMounted } from "vue";
-import { User } from "@greep/logic/src/gql/graphql";
+import { GlobalExchangeRate, User } from "@greep/logic/src/gql/graphql";
 import { computed } from "vue";
 import { onIonViewWillEnter } from "@ionic/vue";
+import { onUnmounted } from "vue";
 
 const defaultCountryCode = availableCurrencies.filter(
   (item) => item.code == Logic.Auth.AuthUser?.profile?.default_currency
@@ -126,6 +153,7 @@ export default defineComponent({
     AppNormalText,
     AppTitleCardContainer,
     AppCurrencySwitch,
+    AppModal,
   },
   middlewares: {
     fetchRules: [
@@ -133,7 +161,10 @@ export default defineComponent({
         domain: "Wallet",
         property: "OnRampChannels",
         method: "GetOnRampChannels",
-        params: [defaultCountryCode?.country_code],
+        params: [
+          defaultCountryCode?.country_code ||
+            localStorage.getItem("default_country_code"),
+        ],
         requireAuth: true,
         ignoreProperty: false,
       },
@@ -141,7 +172,10 @@ export default defineComponent({
         domain: "Wallet",
         property: "OnRampNetwork",
         method: "GetOnRampNetwork",
-        params: [defaultCountryCode?.country_code],
+        params: [
+          defaultCountryCode?.country_code ||
+            localStorage.getItem("default_country_code"),
+        ],
         requireAuth: true,
         ignoreProperty: false,
       },
@@ -152,6 +186,9 @@ export default defineComponent({
 
     const OnRampChannels = ref(Logic.Wallet.OnRampChannels);
     const OnRampNetwork = ref(Logic.Wallet.OnRampNetwork);
+    const currencyExchangeToUSD = ref<GlobalExchangeRate | undefined>();
+
+    const showPayWithCard = ref(false);
 
     const defaultCurrency = ref(defaultCountryCode.code);
 
@@ -169,6 +206,22 @@ export default defineComponent({
       );
     });
 
+    const minAmount = computed(() => {
+      if (selectedMethod.value != "card") {
+        return selectedChannel.value?.min || 0;
+      } else {
+        return defaultCountryCode.card_payment?.min || 0;
+      }
+    });
+
+    const maxAmount = computed(() => {
+      if (selectedMethod.value != "card") {
+        return selectedChannel.value?.max || 0;
+      } else {
+        return defaultCountryCode.card_payment?.max || 1000000;
+      }
+    });
+
     const setPageDefaults = () => {
       defaultCurrency.value =
         Logic.Auth.AuthUser?.profile?.default_currency ||
@@ -180,14 +233,38 @@ export default defineComponent({
     };
 
     const amountIsValid = () => {
-      return (
-        parseFloat(amount.value) >= (selectedChannel.value?.min || 0) &&
-        parseFloat(amount.value) <= (selectedChannel.value?.max || 0)
-      );
+      if (selectedMethod.value != "card") {
+        return (
+          parseFloat(amount.value) >= (selectedChannel.value?.min || 0) &&
+          parseFloat(amount.value) <= (selectedChannel.value?.max || 0)
+        );
+      } else {
+        return (
+          parseFloat(amount.value) >=
+            (defaultCountryCode.card_payment?.min || 0) &&
+          parseFloat(amount.value) <=
+            (defaultCountryCode.card_payment?.max || 1000000)
+        );
+      }
     };
+
+    const paymentBaseUrl = computed(() => {
+      return import.meta.env.VITE_PAYMENT_URL;
+    });
+
+    const amountInUSD = computed(() => {
+      return (
+        parseFloat(amount.value.replaceAll(",", "")) /
+        (currencyExchangeToUSD.value?.mid || 1)
+      );
+    });
 
     const continueToNext = () => {
       if (amountIsValid()) {
+        if (selectedMethod.value == "card") {
+          showPayWithCard.value = true;
+          return;
+        }
         if (selectedChannel.value?.channelType == "momo") {
           const purchaseData = {
             type: "momo",
@@ -215,8 +292,43 @@ export default defineComponent({
       }
     };
 
+    const setExchangeRateToUSD = async () => {
+      currencyExchangeToUSD.value = await Logic.Wallet.GetGlobalExchangeRate(
+        "USD",
+        defaultCountryCode.code || "",
+        true
+      );
+    };
+
+    const handleIframeMessage = (event: MessageEvent) => {
+      if (event.origin === import.meta.env.VITE_PAYMENT_BASE_URL) {
+        const paymentStatus: string = event.data.paymentStatus;
+        if (paymentStatus == "success") {
+          Logic.Common.showAlert({
+            show: true,
+            type: "success",
+            message: "Topup Successful",
+          });
+
+          showPayWithCard.value = false;
+          Logic.Auth.GetAuthUser();
+          Logic.Common.GoToRoute("/");
+        } else {
+          Logic.Common.showAlert({
+            show: true,
+            type: "error",
+            message: "Topup Failed. Please try again",
+          });
+          showPayWithCard.value = false;
+        }
+      }
+    };
+
     onIonViewWillEnter(() => {
       setPageDefaults();
+      if (selectedMethod.value == "card") {
+        setExchangeRateToUSD();
+      }
     });
 
     onMounted(() => {
@@ -224,6 +336,12 @@ export default defineComponent({
       Logic.Wallet.watchProperty("OnRampChannels", OnRampChannels);
       Logic.Wallet.watchProperty("OnRampNetwork", OnRampNetwork);
       setPageDefaults();
+
+      window.addEventListener("message", handleIframeMessage);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("message", handleIframeMessage);
     });
 
     return {
@@ -236,6 +354,14 @@ export default defineComponent({
       availableCurrencies,
       defaultCurrency,
       defaultCountryCode,
+      getBottomPadding,
+      selectedMethod,
+      minAmount,
+      maxAmount,
+      showPayWithCard,
+      currencyExchangeToUSD,
+      paymentBaseUrl,
+      amountInUSD,
     };
   },
 });

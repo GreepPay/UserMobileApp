@@ -8,7 +8,7 @@
       <div
         v-if="slidePosition <= 2"
         class="flex justify-center items-center fixed w-full top-0 left-0 px-4 z-50"
-        style="padding-top: calc(env(safe-area-inset-top) + 16px)"
+        :style="`${paddings.paddingTop} ${paddings.paddingBottom}`"
       >
         <div class="w-[80%] rounded-[99px] bg-light-gray-two h-[6px] relative">
           <div
@@ -34,16 +34,15 @@
       >
         <!-- Slide 1 -->
         <swiper-slide
-          class="!flex !flex-col items-start relative justify-center bg-white"
-          :style="`height: ${mobileFullHeight ? mobileFullHeight.height : ''};`"
+          class="!flex !flex-col items-start relative justify-center bg-white h-screen"
         >
           <div
-            class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
-            style="padding-top: calc(env(safe-area-inset-top) + 16px)"
+            class="w-full flex flex-col items-center h-full relative space-y-2 justify-between"
+            :style="`${paddings.paddingTop} ${paddings.paddingBottom}`"
           >
             <!-- Main section -->
             <div
-              class="w-full flex flex-col items-center justify-center space-y-5 -mt-8"
+              class="w-full flex flex-col items-center justify-center space-y-5 -mt-8 h-full"
             >
               <img
                 src="/images/onboarding/slide-1.png"
@@ -69,8 +68,7 @@
 
             <!-- Button -->
             <div
-              class="flex flex-col justify-center items-center absolute bottom-0 left-0 px-4 pt-4 w-full"
-              style="padding-bottom: calc(env(safe-area-inset-bottom) + 16px)"
+              class="flex flex-col justify-center items-center px-4 pt-4 w-full"
             >
               <app-button
                 class="!w-full !py-4 font-semibold"
@@ -85,16 +83,15 @@
 
         <!-- Slide 2 -->
         <swiper-slide
-          class="!flex !flex-col items-start relative justify-center bg-white"
-          :style="`height: ${mobileFullHeight ? mobileFullHeight.height : ''};`"
+          class="!flex !flex-col items-start relative justify-center bg-white h-screen"
         >
           <div
-            class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
-            style="padding-top: calc(env(safe-area-inset-top) + 16px)"
+            class="w-full flex flex-col items-center h-full relative space-y-2 justify-between"
+            :style="`${paddings.paddingTop} ${paddings.paddingBottom}`"
           >
             <!-- Main section -->
             <div
-              class="w-full flex flex-col items-center justify-center space-y-5 -mt-8"
+              class="w-full flex flex-col items-center justify-center space-y-5 -mt-8 h-full"
             >
               <img
                 src="/images/onboarding/slide-2.png"
@@ -120,8 +117,7 @@
 
             <!-- Button -->
             <div
-              class="flex flex-col justify-center items-center absolute bottom-0 left-0 px-4 pt-4 w-full"
-              style="padding-bottom: calc(env(safe-area-inset-bottom) + 16px)"
+              class="flex flex-col justify-center items-center px-4 pt-4 w-full"
             >
               <app-button
                 class="!w-full !py-4 font-semibold"
@@ -136,16 +132,15 @@
 
         <!-- Slide 3 -->
         <swiper-slide
-          class="!flex !flex-col items-start relative justify-center bg-white"
-          :style="`height: ${mobileFullHeight ? mobileFullHeight.height : ''};`"
+          class="!flex !flex-col items-start relative justify-center bg-white h-screen"
         >
           <div
-            class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
-            style="padding-top: calc(env(safe-area-inset-top) + 16px)"
+            class="w-full flex flex-col items-center h-full relative space-y-2 justify-between"
+            :style="`${paddings.paddingTop} ${paddings.paddingBottom}`"
           >
             <!-- Main section -->
             <div
-              class="w-full flex flex-col items-center justify-center space-y-5 px-4 -mt-8"
+              class="w-full flex flex-col items-center justify-center space-y-5 px-4 -mt-8 h-full"
             >
               <img
                 src="/images/onboarding/slide-3.png"
@@ -171,8 +166,7 @@
 
             <!-- Button -->
             <div
-              class="flex flex-col justify-center items-center absolute bottom-0 left-0 px-4 pt-4 w-full"
-              style="padding-bottom: calc(env(safe-area-inset-bottom) + 16px)"
+              class="flex flex-col justify-center items-center px-4 pt-4 w-full"
             >
               <app-button
                 class="!w-full !py-4 font-semibold"
@@ -187,24 +181,22 @@
 
         <!-- Slide 4 -->
         <swiper-slide
-          class="!flex !flex-col items-start relative justify-center bg-white"
-          :style="`height: ${mobileFullHeight ? mobileFullHeight.height : ''};`"
+          class="!flex !flex-col items-start relative justify-center bg-white h-screen"
         >
           <div
-            class="w-full flex flex-col items-center h-full relative space-y-2 justify-center r"
-            style="padding-top: calc(env(safe-area-inset-top) + 16px)"
+            class="w-full flex flex-col items-center h-full relative space-y-2 justify-between"
+            :style="`${paddings.paddingTop} ${paddings.paddingBottom}`"
           >
             <!-- Main section -->
             <div
-              class="w-full flex flex-col items-center justify-center space-y-5 px-4"
+              class="w-full flex flex-col items-center justify-center space-y-5 px-4 h-full"
             >
               <img src="/images/logo.png" alt="logo" class="w-[100px]" />
             </div>
 
             <!-- Button -->
             <div
-              class="flex flex-col justify-center items-center absolute bottom-0 left-0 px-4 pt-4 w-full"
-              style="padding-bottom: calc(env(safe-area-inset-bottom) + 16px)"
+              class="flex flex-col justify-center items-center px-4 pt-4 w-full"
             >
               <div class="bg-light-gray-one p-5 rounded-2xl mb-5">
                 <app-header-text
@@ -260,8 +252,10 @@ import {
   AppSwiper,
 } from "@greep/ui-components";
 import { SwiperSlide } from "swiper/vue";
+import { safeAreaInsetBottom, safeAreaInsetTop } from "../../composable";
 import { onUnmounted } from "vue";
 import { computed } from "vue";
+import { getPlatforms } from "@ionic/vue";
 
 export default defineComponent({
   components: {
@@ -304,6 +298,34 @@ export default defineComponent({
       window.removeEventListener("resize", updateHeight);
     });
 
+    const paddings = computed(() => {
+      const platformIsIOS =
+        getPlatforms()[0] === "iphone" ||
+        getPlatforms()[0] === "ipad" ||
+        getPlatforms()[0] === "ios";
+
+      if (platformIsIOS) {
+        return {
+          paddingTop: `padding-top: calc(env(safe-area-inset-top) + 16px) !important;`,
+          paddingBottom: `padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;`,
+        };
+      }
+
+      const platformIsAndroid = getPlatforms()[0] == "android";
+
+      if (platformIsAndroid) {
+        return {
+          paddingTop: `padding-top: calc(env(safe-area-inset-top) + 45px) !important;`,
+          paddingBottom: `padding-bottom: calc(env(safe-area-inset-bottom) + 45px) !important;`,
+        };
+      }
+
+      return {
+        paddingTop: `padding-top: calc(${safeAreaInsetTop.value}px + 16px);`,
+        paddingBottom: `padding-bottom: calc(${safeAreaInsetBottom.value}px + 16px);`,
+      };
+    });
+
     const mobileFullHeight = computed(() => {
       return {
         height: `${innerHeight.value}px`,
@@ -316,6 +338,7 @@ export default defineComponent({
       currentSlidePosition,
       totalSlides,
       mobileFullHeight,
+      paddings,
     };
   },
 });

@@ -106,9 +106,9 @@
       <!-- Bottom button -->
       <div
         class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4 flex flex-col space-y-3"
-        style="
-          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-        "
+        :style="`
+          ${getBottomPadding}
+        `"
       >
         <div
           class="w-full flex flex-col"
@@ -156,8 +156,23 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue"
-  import {
+import { defineComponent } from "vue";
+import {
+  AppButton,
+  AppNormalText,
+  AppImageLoader,
+  AppHeaderText,
+  AppIcon,
+  AppContentEditable,
+  AppTitleCardContainer,
+} from "@greep/ui-components";
+import { Logic } from "@greep/logic";
+import { ref } from "vue";
+import { getBottomPadding } from "../../composable";
+
+export default defineComponent({
+  name: "ConvertGRPTokenPage",
+  components: {
     AppButton,
     AppNormalText,
     AppImageLoader,
@@ -165,50 +180,37 @@
     AppIcon,
     AppContentEditable,
     AppTitleCardContainer,
-  } from "@greep/ui-components"
-  import { Logic } from "@greep/logic"
-  import { ref } from "vue"
+  },
+  setup() {
+    const hideBackBtn = ref(false);
 
-  export default defineComponent({
-    name: "ConvertGRPTokenPage",
-    components: {
-      AppButton,
-      AppNormalText,
-      AppImageLoader,
-      AppHeaderText,
-      AppIcon,
-      AppContentEditable,
-      AppTitleCardContainer,
-    },
-    setup() {
-      const hideBackBtn = ref(false)
+    const currentPageContent = ref("conversion");
+    const mainButtonLabel = ref("Redeem");
+    const pageTitle = ref("GRP Converter");
 
-      const currentPageContent = ref("conversion")
-      const mainButtonLabel = ref("Redeem")
-      const pageTitle = ref("GRP Converter")
+    const grp_amount = ref(0);
 
-      const grp_amount = ref(0)
-
-      const continueToNext = () => {
-        if (currentPageContent.value === "conversion") {
-          currentPageContent.value = "processing"
-          pageTitle.value = "Processing"
-          mainButtonLabel.value = "Profile"
-          hideBackBtn.value = true
-        } else {
-          Logic.Common.GoToRoute(`/profile`)
-        }
+    const continueToNext = () => {
+      if (currentPageContent.value === "conversion") {
+        currentPageContent.value = "processing";
+        pageTitle.value = "Processing";
+        mainButtonLabel.value = "Profile";
+        hideBackBtn.value = true;
+      } else {
+        Logic.Common.GoToRoute(`/profile`);
       }
+    };
 
-      return {
-        Logic,
-        continueToNext,
-        hideBackBtn,
-        currentPageContent,
-        mainButtonLabel,
-        pageTitle,
-        grp_amount,
-      }
-    },
-  })
+    return {
+      Logic,
+      continueToNext,
+      hideBackBtn,
+      currentPageContent,
+      mainButtonLabel,
+      pageTitle,
+      grp_amount,
+      getBottomPadding,
+    };
+  },
+});
 </script>

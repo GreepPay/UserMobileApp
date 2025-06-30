@@ -64,9 +64,9 @@
       <!-- Bottom button -->
       <div
         class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
-        style="
-          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-        "
+        :style="`
+          ${getBottomPadding}
+        `"
       >
         <app-button
           custom-class="!w-full !py-4  !border-red !text-red !border-[1.5px] hover:!bg-red/20"
@@ -92,6 +92,7 @@ import {
   AppImageLoader,
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
+import { getBottomPadding } from "../../composable";
 
 export default defineComponent({
   name: "WalletProfilePage",
@@ -139,6 +140,7 @@ export default defineComponent({
       profileSettings,
       amount,
       AuthUser,
+      getBottomPadding,
     };
   },
 });

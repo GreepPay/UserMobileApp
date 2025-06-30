@@ -33,9 +33,9 @@
       <!-- Bottom button -->
       <div
         class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4"
-        style="
-          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-        "
+        :style="`
+          ${getBottomPadding}
+        `"
       >
         <div class="w-full flex flex-col">
           <app-button
@@ -62,7 +62,11 @@ import {
   AppDetails,
 } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
-import { availableCurrencies } from "../../composable";
+import {
+  availableCurrencies,
+  getBottomPadding,
+  getPayinFee,
+} from "../../composable";
 import { ref } from "vue";
 import { onMounted } from "vue";
 import { onIonViewWillEnter } from "@ionic/vue";
@@ -87,7 +91,10 @@ export default defineComponent({
         domain: "Wallet",
         property: "OnRampNetwork",
         method: "GetOnRampNetwork",
-        params: [defaultCountryCode?.country_code],
+        params: [
+          defaultCountryCode?.country_code ||
+            localStorage.getItem("default_country_code"),
+        ],
         requireAuth: true,
         ignoreProperty: false,
       },
@@ -95,7 +102,10 @@ export default defineComponent({
         domain: "Wallet",
         property: "OnRampChannels",
         method: "GetOnRampChannels",
-        params: [defaultCountryCode?.country_code],
+        params: [
+          defaultCountryCode?.country_code ||
+            localStorage.getItem("default_country_code"),
+        ],
         requireAuth: true,
         ignoreProperty: false,
       },
@@ -155,6 +165,8 @@ export default defineComponent({
         ? JSON.parse(localStorage.getItem("purchaseData") || "")
         : undefined;
 
+      let methodType = "momo";
+
       if (purchaseData.value) {
         bankDetails.length = 0;
 
@@ -163,6 +175,8 @@ export default defineComponent({
             title: "Payment Method",
             content: "Bank Transfer",
           });
+
+          methodType = "bank_transfer";
         } else {
           bankDetails.push({
             title: "Payment Method",
@@ -193,10 +207,16 @@ export default defineComponent({
           )}`,
         });
 
+        const finalFee = getPayinFee(
+          defaultCountryCode.code,
+          methodType,
+          purchaseData.value.amount
+        );
+
         bankDetails.push({
           title: "Fee",
           content: `${defaultCountryCode.symbol} ${Logic.Common.convertToMoney(
-            selectedChannel.value?.feeLocal || 0,
+            finalFee || 0,
             false,
             ""
           )}`,
@@ -259,6 +279,7 @@ export default defineComponent({
       purchaseData,
       selectedChannel,
       loadingState,
+      getBottomPadding,
     };
   },
 });

@@ -86,9 +86,9 @@
       <!-- Bottom button -->
       <div
         class="w-full fixed bg-white dark:bg-black bottom-0 left-0 pt-4 px-4 flex flex-col"
-        style="
-          padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-        "
+        :style="`
+          ${getBottomPadding}
+        `"
       >
         <div
           class="w-full flex flex-col pb-4"
@@ -126,7 +126,7 @@ import { Logic } from "@greep/logic";
 import { reactive } from "vue";
 import { ref } from "vue";
 import { User } from "@greep/logic/src/gql/graphql";
-import { availableCurrencies } from "../../composable";
+import { availableCurrencies, getBottomPadding } from "../../composable";
 import { onMounted } from "vue";
 import { onIonViewWillEnter } from "@ionic/vue";
 import { computed } from "vue";
@@ -309,6 +309,7 @@ export default defineComponent({
       selectedCurrencyData,
       paymentData,
       buttonIsLoading,
+      getBottomPadding,
     };
   },
 });

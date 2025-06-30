@@ -423,7 +423,6 @@ export default defineComponent({
         showWelcomeModal.value = true;
         localStorage.setItem("has_seen_welcome_modal", "true");
       }
-      Logic.Auth.watchProperty("AuthUser", AuthUser);
 
       setPageDefaults();
       setTransactionData();

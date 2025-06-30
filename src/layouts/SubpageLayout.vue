@@ -1,10 +1,12 @@
 <template>
   <div
     class="w-full flex flex-col lg:text-sm mdlg:text-[12px] relative h-full text-xs overflow-y-hidden font-poppins"
-    style="
-      padding-top: calc(env(safe-area-inset-top) + 0px) !important;
+    :style="`
+      padding-top: calc(env(safe-area-inset-top) + ${
+        currentPlatform == 'android' ? '32' : '0'
+      }px) !important;
       padding-bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
-    "
+    `"
   >
     <div
       class="w-full flex flex-col relative h-full min-h-screen overflow-y-auto"
@@ -48,9 +50,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { AppHeaderText, AppIcon } from "@greep/ui-components";
+import { getPlatforms } from "@ionic/vue";
 
 export default defineComponent({
   components: {
@@ -105,6 +108,10 @@ export default defineComponent({
       }
     };
 
+    const currentPlatform = computed(() => {
+      return getPlatforms()[0];
+    });
+
     const handleBack = () => {
       if (props.useEmitBack) emit("back");
       else goBack();
@@ -113,6 +120,7 @@ export default defineComponent({
     return {
       handleBack,
       goToRoute,
+      currentPlatform,
     };
   },
 });

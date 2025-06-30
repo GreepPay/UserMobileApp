@@ -57,6 +57,7 @@
 import { defineComponent, reactive, ref } from "vue";
 import { AppFormWrapper, AppTextField, AppButton } from "@greep/ui-components";
 import { Logic } from "@greep/logic";
+import { availableCurrencies } from "../../composable";
 
 export default defineComponent({
   name: "LoginPage",
@@ -88,6 +89,16 @@ export default defineComponent({
         try {
           await Logic.Auth.SignIn(true);
           await Logic.Auth.GetAuthUser();
+
+          const defaultCountryCode = availableCurrencies.filter(
+            (item) =>
+              item.code == Logic.Auth.AuthUser?.profile?.default_currency
+          )[0];
+
+          localStorage.setItem(
+            "default_country_code",
+            defaultCountryCode?.country_code || ""
+          );
 
           // Check if passcode has been set
           if (localStorage.getItem("auth_passcode")) {
